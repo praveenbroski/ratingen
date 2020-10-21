@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.ui.drawerscreen.ridescreen.payment.PaymentViewModel" />
+
+    </data>
+
+    <RelativeLayout
+        android:background="@color/clr_white"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:background="@color/clr_transparent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:elevation="0dp">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                style="@style/Toolbar"
+                app:title=""
+                app:titleTextAppearance="@style/Toolbar.TitleText"
+                app:titleTextColor="@color/clr_222B45"
+                app:navigationIcon="@drawable/back_nav" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <TextView
+            android:id="@+id/txt_payment_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/appBarLayout"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:layout_marginEnd="@dimen/_12sdp"
+            android:fontFamily="@font/sf_semibold"
+            android:textColor="@color/clr_222B45"
+            android:textSize="@dimen/_20sdp"
+            android:text="@{viewModel.translationModel.txt_pay_methods}" />
+
+        <TextView
+            android:id="@+id/txt_current_method"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_payment_title"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:layout_marginEnd="@dimen/_12sdp"
+            android:fontFamily="@font/sf_semibold"
+            android:textAllCaps="true"
+            android:textColor="@color/clr_ACB1C0"
+            android:textSize="13sp"
+            android:text="@{viewModel.translationModel.txt_curr_method}" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/payment_method_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_8sdp"
+            android:visibility="gone"
+            android:layout_below="@+id/txt_current_method"
+            android:layout_above="@+id/btn_add_payment_method" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:layout_below="@+id/txt_current_method"
+            android:layout_above="@+id/btn_add_payment_method">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/ll_pay_cash"
+                    android:orientation="vertical"
+                    android:background="@color/clr_white"
+                    android:layout_width="match_parent"
+                    android:layout_height="82dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="@{viewModel::onCashClick}">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="1dp"
+                        android:layout_marginBottom="1dp"
+                        app:cardUseCompatPadding="false"
+                        app:cardCornerRadius="4dp"
+                        android:layout_marginStart="@dimen/_12sdp"
+                        android:layout_marginEnd="@dimen/_12sdp">
+
+                        <RelativeLayout
+                            android:background="@drawable/payment_normal_bg"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:id="@+id/img_pay_cash"
+                                android:layout_width="50dp"
+                                android:layout_height="30dp"
+                                android:layout_centerVertical="true"
+                                android:layout_marginStart="16dp"
+                                app:srcCompat="@drawable/ic_cash" />
+
+                            <TextView
+                                android:id="@+id/txt_pay_cash"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_toEndOf="@+id/img_pay_cash"
+                                android:layout_toStartOf="@+id/img_pay_check_cash"
+                                android:layout_marginTop="20dp"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginEnd="16dp"
+                                android:textColor="@color/clr_222B45"
+                                android:textSize="18sp"
+                                android:fontFamily="@font/sf_semibold"
+                                android:text="@{viewModel.translationModel.txt_cash}" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_toEndOf="@+id/img_pay_cash"
+                                android:layout_toStartOf="@+id/img_pay_check_cash"
+                                android:layout_below="@+id/txt_pay_cash"
+                                android:layout_marginTop="4dp"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginEnd="16dp"
+                                android:textColor="@color/clr_ACB1C0"
+                                android:textSize="13sp"
+                                android:fontFamily="@font/sf_medium"
+                                android:text="@{viewModel.translationModel.txt_Defdult_method_dummy}" />
+
+                            <ImageView
+                                android:id="@+id/img_pay_check_cash"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_centerVertical="true"
+                                android:layout_alignParentEnd="true"
+                                android:visibility="invisible"
+                                android:layout_marginEnd="16dp"
+                                android:layout_marginStart="16dp"
+                                app:srcCompat="@drawable/ic_red_check_checked" />
+
+                        </RelativeLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_pay_wallet"
+                    android:orientation="vertical"
+                    android:background="@color/clr_white"
+                    android:layout_width="match_parent"
+                    android:layout_height="82dp"
+                    android:layout_marginTop="6dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="@{viewModel::onWalletClick}">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="1dp"
+                        android:layout_marginBottom="1dp"
+                        app:cardUseCompatPadding="false"
+                        app:cardCornerRadius="4dp"
+                        android:layout_marginStart="@dimen/_12sdp"
+                        android:layout_marginEnd="@dimen/_12sdp">
+
+                        <RelativeLayout
+                            android:background="@drawable/payment_normal_bg"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:id="@+id/img_pay_wallet"
+                                android:layout_width="50dp"
+                                android:layout_height="30dp"
+                                android:layout_centerVertical="true"
+                                android:layout_marginStart="16dp"
+                                app:srcCompat="@drawable/ic_wallet" />
+
+                            <TextView
+                                android:id="@+id/txt_pay_wallet"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_toEndOf="@+id/img_pay_wallet"
+                                android:layout_toStartOf="@+id/img_pay_check_wallet"
+                                android:layout_marginTop="20dp"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginEnd="16dp"
+                                android:textColor="@color/clr_222B45"
+                                android:textSize="18sp"
+                                android:fontFamily="@font/sf_semibold"
+                                android:text="@{viewModel.translationModel.txt_wallet}" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_toEndOf="@+id/img_pay_wallet"
+                                android:layout_toStartOf="@+id/img_pay_check_wallet"
+                                android:layout_below="@+id/txt_pay_wallet"
+                                android:layout_marginTop="4dp"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginEnd="16dp"
+                                android:textColor="@color/clr_ACB1C0"
+                                android:textSize="13sp"
+                                android:fontFamily="@font/sf_medium"
+                                android:text="@{viewModel.translationModel.txt_Defdult_method_dummy}" />
+
+                            <ImageView
+                                android:id="@+id/img_pay_check_wallet"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_centerVertical="true"
+                                android:layout_alignParentEnd="true"
+                                android:visibility="invisible"
+                                android:layout_marginEnd="16dp"
+                                android:layout_marginStart="16dp"
+                                app:srcCompat="@drawable/ic_red_check_checked" />
+
+                        </RelativeLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_pay_card"
+                    android:orientation="vertical"
+                    android:background="@color/clr_white"
+                    android:layout_width="match_parent"
+                    android:layout_height="82dp"
+                    android:layout_marginTop="6dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="@{viewModel::onCardClick}">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="1dp"
+                        android:layout_marginBottom="1dp"
+                        app:cardUseCompatPadding="false"
+                        app:cardCornerRadius="4dp"
+                        android:layout_marginStart="@dimen/_12sdp"
+                        android:layout_marginEnd="@dimen/_12sdp">
+
+                        <RelativeLayout
+                            android:background="@drawable/payment_normal_bg"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:id="@+id/img_pay_card"
+                                android:layout_width="50dp"
+                                android:layout_height="30dp"
+                                android:layout_centerVertical="true"
+                                android:layout_marginStart="16dp"
+                                app:srcCompat="@drawable/ic_card_yellow" />
+
+                            <TextView
+                                android:id="@+id/txt_pay_card"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_toEndOf="@+id/img_pay_card"
+                                android:layout_toStartOf="@+id/img_pay_check_card"
+                                android:layout_marginTop="20dp"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginEnd="16dp"
+                                android:textColor="@color/clr_222B45"
+                                android:textSize="18sp"
+                                android:fontFamily="@font/sf_semibold"
+                                android:text="@{viewModel.translationModel.txt_card}" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_toEndOf="@+id/img_pay_card"
+                                android:layout_toStartOf="@+id/img_pay_check_card"
+                                android:layout_below="@+id/txt_pay_card"
+                                android:layout_marginTop="4dp"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginEnd="16dp"
+                                android:textColor="@color/clr_ACB1C0"
+                                android:textSize="13sp"
+                                android:fontFamily="@font/sf_medium"
+                                android:text="@{viewModel.translationModel.txt_Defdult_method_dummy}" />
+
+                            <ImageView
+                                android:id="@+id/img_pay_check_card"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_centerVertical="true"
+                                android:layout_alignParentEnd="true"
+                                android:visibility="invisible"
+                                android:layout_marginEnd="16dp"
+                                android:layout_marginStart="16dp"
+                                app:srcCompat="@drawable/ic_red_check_checked" />
+
+                        </RelativeLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <Button
+            android:id="@+id/btn_add_payment_method"
+            android:background="@drawable/btn_primary"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_35sdp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="@dimen/_16sdp"
+            android:layout_marginEnd="@dimen/_16sdp"
+            android:layout_marginBottom="@dimen/_16sdp"
+            android:fontFamily="@font/sf_semibold"
+            android:textAllCaps="true"
+            android:textColor="@color/clr_white"
+            android:textSize="@dimen/_12sdp"
+            android:text="@{viewModel.translationModel.txt_pay_method}" />
+
+    </RelativeLayout>
+
+</layout>

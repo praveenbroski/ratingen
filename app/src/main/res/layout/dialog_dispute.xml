@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.ui.drawerscreen.disputdialog.DisputeDialogViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/clr_white"
+        android:clickable="true">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true">
+
+                    <ImageView
+                        android:id="@+id/img_background_otp"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_120sdp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_half_background" />
+
+                    <ImageView
+                        android:layout_width="@dimen/_80sdp"
+                        android:layout_height="@dimen/_80sdp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/_80sdp"
+                        android:background="@drawable/circle_primary"
+                        android:src="@drawable/doc_info" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="@dimen/_16sdp"
+                    android:layout_marginRight="@dimen/_16sdp"
+                    android:paddingTop="16dp">
+
+                    <TextView
+                        android:id="@+id/txt_title_regst_signup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:text="@{viewModel.translationModel.txt_complaints}"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/_22sdp"
+                        app:textfont="@{`Laksaman.ttf`}" />
+                    <Spinner
+                        android:id="@+id/spin_titile_complaints"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/txt_title_regst_signup"
+                        android:theme="@style/ThemeOverlay.AppCompat.Light"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:gravity="start"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/spin_titile_complaints"
+                        android:layout_marginTop="@dimen/_18sdp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:gravity="start"
+                            android:text="@{viewModel.translationModel.hint_your_comments}"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            app:textfont="@{`Padauk.ttf`}" />
+                        <RelativeLayout
+                            android:id="@+id/layout_licence_signup"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_margin="8dp"
+                            android:background="@drawable/curved_border_gray_background"
+                            android:padding="8dp">
+
+                            <EditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerVertical="true"
+                                android:background="@android:color/transparent"
+                                android:gravity="start"
+                                android:lines="4"
+                                android:maxLength="120"
+                                android:minLines="4"
+                                android:text="@={viewModel.text_cmts}"
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                app:textfont="@{`Padauk.ttf`}" />
+
+
+                        </RelativeLayout>
+
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/btn_send_complaint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/_25sdp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/_18sdp"
+                    android:background="@drawable/curved_border_background"
+                    android:onClick="@{viewModel::OnlickSend}"
+                    android:paddingLeft="@dimen/_40sdp"
+                    android:paddingRight="@dimen/_40sdp"
+                    android:text="@string/text_send"
+                    android:textAllCaps="false"
+                    android:textColor="@color/buttonTextColor"
+                    app:Buttonfont="@{`Padauk.ttf`}" />
+
+                <androidx.legacy.widget.Space
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_25sdp" />
+
+            </LinearLayout>
+        </ScrollView>
+
+        <include
+            android:id="@+id/progressBar"
+            layout="@layout/progress_dialog"
+            android:visibility="@{viewModel.mIsLoading ? View.VISIBLE : View.GONE}" />
+
+    </RelativeLayout>
+</layout>

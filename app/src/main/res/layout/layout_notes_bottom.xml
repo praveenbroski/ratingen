@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/curved_border_top_white">
+
+    <TextView
+        android:id="@+id/txt_notes_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:fontFamily="@font/sf_semibold"
+        android:textSize="@dimen/_20sdp"
+        android:textColor="@color/clr_222B45"
+        android:text="Note to driver" />
+
+    <TextView
+        android:id="@+id/txt_notes_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_7sdp"
+        android:fontFamily="@font/sf_regular"
+        android:textSize="@dimen/_11sdp"
+        android:textColor="@color/clr_222B45"
+        android:text="Let driver know more about your requests." />
+
+    <EditText
+        android:id="@+id/et_driver_notes"
+        android:background="@drawable/edit_text_form_multiline"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_73sdp"
+        android:layout_marginTop="@dimen/_18sdp"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:paddingStart="@dimen/_16sdp"
+        android:paddingEnd="@dimen/_16sdp"
+        android:paddingTop="@dimen/_8sdp"
+        android:paddingBottom="@dimen/_8sdp"
+        android:gravity="top"
+        android:singleLine="true"
+        android:imeOptions="actionDone"
+        android:inputType="textMultiLine"
+        android:lines="3"
+        android:hint="Eg: I'm in front of the bus stop"
+        android:textColorHint="@color/clr_8F9BB3"
+        android:fontFamily="@font/sf_regular"
+        android:textSize="@dimen/_12sdp"
+        android:textColor="@color/clr_222B45" />
+
+    <Button
+        android:id="@+id/btn_driver_notes"
+        style="?android:attr/borderlessButtonStyle"
+        android:background="@drawable/btn_primary"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_35sdp"
+        android:layout_marginTop="@dimen/_30sdp"
+        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
+        android:layout_marginBottom="@dimen/_15sdp"
+        android:textAllCaps="true"
+        android:fontFamily="@font/sf_semibold"
+        android:textColor="@color/clr_white"
+        android:textSize="@dimen/_12sdp"
+        android:text="Confirm" />
+
+</LinearLayout>

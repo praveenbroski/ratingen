@@ -1,0 +1,47 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 29
+
+    defaultConfig {
+        minSdkVersion 17
+        targetSdkVersion 29
+        versionCode 2
+        versionName "1.1"
+    }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    implementation "androidx.appcompat:appcompat:1.1.0"
+}
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'singledateandtimepicker'
+    orgName = 'florent37'
+
+    publishedGroupId = 'florent37'
+    libraryName = 'singledateandtimepicker'
+    artifact = 'singledateandtimepicker'
+
+    libraryDescription = 'singledateandtimepicker'
+
+    siteUrl = 'https://github.com/florent37/SingleDateAndTimePicker'
+    gitUrl = 'https://github.com/florent37/SingleDateAndTimePicker.git'
+
+    libraryVersion = '2.2.6'
+
+    developerId = 'florent37'
+    developerName = 'Florent Champigny'
+    developerEmail = 'champigny.florent@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+//apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/gradle/install-v1.gradle'
+//apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/gradle/bintray-android-v1.gradle'

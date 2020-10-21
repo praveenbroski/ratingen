@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_Home"
+            android:icon="@drawable/ic_menu_home"
+            android:title="@string/txt_booking_page" />
+
+        <item
+            android:id="@+id/nav_Profile"
+            android:icon="@drawable/ic_menu_profile"
+            android:title="@string/text_profile" />
+
+        <item
+            android:id="@+id/nav_History"
+            android:icon="@drawable/ic_menu_history"
+            android:title="@string/txt_my_rides" />
+
+        <item
+            android:id="@+id/nav_Favs"
+            android:icon="@drawable/ic_menu_favs"
+            android:title="@string/txt_Favourites" />
+
+        <item
+            android:id="@+id/nav_Payment"
+            android:icon="@drawable/ic_menu_payment"
+            android:title="@string/txt_Payment"
+            android:visible="false" />
+
+        <item
+            android:id="@+id/nav_Wallet"
+            android:icon="@drawable/ic_menu_payment"
+            android:title="@string/txt_wall_pay" />
+
+        <item
+            android:id="@+id/nav_Notifications"
+            android:icon="@drawable/ic_nav_notifications"
+            android:title="@string/txt_noitification" />
+
+        <item
+            android:id="@+id/nav_Referralcode"
+            android:icon="@drawable/ic_nav_refferal_code"
+            android:title="@string/text_title_Referralcode"
+            android:visible="false" />
+
+        <item
+            android:id="@+id/nav_Complaints"
+            android:icon="@drawable/ic_menu_support"
+            android:title="@string/txt_support" />
+
+        <item
+            android:id="@+id/nav_Setting"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/txt_Setting"
+            android:visible="false" />
+
+        <item
+            android:id="@+id/nav_Sos"
+            android:icon="@drawable/ic_menu_sos"
+            android:title="@string/txt_sos" />
+
+        <item
+            android:id="@+id/nav_faq"
+            android:icon="@drawable/ic_menu_faq"
+            android:title="@string/text_faq" />
+
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/ic_menu_about"
+            android:title="@string/txt_about_us" />
+
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_menu_logout"
+            android:title="@string/txt_logout" />
+
+    </group>
+
+</menu>
+

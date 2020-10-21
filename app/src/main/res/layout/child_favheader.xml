@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+      <import type="android.view.View"/>
+
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.ui.drawerscreen.placeapiscreen.adapter.ChildPlaceFavViewModel"/>
+
+    </data>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/ChildFav_FavTitle"
+        android:layout_width="wrap_content"
+        android:text="@string/txt_Favourites"
+        android:layout_marginTop="@dimen/_15sdp"
+        android:textSize="@dimen/_12sdp"
+        android:textColor="@color/clr_graydark"
+        android:fontFamily="sans-serif"
+        android:visibility="@{viewModel.IsFavtitle ? View.VISIBLE : View.GONE}"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:layout_marginLeft="@dimen/_1sdp"
+        android:layout_marginStart="@dimen/_1sdp"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/child_linear"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_below="@+id/ChildFav_FavTitle"
+        android:layout_marginLeft="@dimen/_1sdp"
+        android:layout_marginStart="@dimen/_1sdp"
+        android:layout_height="@dimen/_50sdp">
+
+        <ImageView
+            android:layout_width="@dimen/_16sdp"
+            android:background='@{!viewModel.IsPlaceLayout ? @drawable/ic_liked :@drawable/ic_location}'
+            android:layout_height="@dimen/_16sdp" />
+
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/_23sdp"
+            android:layout_marginStart="@dimen/_23sdp"
+            android:layout_width="0dp"
+            android:onClick="@{(v) -> viewModel.onFavselected(v)}"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="@={viewModel.NickName}"
+                android:maxLines="1"
+                android:fontFamily="sans-serif"
+                android:ellipsize="end"
+               android:textColor="@android:color/black"
+                android:textSize="@dimen/_14sdp"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="@={viewModel.place}"
+                android:maxWidth="@dimen/_200sdp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:fontFamily="sans-serif"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="@dimen/_14sdp"
+                android:layout_height="wrap_content" />
+
+
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/child_delete"
+            android:layout_width="@dimen/_16sdp"
+            app:srcCompat="@drawable/ic_menu"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:onClick="@{(v) -> viewModel.onDeleteClick(v)}"
+            android:visibility="@{!viewModel.IsPlaceLayout ? View.VISIBLE : View.GONE}"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:layout_height="@dimen/_16sdp" />
+
+    </LinearLayout>
+
+<View
+    android:layout_width="match_parent"
+    android:layout_marginLeft="@dimen/_40sdp"
+    android:layout_marginStart="@dimen/_40sdp"
+    android:layout_below="@+id/child_linear"
+    android:background="@android:color/darker_gray"
+    android:layout_height="0.5dp"/>
+
+
+</RelativeLayout>
+
+   </layout>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.retro.responsemodel.FAQModel" />
+
+    </data>
+
+    <LinearLayout
+        android:background="@drawable/bg_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="@dimen/_18sdp"
+        android:layout_marginRight="@dimen/_18sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_2sdp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{viewModel::onClickArrow}">
+
+            <TextView
+                android:id="@+id/txt_sostitle_sos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@+id/iv_arrow_faq"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginBottom="@dimen/_8sdp"
+                android:layout_marginStart="@dimen/_16sdp"
+                android:layout_centerVertical="true"
+                app:textfont="@{`sf_regular.otf`}"
+                android:text="@{viewModel.question}"
+                android:textSize="@dimen/_12sdp"
+                android:textAppearance="?android:textAppearanceSmall"
+                android:textColor="@color/clr_333333" />
+
+            <ImageView
+                android:id="@+id/iv_arrow_faq"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:padding="@dimen/_8sdp"
+                android:onClick="@{viewModel::onClickArrow}"
+                app:srcCompat="@drawable/ic_arrow_down_faq" />
+
+        </RelativeLayout>
+
+        <View
+            android:background="@color/clr_E4E9F2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:visibility="@{viewModel.clickedArrow?View.GONE:View.VISIBLE}" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:visibility="@{viewModel.clickedArrow?View.GONE:View.VISIBLE}">
+
+            <TextView
+                android:id="@+id/txt_phonenumber_sos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                app:textfont="@{`sf_regular.otf`}"
+                android:textSize="@dimen/_10sdp"
+                android:textColor="@color/clr_555555"
+                android:text="@{viewModel.answer}"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+<!--    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--        xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--        android:id="@+id/card_item_sos"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginLeft="@dimen/_18sdp"-->
+<!--        android:layout_marginRight="@dimen/_18sdp"-->
+<!--        android:layout_marginTop="@dimen/_10sdp"-->
+<!--        android:layout_marginBottom="@dimen/_2sdp"-->
+<!--        android:clickable="true"-->
+<!--        app:cardBackgroundColor="@color/clr_white"-->
+<!--        app:cardCornerRadius="3.2dp">-->
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical">-->
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="@color/clr_white"-->
+<!--                android:padding="8dp">-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/txt_sostitle_sos"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:gravity="start"-->
+<!--                    android:paddingLeft="8dp"-->
+<!--                    app:textfont="@{`Laksaman.ttf`}"-->
+<!--                    android:text="@{viewModel.question}"-->
+<!--                    android:textAppearance="?android:textAppearanceSmall"-->
+<!--                    android:textColor="@color/clr_black" />-->
+
+<!--                <ImageView-->
+<!--                    android:layout_width="@dimen/_24sdp"-->
+<!--                    android:layout_height="@dimen/_20sdp"-->
+<!--                    android:onClick="@{viewModel::onClickArrow}"-->
+<!--                    app:srcCompat="@drawable/ic_down_arrow" />-->
+<!--            </LinearLayout>-->
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:paddingTop="2dp"-->
+<!--                android:paddingLeft="8dp"-->
+<!--                android:paddingStart="8dp"-->
+<!--                android:paddingEnd="8dp"-->
+<!--                android:paddingRight="8dp"-->
+<!--                android:paddingBottom="4dp"-->
+<!--                android:visibility="@{viewModel.clickedArrow?View.GONE:View.VISIBLE}">-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/txt_phonenumber_sos"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:textColor="@color/colorPrimaryDark_click"-->
+<!--                    android:paddingLeft="@dimen/_8sdp"-->
+<!--                    android:paddingStart="@dimen/_8sdp"-->
+<!--                    android:text="@{viewModel.answer}"/>-->
+<!--            </LinearLayout>-->
+
+<!--        </LinearLayout>-->
+<!--        -->
+<!--    </androidx.cardview.widget.CardView>-->
+
+</layout>

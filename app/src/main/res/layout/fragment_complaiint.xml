@@ -1,0 +1,280 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.ui.drawerscreen.complaint.ComplaintViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:background="@color/clr_white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:navigationIcon="@drawable/back_nav"
+            app:titleTextColor="@color/titleTextColor"
+            android:background="@color/clr_white" />
+
+        <ScrollView
+            android:background="@color/clr_white"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/toolbar">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_title_regst_signup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:layout_marginStart="@dimen/_16sdp"
+                    android:layout_marginEnd="@dimen/_16sdp"
+                    android:textColor="@color/clr_222B45"
+                    app:textfont="@{`sf_semibold.otf`}"
+                    android:textSize="@dimen/_20sdp"
+                    android:text="@{viewModel.translationModel.txt_support}" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginStart="@dimen/_16sdp"
+                    android:layout_marginEnd="@dimen/_16sdp"
+                    android:textColor="@color/clr_8992A3"
+                    android:textAllCaps="true"
+                    app:textfont="@{`sf_regular.otf`}"
+                    android:textSize="@dimen/_10sdp"
+                    android:text="@{viewModel.translationModel.txt_complaints}" />
+
+                <Spinner
+                    android:background="@drawable/bg_spinner"
+                    android:id="@+id/spin_titile_complaints"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:layout_marginStart="@dimen/_16sdp"
+                    android:layout_marginEnd="@dimen/_16sdp"
+                    android:gravity="start"
+                    android:onItemSelected="@{viewModel::onItemSelected}"
+                    android:theme="@style/ThemeOverlay.AppCompat.Light" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:layout_marginStart="@dimen/_16sdp"
+                    android:layout_marginEnd="@dimen/_16sdp"
+                    android:textAllCaps="true"
+                    android:textColor="@color/clr_8992A3"
+                    app:textfont="@{`sf_regular.otf`}"
+                    android:textSize="@dimen/_10sdp"
+                    android:text="@{viewModel.translationModel.hint_your_comments}" />
+
+                <EditText
+                    android:background="@drawable/bg_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:layout_marginStart="@dimen/_16sdp"
+                    android:layout_marginEnd="@dimen/_16sdp"
+                    android:padding="@dimen/_8sdp"
+                    android:gravity="start"
+                    android:maxLength="500"
+                    android:minLines="5"
+                    android:maxLines="5"
+                    android:textSize="@dimen/_12sdp"
+                    android:inputType="textMultiLine|textCapSentences"
+                    android:text="@={viewModel.text_cmts}"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    app:textfont="@{`sf_regular.otf`}" />
+
+                <Button
+                    android:id="@+id/btn_send_complaint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/_35sdp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/_30sdp"
+                    android:background="@drawable/btn_red_bg"
+                    android:onClick="@{viewModel.OnlickSend}"
+                    android:paddingLeft="@dimen/_40sdp"
+                    android:paddingRight="@dimen/_40sdp"
+                    android:text="@{viewModel.translationModel.text_submit}"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/_12sdp"
+                    android:textColor="@color/buttonTextColor"
+                    app:Buttonfont="@{`sf_semibold.otf`}" />
+
+                <androidx.legacy.widget.Space
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_25sdp" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <include
+        android:id="@+id/progressBar"
+        layout="@layout/progress_dialog"
+        android:visibility="@{viewModel.mIsLoading ? View.VISIBLE : View.GONE}" />
+
+    </RelativeLayout>
+
+
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:background="@color/clr_white"-->
+<!--        android:clickable="true"-->
+<!--        android:orientation="vertical">-->
+
+<!--        <RelativeLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent">-->
+
+<!--            <ScrollView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent">-->
+
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="vertical">-->
+
+<!--                    <RelativeLayout-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_alignParentStart="true"-->
+<!--                        android:layout_alignParentLeft="true">-->
+
+<!--                        <View-->
+<!--                            android:id="@+id/img_background_otp"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="@dimen/_120sdp"-->
+<!--                            android:background="@drawable/ic_building_bg" />-->
+
+<!--                        <ImageView-->
+<!--                            android:layout_width="@dimen/_80sdp"-->
+<!--                            android:layout_height="@dimen/_80sdp"-->
+<!--                            android:layout_centerHorizontal="true"-->
+<!--                            android:layout_marginTop="@dimen/_80sdp"-->
+<!--                            android:background="@drawable/circle_primary_"-->
+<!--                            android:src="@drawable/doc_info" />-->
+<!--                    </RelativeLayout>-->
+
+<!--                    <RelativeLayout-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_centerInParent="true"-->
+<!--                        android:layout_marginLeft="@dimen/_16sdp"-->
+<!--                        android:layout_marginRight="@dimen/_16sdp"-->
+<!--                        android:paddingTop="16dp">-->
+
+<!--                        <TextView-->
+<!--                            android:id="@+id/txt_title_regst_signup"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:gravity="start"-->
+<!--                            android:text="@{viewModel.translationModel.text_complaint}"-->
+<!--                            android:textColor="@android:color/black"-->
+<!--                            android:textSize="@dimen/_22sdp"-->
+<!--                            app:textfont="@{`Laksaman.ttf`}" />&lt;!&ndash;-->
+<!--                            android:text="@string/text_complaint"&ndash;&gt;-->
+
+<!--                        <Spinner-->
+<!--                            android:id="@+id/spin_titile_complaints"-->
+<!--                            android:layout_width="match_parent"-->
+
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_below="@+id/txt_title_regst_signup"-->
+<!--                            android:layout_marginTop="@dimen/_18sdp"-->
+<!--                            android:gravity="start"-->
+<!--                            android:onItemSelected="@{viewModel::onItemSelected}"-->
+<!--                            android:theme="@style/ThemeOverlay.AppCompat.Light" />-->
+
+<!--                        <LinearLayout-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_below="@+id/spin_titile_complaints"-->
+<!--                            android:layout_marginTop="@dimen/_18sdp"-->
+<!--                            android:orientation="vertical">-->
+
+<!--                            <TextView-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_marginLeft="8dp"-->
+<!--                                android:gravity="start"-->
+<!--                                android:text="@{viewModel.translationModel.hint_your_comments}"-->
+<!--                                android:textAppearance="?android:attr/textAppearanceMedium"-->
+<!--                                app:textfont="@{`Padauk.ttf`}" />-->
+<!--                            &lt;!&ndash;-->
+<!--                                                            android:text="@string/hint_your_comments"&ndash;&gt;-->
+<!--                            <RelativeLayout-->
+<!--                                android:id="@+id/layout_licence_signup"-->
+<!--                                android:layout_width="match_parent"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_gravity="center_vertical"-->
+<!--                                android:layout_margin="8dp"-->
+<!--                                android:background="@drawable/curved_border_gray_background"-->
+<!--                                android:padding="8dp">-->
+
+<!--                                <EditText-->
+<!--                                    android:layout_width="match_parent"-->
+<!--                                    android:layout_height="wrap_content"-->
+<!--                                    android:layout_alignParentStart="true"-->
+<!--                                    android:layout_alignParentLeft="true"-->
+<!--                                    android:layout_centerVertical="true"-->
+<!--                                    android:background="@android:color/transparent"-->
+<!--                                    android:gravity="start"-->
+<!--                                    android:lines="4"-->
+<!--                                    android:maxLength="100"-->
+<!--                                    android:minLines="1"-->
+<!--                                    android:text="@={viewModel.text_cmts}"-->
+<!--                                    android:textAppearance="?android:attr/textAppearanceMedium"-->
+<!--                                    app:textfont="@{`Padauk.ttf`}" />-->
+<!--                            </RelativeLayout>-->
+<!--                        </LinearLayout>-->
+<!--                    </RelativeLayout>&lt;!&ndash;android:onClick="@{viewModel::reportComplaint}"&ndash;&gt;-->
+<!--                    <Button-->
+<!--                        android:id="@+id/btn_send_complaint"-->
+<!--                        android:layout_width="wrap_content"-->
+
+<!--                        android:layout_height="@dimen/_25sdp"-->
+<!--                        android:layout_gravity="center_horizontal"-->
+<!--                        android:layout_marginTop="@dimen/_18sdp"-->
+<!--                        android:background="@drawable/curved_border_background"-->
+<!--                        android:onClick="@{viewModel.OnlickSend}"-->
+<!--                        android:paddingLeft="@dimen/_40sdp"-->
+<!--                        android:paddingRight="@dimen/_40sdp"-->
+<!--                        android:text="@{viewModel.translationModel.text_send}"-->
+<!--                        android:textAllCaps="false"-->
+<!--                        android:textColor="@color/buttonTextColor"-->
+<!--                        app:Buttonfont="@{`Padauk.ttf`}" />&lt;!&ndash;-->
+<!--                        android:text="@string/text_send"&ndash;&gt;-->
+
+<!--                    <androidx.legacy.widget.Space-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="@dimen/_25sdp" />-->
+<!--                </LinearLayout>-->
+<!--            </ScrollView>-->
+
+<!--            <include-->
+<!--                android:id="@+id/progressBar"-->
+<!--                layout="@layout/progress_dialog"-->
+<!--                android:visibility="@{viewModel.mIsLoading ? View.VISIBLE : View.GONE}" />-->
+<!--        </RelativeLayout>-->
+<!--    </LinearLayout>-->
+
+</layout>

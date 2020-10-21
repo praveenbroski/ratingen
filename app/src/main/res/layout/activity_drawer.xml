@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+
+            name="viewModel"
+            type="taxi.ratingen.ui.drawerscreen.DrawerViewModel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <androidx.drawerlayout.widget.DrawerLayout
+            android:id="@+id/drawer_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/splash_bg">
+
+            <!--<include
+                bind:viewModel="@{viewModel}"
+                layout="@layout/app_bar_drawer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />-->
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:id="@+id/CoordinatorLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                tools:context="taxi.ratingen.ui.drawerscreen.DrawerAct">
+
+
+                <RelativeLayout
+                    android:id="@+id/activityMain"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/content_drawer" />
+
+<!--                    <RelativeLayout-->
+<!--                        android:id="@+id/layout_actionbar"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:gravity="center_vertical"-->
+<!--                        android:paddingTop="18dp"-->
+<!--                        android:visibility="gone">-->
+<!--                        &lt;!&ndash;Actionbar size 56dp&ndash;&gt;-->
+<!--                        <ImageView-->
+<!--                            android:id="@+id/menu_ham"-->
+<!--                            android:layout_width="38dp"-->
+<!--                            android:layout_height="38dp"-->
+<!--                            android:layout_marginStart="@dimen/_18sdp"-->
+<!--                            android:onClick="@{viewModel::onMenuClick}"-->
+<!--                            android:scaleType="fitXY"-->
+<!--                            android:padding="@dimen/_3sdp"-->
+<!--                            android:background="@drawable/ic_menu_ham"-->
+<!--                            app:srcCompat="@drawable/invoice_profile"-->
+<!--                            app:imageUrl="@{viewModel.Imageurl}" />-->
+
+<!--                    </RelativeLayout>-->
+                </RelativeLayout>
+
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+            <com.google.android.material.navigation.NavigationView
+                android:id="@+id/nav_view"
+                style="@style/Widget.Design.NavigationView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:background="@color/clr_white"
+                app:itemBackground="@color/clr_white"
+                app:itemTextAppearance="@style/SideMenuFont"
+                app:itemIconTint="@color/clr_8F9BB3"
+                app:menu="@menu/activity_drawer_drawer">
+
+            </com.google.android.material.navigation.NavigationView>
+
+        </androidx.drawerlayout.widget.DrawerLayout>
+
+
+<!--        <include-->
+<!--            android:id="@+id/progressBar"-->
+<!--            layout="@layout/progress_dialog"-->
+<!--            android:visibility="@{viewModel.mIsLoading ? View.VISIBLE : View.GONE}" />-->
+    </FrameLayout>
+</layout>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.ui.sociallogin.SiginSocialViewModel" />
+
+    </data>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+
+        >
+
+        <include
+            android:id="@+id/social_toolbar"
+            layout="@layout/toolbar" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="@dimen/_80sdp"
+                    android:layout_height="@dimen/_80sdp"
+                    android:onClick="@{viewModel::onclickFacebook}"
+                    android:src="@drawable/ic_fb" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Facebook"
+                    android:textSize="@dimen/_22sdp"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="@dimen/_80sdp"
+                    android:layout_height="@dimen/_80sdp"
+                    android:layout_marginTop="@dimen/_50sdp"
+                    android:onClick="@{viewModel::onclickGoogle}"
+                    android:src="@drawable/ic_gplus" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Google +"
+                    android:textSize="@dimen/_22sdp"
+                    />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+        <!-- <LinearLayout
+             android:id="@+id/layout_google_social_signin"
+             android:layout_width="match_parent"
+             android:onClick="@{viewModel::onclickGoogle}"
+             android:layout_height="wrap_content"
+             android:background="@drawable/white_background"
+             android:padding="8dp">
+
+             <ImageView
+                 android:layout_width="@dimen/_30sdp"
+                 android:layout_height="@dimen/_30sdp"
+                 android:clickable="false"
+                 android:src="@drawable/ic_google" />
+
+             <TextView
+                 style="@style/TextViewTheme"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_gravity="center_vertical"
+                 android:layout_marginLeft="@dimen/_24sdp"
+                 android:layout_marginStart="@dimen/_24sdp"
+                 android:clickable="false"
+                 android:text="@string/text_google"
+                 android:textSize="@dimen/_16sdp" />
+         </LinearLayout>
+
+         <LinearLayout
+             android:id="@+id/layout_fb_social_signin"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginTop="@dimen/_16sdp"
+             android:onClick="@{viewModel::onclickFacebook}"
+             android:background="@drawable/white_background"
+             android:padding="@dimen/_8sdp">
+
+             <ImageView
+                 android:layout_width="30dp"
+                 android:layout_height="30dp"
+                 android:clickable="false"
+                 android:src="@drawable/ic_fb" />
+
+             <TextView
+                 style="@style/TextViewTheme"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_gravity="center_vertical"
+                 android:layout_marginLeft="24dp"
+                 android:layout_marginStart="24dp"
+                 android:clickable="false"
+                 android:text="@string/text_facebook"
+                 android:textSize="@dimen/_16sdp" />
+         </LinearLayout>-->
+        <include
+            android:id="@+id/progressBar"
+            android:visibility="@{viewModel.mIsLoading ? View.VISIBLE : View.GONE}"
+            layout="@layout/progress_dialog"
+            />
+
+    </RelativeLayout>
+
+</layout>

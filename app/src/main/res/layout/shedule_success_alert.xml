@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:cardCornerRadius="@dimen/_6sdp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/clr_white">
+
+        <TextView
+            android:id="@+id/trip_scedule"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:fontFamily="@font/sf_semibold"
+            android:gravity="center"
+            android:text="TRIP SCHEDULE"
+            android:textColor="@color/clr_222B45"
+            android:textSize="@dimen/_18sdp" />
+
+        <TextView
+            android:id="@+id/trip_sch_at"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/trip_scedule"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:fontFamily="@font/sf_regular"
+            android:gravity="center"
+            android:text="trip schedule at"
+            android:textColor="@color/clr_333333"
+            android:textSize="@dimen/_14sdp" />
+
+        <TextView
+            android:id="@+id/trip_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/trip_sch_at"
+            android:fontFamily="@font/sf_medium"
+            android:gravity="center"
+            android:text="Fri jan 25 2020 10.45AM"
+            android:textColor="@color/clr_FB4A46"
+            android:textSize="@dimen/_12sdp" />
+
+        <LinearLayout
+            android:id="@+id/note_lay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/trip_time"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/note_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:fontFamily="@font/sf_semibold"
+                android:text="Note :"
+                android:textColor="@color/clr_black"
+                android:textSize="@dimen/_12sdp" />
+
+            <TextView
+                android:id="@+id/note_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:fontFamily="@font/sf_regular"
+                android:text="You Cannot initiate any trip between"
+                android:textColor="@color/clr_black"
+                android:textSize="@dimen/_12sdp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/note_timings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/note_lay"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:fontFamily="@font/sf_regular"
+            android:gravity="center"
+            android:text="Fri, jan 25 2020 10.30AM"
+            android:textColor="@color/clr_black"
+            android:textSize="@dimen/_12sdp" />
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/ok"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_below="@+id/note_timings"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:orientation="horizontal"
+            app:cardBackgroundColor="@color/clr_FB4A46"
+            app:cardCornerRadius="@dimen/_3sdp">
+
+            <TextView
+                android:id="@+id/cancel_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/sf_medium"
+                android:gravity="center_horizontal"
+                android:padding="@dimen/_8sdp"
+                android:text="OK"
+                android:textAllCaps="false"
+                android:textColor="@color/buttonTextColor"
+                android:textSize="@dimen/_12sdp" />
+        </androidx.cardview.widget.CardView>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_15sdp"
+            android:layout_below="@+id/ok" />
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

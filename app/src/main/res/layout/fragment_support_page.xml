@@ -1,0 +1,54 @@
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.ui.drawerscreen.support.SupportFragViewModel" />
+
+    </data>
+
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_bg_gray"
+        android:clickable="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_12sdp"
+            android:orientation="vertical">
+            <EditText
+                android:layout_width="match_parent"
+                android:lines="5"
+                android:elevation="@dimen/_2sdp"
+                style="@style/EditTextTheme"
+                app:textfont="@{`Padauk.ttf`}"
+                android:padding="@dimen/_6sdp"
+                android:text="@={viewModel.comments}"
+                android:hint="@{viewModel.translationModel.hint_share_details}"
+                android:background="@drawable/curved_border_white"
+                android:layout_height="wrap_content" />
+            <Button
+                android:text="@{viewModel.translationModel.text_submit}"
+                android:textColor="@color/buttonTextColor"
+                android:background="@drawable/curved_border_small"
+                android:layout_width="match_parent"
+                android:onClick="@{viewModel::onclickSubmit}"
+                android:elevation="@dimen/_2sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <include
+            android:id="@+id/progressBar"
+            layout="@layout/progress_dialog"
+            android:visibility="@{viewModel.mIsLoading ? View.VISIBLE : View.GONE}" />
+    </RelativeLayout>
+</layout>

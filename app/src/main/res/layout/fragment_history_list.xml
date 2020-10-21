@@ -1,0 +1,214 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+
+
+            name="viewModel"
+            type="taxi.ratingen.ui.drawerscreen.history.HistoryListViewModel" />
+    </data>
+
+    <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/clr_F7F9FC"
+        android:clickable="true"
+        android:focusable="true"
+        tools:context="taxi.ratingen.ui.drawerscreen.history.HistoryListFrag">
+
+        <LinearLayout
+            android:id="@+id/ll_header"
+            android:background="@color/clr_white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:elevation="@dimen/_1sdp"
+            tools:targetApi="lollipop">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appBarLayout"
+                android:background="@color/clr_white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:elevation="0dp">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    style="@style/Toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:title=""
+                    app:titleTextAppearance="@style/Toolbar.TitleText"
+                    app:titleTextColor="@color/clr_222B45"
+                    app:navigationIcon="@drawable/back_nav" />
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <TextView
+                android:id="@+id/txt_title_wallet_history"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:layout_marginStart="@dimen/_16sdp"
+                android:layout_marginEnd="@dimen/_16sdp"
+                android:textColor="@color/clr_222B45"
+                android:textAllCaps="false"
+                app:textfont="@{`sf_semibold.otf`}"
+                android:textSize="@dimen/_20sdp"
+                android:text="@{viewModel.translationModel.txt_my_rides}" />
+
+            <LinearLayout
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_35sdp"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:baselineAligned="false">
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:onClick="@{viewModel::scheduledClick}">
+
+                    <TextView
+                        android:id="@+id/scheduled"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="@{viewModel.translationModel.Txt_Schedule}"
+                        android:textAlignment="center"
+                        app:textfont="@{`sf_semibold.otf`}"
+                        android:textAllCaps="true"
+                        android:textColor="@{viewModel.scheduledClick ? @color/clr_FB4A46 : @color/clr_ACB1C0}"
+                        android:textSize="@dimen/_12sdp" />
+
+                    <View
+                        android:background="@{viewModel.scheduledClick ? @color/clr_FB4A46 : @color/clr_transparent}"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_3sdp"
+                        android:layout_alignParentBottom="true" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:onClick="@{viewModel::completedClick}">
+
+                    <TextView
+                        android:id="@+id/completed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="@{viewModel.translationModel.txt_completed}"
+                        android:textAlignment="center"
+                        app:textfont="@{`sf_semibold.otf`}"
+                        android:textAllCaps="true"
+                        android:textColor="@{viewModel.completedClick ? @color/clr_FB4A46 : @color/clr_ACB1C0}"
+                        android:textSize="@dimen/_12sdp" />
+
+                    <View
+                        android:background="@{viewModel.completedClick ? @color/clr_FB4A46 : @color/clr_transparent}"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_3sdp"
+                        android:layout_alignParentBottom="true" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:onClick="@{viewModel::cancelledClick}">
+
+                    <TextView
+                        android:id="@+id/cancelled"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="@{viewModel.translationModel.txt_cancelled}"
+                        android:textAlignment="center"
+                        app:textfont="@{`sf_semibold.otf`}"
+                        android:textAllCaps="true"
+                        android:textColor="@{viewModel.cancelledClick ? @color/clr_FB4A46 : @color/clr_ACB1C0}"
+                        android:textSize="@dimen/_12sdp" />
+
+                    <View
+                        android:background="@{viewModel.cancelledClick ? @color/clr_FB4A46 : @color/clr_transparent}"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_3sdp"
+                        android:layout_alignParentBottom="true" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_history"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/ll_header"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:scrollbars="vertical" />
+
+        <RelativeLayout
+            android:id="@+id/no_item_found"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_header"
+            android:background="@color/clr_FB4A46"
+            android:layout_marginTop="10dp"
+            android:paddingTop="@dimen/_12sdp"
+            android:paddingBottom="@dimen/_12sdp"
+            android:paddingStart="@dimen/_20sdp"
+            android:paddingEnd="@dimen/_20sdp"
+            android:visibility="@{!viewModel.isdata?View.VISIBLE:View.GONE}">
+
+            <TextView
+                android:id="@+id/txt_no_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:textSize="@dimen/_12sdp"
+                android:textColor="@color/clr_222B45"
+                android:text=""
+                app:textfont="@{`sf_regular.otf`}"/>
+
+        </RelativeLayout>
+
+<!--        <RelativeLayout-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_centerInParent="true"-->
+<!--            android:gravity="center"-->
+<!--            android:visibility="@{!viewModel.isdata?View.VISIBLE:View.GONE}">-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/noPassenger"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="@dimen/_100sdp"-->
+<!--                android:layout_centerHorizontal="true"-->
+<!--                android:src="@drawable/no_passengers" />-->
+
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_below="@+id/noPassenger"-->
+<!--                android:layout_centerHorizontal="true"-->
+<!--                android:text="@{viewModel.translationModel.txt_history_empty}"-->
+<!--                android:textSize="@dimen/_14sdp"-->
+<!--                app:textfont="@{`Poppins.ttf`}" />-->
+<!--        </RelativeLayout>-->
+
+    </RelativeLayout>
+
+</layout>

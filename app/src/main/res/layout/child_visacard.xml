@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout>
+
+    <data>
+
+        <import type="taxi.ratingen.R" />
+
+        <import type="android.graphics.drawable.Drawable" />
+
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.ui.drawerscreen.payment.adapter.ChildVisaViewModel" />
+
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="@dimen/_35sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@{viewModel.isDefault ? @drawable/ic_card_yellow :@drawable/ic_card_grey}" />
+
+        <!--  android:textColor="@color/clr_graydark"
+         android:text="**** - **** - **** - 5896"
+         app:srcCompat="@drawable/ic_check_off"
+          android:textColor="@{viewModel.isDefault ?  R.color.clr_black : R.color.clr_graydark}"-->
+        <TextView
+
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginLeft="@dimen/_5sdp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text='@{viewModel.lastNumber.get().length()==2?String.format("%s %s",@string/text_card_subtext2, viewModel.lastNumber):String.format("%s %s",@string/text_card_subtext4, viewModel.lastNumber)}'
+            android:textColor="@{viewModel.isDefault? @colorStateList/clr_black : @colorStateList/clr_graydark}"
+            android:textSize="@dimen/_14sdp"
+            app:textfont="@{`Padauk.ttf`}" />
+
+
+        <ImageView
+            android:layout_width="@dimen/_18sdp"
+            android:layout_height="@dimen/_18sdp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:layout_marginLeft="@dimen/_4sdp"
+            android:layout_marginEnd="@dimen/_6sdp"
+            android:layout_marginRight="@dimen/_6sdp"
+            android:onClick="@{() -> viewModel.onItemTickClick()}"
+            app:srcCompat="@{viewModel.isDefault ? @drawable/ic_check_on :@drawable/ic_check_off}" />
+
+        <ImageView
+            android:layout_width="@dimen/_15sdp"
+            android:layout_height="@dimen/_15sdp"
+
+            android:layout_gravity="center_vertical"
+            android:onClick="@{() -> viewModel.onItemTrashClick()}"
+
+            app:srcCompat="@drawable/ic_trash" />
+
+    </LinearLayout>
+
+
+</layout>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+   <!-- <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Terms and Conditions"
+        android:textSize="@dimen/_25sdp"
+        android:padding="@dimen/_18sdp"/>
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="@dimen/_11sdp"
+        android:padding="@dimen/_28sdp"
+        android:text="        This section provides data about the relative number of devices that have a particular screen configuration, defined by a combination of screen size and density. To simplify the way that you design your user interfaces for different screen configurations, Android divides the range of actual screen sizes and densities into several buckets as expressed by the table below.
+
+For information about how you can support multiple screen configurations in your application, read Supporting Multiple Screens.          This section provides data about the relative number of devices that have a particular screen configuration, defined by a combination of screen size and density. To simplify the way that you design your user interfaces for different screen configurations, Android divides the range of actual screen sizes and densities into several buckets as expressed by the table below.
+
+For information about how you can support multiple screen configurations in your application, read Supporting Multiple Screens.This section provides data about the relative number of devices that have a particular screen configuration, defined by a combination of screen size and density. To simplify the way that you design your user interfaces for different screen configurations, Android divides the range of actual screen sizes and densities into several buckets as expressed by the table below.
+
+For information about how you can support multiple screen configurations in your application, read Supporting Multiple Screens. This section provides data about the relative number of devices that have a particular screen configuration, defined by a combination of screen size and density. To simplify the way that you design your user interfaces for different screen configurations, Android divides the range of actual screen sizes and densities into several buckets as expressed by the table below.
+
+For information about how you can support multiple screen configurations in your application, read Supporting Multiple Screens."/>
+</ScrollView>-->
+
+    <WebView
+        android:id="@+id/webView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </WebView>
+
+</LinearLayout>

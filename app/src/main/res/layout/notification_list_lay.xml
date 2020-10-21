@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="taxi.ratingen.ui.drawerscreen.DrawerAct">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.ui.drawerscreen.notification.NotificationListViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/clr_white"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:navigationIcon="@drawable/back_nav"
+            app:titleTextColor="@color/titleTextColor"
+            android:background="@color/clr_white" />
+
+        <TextView
+            android:id="@+id/txt_title_notifications"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:layout_marginLeft="@dimen/_16sdp"
+            android:layout_marginRight="@dimen/_16sdp"
+            android:layout_below="@+id/toolbar"
+            android:gravity="start"
+            android:fontFamily="@font/sf_semibold"
+            android:text="@{viewModel.translationModel.txt_noitification}"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/_20sdp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/noti_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/txt_title_notifications"
+            android:visibility="@{!viewModel.noItemFound?View.VISIBLE:View.GONE}" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/clr_FB4A46"
+            android:layout_below="@+id/txt_title_notifications"
+            android:layout_marginTop="10dp"
+            android:paddingTop="@dimen/_12sdp"
+            android:paddingBottom="@dimen/_12sdp"
+            android:paddingStart="@dimen/_20sdp"
+            android:paddingEnd="@dimen/_20sdp"
+            android:visibility="@{viewModel.noItemFound?View.VISIBLE:View.GONE}">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:textSize="@dimen/_12sdp"
+                android:textColor="@color/clr_222B45"
+                android:text="@{viewModel.translationModel.txt_no_notifications}"
+                app:textfont="@{`sf_regular.otf`}"/>
+
+        </RelativeLayout>
+
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_centerInParent="true"-->
+<!--            android:text="No Item Found"-->
+<!--            android:textColor="@color/clr_black"-->
+<!--            android:textSize="@dimen/_12sdp"-->
+<!--            android:textStyle="bold"-->
+<!--            android:visibility="@{viewModel.noItemFound?View.VISIBLE:View.GONE}" />-->
+
+        <include
+            android:id="@+id/progressBar"
+            layout="@layout/progress_dialog"
+            android:visibility="@{viewModel.mIsLoading ? View.VISIBLE : View.GONE}" />
+
+
+    </RelativeLayout>
+
+</layout>

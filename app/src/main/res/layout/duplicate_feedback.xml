@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.ui.drawerscreen.canceldialog.CancelDialogViewModel" />
+    </data>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#edc"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="@dimen/_50sdp"
+            android:background="@drawable/top_curved_rect">
+
+            <TextView
+                android:id="@+id/cancel_this_ride"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/_40sdp"
+                android:fontFamily="@font/sf_semibold"
+                android:text="Cancel this ride?"
+                android:textColor="@color/clr_black"
+                android:textSize="@dimen/_14sdp" />
+
+            <TextView
+                android:id="@+id/cancelation_fee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/cancel_this_ride"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:fontFamily="@font/sf_regular"
+                android:text="Cancelation charges might be applied"
+                android:textColor="@color/clr_FB4A46"
+                android:textSize="@dimen/_14sdp" />
+
+            <TextView
+                android:id="@+id/driver_pay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/cancelation_fee"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:fontFamily="@font/sf_regular"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:text="My driver asked to cancel the ride and pay offline"
+                android:textColor="@color/clr_black"
+                android:textSize="@dimen/_14sdp" />
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_below="@+id/driver_pay"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:background="@color/clr_gray" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/view"
+                android:orientation="vertical">
+
+                <include layout="@layout/cancel_radio_item" />
+
+                <include layout="@layout/cancel_radio_item" />
+
+                <include layout="@layout/cancel_radio_item" />
+
+                <include layout="@layout/cancel_radio_item" />
+
+            </LinearLayout>
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/submit_butt"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_above="@+id/cancel_ride"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_30sdp"
+                android:layout_marginRight="@dimen/_20sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:clickable="true"
+                android:gravity="end"
+                android:orientation="horizontal"
+                app:cardBackgroundColor="@color/clr_FB4A46"
+                app:cardCornerRadius="@dimen/_3sdp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/sf_semibold"
+                    android:gravity="center_horizontal"
+                    android:padding="@dimen/_8sdp"
+                    android:text="@{viewModel.translationModel.txt_keep_booking}"
+                    android:textAllCaps="true"
+                    android:textColor="@color/buttonTextColor"
+                    android:textSize="@dimen/_12sdp" />
+            </androidx.cardview.widget.CardView>
+
+
+            <TextView
+                android:id="@+id/cancel_ride"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_above="@+id/space"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/_20sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:background="@drawable/red_unfilled_border"
+                android:enabled="@{viewModel.iscancelenable}"
+                android:fontFamily="@font/sf_semibold"
+                android:gravity="center_horizontal"
+                android:onClick="@{viewModel.onclickcancel}"
+                android:padding="@dimen/_8sdp"
+                android:text="@{viewModel.translationModel.txt_cancel_ride}"
+                android:textAllCaps="true"
+                android:textColor="@color/clr_FB4A46"
+                android:textSize="@dimen/_12sdp" />
+
+            <Space
+                android:id="@+id/space"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_10sdp"
+                android:layout_alignParentBottom="true" />
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_18sdp"
+                android:layout_marginLeft="@dimen/_18sdp"
+                android:layout_marginEnd="@dimen/_18sdp"
+                android:layout_marginRight="@dimen/_18sdp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:padding="@dimen/_10sdp"
+                    android:text="@{viewModel.translationModel.txt_cancelRide}"
+                    android:textColor="@color/clr_black"
+                    android:textSize="@dimen/_16sdp"
+                    android:textStyle="normal"
+                    app:textfont="@{`Laksaman.ttf`}" />
+                <!--
+                                android:text="@string/txt_cancelRide"-->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@android:color/darker_gray" />
+
+
+            </LinearLayout>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_cancel_reason"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_250sdp"
+                android:fadeScrollbars="false"
+                android:minHeight="@dimen/_150sdp"
+                android:scrollbarFadeDuration="0"
+                android:visibility="gone" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:onClick="@{viewModel.onclickDontcancel}"
+                android:text="@{viewModel.translationModel.txt_cancel_charge}"
+                android:textAllCaps="true"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/_13sdp" />
+
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@{viewModel.translationModel.hint_add_reason_for_cancel}"
+                android:lines="2"
+                android:text="@={viewModel.otherCancelReason}"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:visibility="@{viewModel.otherCancelAvaialability?View.VISIBLE:View.GONE}" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/clr_white"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_35sdp"
+                    android:layout_weight="1"
+                    android:background="@color/clr_black"
+                    android:gravity="center"
+                    android:onClick="@{viewModel.onclickDontcancel}"
+                    android:text="@{viewModel.translationModel.txt_Dontcancel}"
+                    android:textAllCaps="true"
+                    android:textColor="@color/buttonTextColor"
+                    android:textSize="@dimen/_13sdp" />
+                <!--
+    android:text="@string/txt_Dontcancel"-->
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/clr_graydark" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_35sdp"
+                    android:layout_weight="1"
+                    android:background="@color/clr_black1"
+
+                    android:gravity="center"
+
+                    android:textAllCaps="true"
+                    android:textColor="@color/buttonTextColor"
+                    android:textSize="@dimen/_13sdp" /><!--
+                    android:text="@string/text_cancel"-->
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <!--        <include-->
+        <!--            android:id="@+id/progressBar"-->
+        <!--            layout="@layout/progress_dialog"-->
+        <!--            android:visibility="@{viewModel.mIsLoading ? View.VISIBLE : View.GONE}" />-->
+
+
+    </RelativeLayout>
+
+
+</layout>

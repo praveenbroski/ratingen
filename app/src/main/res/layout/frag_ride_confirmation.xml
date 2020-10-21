@@ -1,0 +1,796 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <import type="taxi.ratingen.BuildConfig" />
+
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.ui.drawerscreen.ridescreen.RideConfirmationViewModel" />
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:background="#E7E7E7"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        tools:context=".MainActivity">
+
+        <RelativeLayout
+            android:background="@color/clr_white"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:focusable="true">
+
+            <fragment
+                android:id="@+id/ride_map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+<!--            <com.google.android.material.appbar.AppBarLayout-->
+<!--                android:id="@+id/appBarLayout"-->
+<!--                android:background="@color/clr_transparent"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="@dimen/_40sdp"-->
+<!--                app:elevation="0dp">-->
+
+<!--                <androidx.appcompat.widget.Toolbar-->
+<!--                    android:id="@+id/toolbar"-->
+<!--                    style="@style/Toolbar"-->
+<!--                    app:title=""-->
+<!--                    app:titleTextAppearance="@style/Toolbar.TitleText"-->
+<!--                    app:titleTextColor="@color/clr_222B45"-->
+<!--                    app:navigationIcon="@drawable/back_nav" />-->
+
+<!--            </com.google.android.material.appbar.AppBarLayout>-->
+
+            <RelativeLayout
+                android:id="@+id/appBarLayout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp">
+
+                <RelativeLayout
+                    android:layout_width="@dimen/_35sdp"
+                    android:layout_height="match_parent">
+
+                    <ImageButton
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:id="@+id/back_img"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_15sdp"
+                        android:layout_centerInParent="true"
+                        app:srcCompat="@drawable/back_nav" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@+id/appBarLayout"
+                app:cardBackgroundColor="@color/clr_white"
+                app:cardCornerRadius="@dimen/_12sdp"
+                app:cardUseCompatPadding="false"
+                app:cardElevation="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:layout_width="@dimen/_35sdp"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="@dimen/_8sdp"
+                                android:layout_height="@dimen/_8sdp"
+                                android:layout_gravity="center"
+                                app:srcCompat="@drawable/ic_pick_dot" />
+
+                            <View
+                                android:background="@drawable/ic_black_square"
+                                android:layout_width="@dimen/_2sdp"
+                                android:layout_height="@dimen/_2sdp"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:layout_gravity="center" />
+
+                            <View
+                                android:background="@drawable/ic_black_square"
+                                android:layout_width="@dimen/_2sdp"
+                                android:layout_height="@dimen/_2sdp"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:layout_gravity="center" />
+
+<!--                            <View-->
+<!--                                android:background="@drawable/ic_black_square"-->
+<!--                                android:layout_width="@dimen/_2sdp"-->
+<!--                                android:layout_height="@dimen/_2sdp"-->
+<!--                                android:layout_marginTop="@dimen/_5sdp"-->
+<!--                                android:layout_gravity="center" />-->
+
+<!--                            <View-->
+<!--                                android:background="@drawable/ic_black_square"-->
+<!--                                android:layout_width="@dimen/_2sdp"-->
+<!--                                android:layout_height="@dimen/_2sdp"-->
+<!--                                android:layout_marginTop="@dimen/_5sdp"-->
+<!--                                android:layout_gravity="center" />-->
+
+                            <View
+                                android:background="@drawable/ic_black_square"
+                                android:layout_width="@dimen/_2sdp"
+                                android:layout_height="@dimen/_2sdp"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:layout_gravity="center" />
+
+                            <ImageView
+                                android:layout_width="@dimen/_8sdp"
+                                android:layout_height="@dimen/_8sdp"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:layout_gravity="center"
+                                app:srcCompat="@drawable/ic_red_square" />
+
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_32sdp"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginEnd="@dimen/_12sdp"
+                                android:lines="1"
+                                android:ellipsize="end"
+                                android:textColor="@color/clr_222B45"
+                                android:fontFamily="@font/sf_regular"
+                                android:textSize="@dimen/_12sdp"
+                                android:text="@{viewModel.PickAddress}" />
+
+                        </RelativeLayout>
+
+                        <View
+                            android:background="@color/clr_E4E9F2"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_1sdp"
+                            android:layout_marginEnd="@dimen/_16sdp" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_32sdp"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginEnd="@dimen/_12sdp"
+                                android:lines="1"
+                                android:ellipsize="end"
+                                android:textColor="@color/clr_222B45"
+                                android:fontFamily="@font/sf_regular"
+                                android:textSize="@dimen/_12sdp"
+                                android:text="@{viewModel.DropAddress}" />
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </RelativeLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/clr_transparent"
+            android:id="@+id/types_bottom_sheet"
+            app:behavior_hideable="false"
+            app:behavior_peekHeight="@dimen/_122sdp"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+            <LinearLayout
+                android:background="@drawable/ic_white_top_round"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <RelativeLayout
+                    android:id="@+id/bottom_sheet_persistent"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_15sdp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <View
+                        android:background="@drawable/bottom_top_handle"
+                        android:layout_width="@dimen/_35sdp"
+                        android:layout_height="@dimen/_3sdp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_alignParentBottom="true"/>
+
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_18sdp"
+                    android:layout_marginStart="@dimen/_12sdp"
+                    android:layout_marginEnd="@dimen/_12sdp"
+                    android:textSize="@dimen/_12sdp"
+                    android:textColor="@color/clr_222B45"
+                    android:fontFamily="@font/sf_semibold"
+                    android:textAllCaps="true"
+                    android:text="@{viewModel.translationModel.txt_suggested_rides}" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/CarsRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:layout_marginBottom="0dp"
+                    android:layoutDirection="ltr" />
+
+                <View
+                    android:background="@color/clr_white"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_90sdp" />
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:background="@color/clr_white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_anchorGravity="bottom"
+            android:layout_gravity="bottom">
+
+            <View
+                android:background="@color/clr_E4E9F2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_1sdp"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginEnd="@dimen/_12sdp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <RelativeLayout
+                    android:background="?attr/selectableItemBackground"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.75"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="@{viewModel.onclickPayment}">
+
+                    <ImageView
+                        android:id="@+id/FP_Paymentsymbol"
+                        android:layout_width="@dimen/_16sdp"
+                        android:layout_height="@dimen/_16sdp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/_15sdp" />
+
+                    <TextView
+                        android:id="@+id/FP_PaymentTXt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@+id/FP_Paymentsymbol"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/_8sdp"
+                        android:text="@{viewModel.translationModel.txt_Payment}"
+                        android:textSize="@dimen/_12sdp" />
+
+                    <ImageView
+                        android:id="@+id/FP_PaymentArrow"
+                        android:layout_width="@dimen/_7sdp"
+                        android:layout_height="@dimen/_12sdp"
+                        android:layout_toEndOf="@+id/FP_PaymentTXt"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/_8sdp"
+                        android:layout_marginStart="@dimen/_8sdp"
+                        android:rotation="180"
+                        app:srcCompat="@drawable/back_nav" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.25"
+                    android:orientation="horizontal"
+                    android:weightSum="4"
+                    tools:ignore="NestedWeights">
+
+                    <LinearLayout
+                        android:background="?attr/selectableItemBackground"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:onClick="@{viewModel::onClickPromocode}"
+                        android:visibility="@{!viewModel.isDropEmpty?View.GONE:viewModel.isPromoApply?View.GONE:View.VISIBLE}">
+
+                        <TextView
+                            android:id="@+id/promocode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="@dimen/_10sdp"
+                            android:layout_marginLeft="@dimen/_10sdp"
+                            android:text="@{viewModel.translationModel.Txt_title_Promocode}"
+                            android:fontFamily="@font/sf_medium"
+                            android:textSize="@dimen/_12sdp"
+                            tools:ignore="RtlHardcoded" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:background="@color/clr_4D222B45"
+                        android:layout_width="@dimen/_1sdp"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="@dimen/_12sdp"
+                        android:layout_marginBottom="@dimen/_12sdp" />
+
+                    <ImageButton
+                        android:background="?attr/selectableItemBackground"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        app:srcCompat="@drawable/ic_schedule_icon"
+                        android:onClick="@{viewModel::onClickSchedule}" />
+
+                    <View
+                        android:background="@color/clr_4D222B45"
+                        android:layout_width="@dimen/_1sdp"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="@dimen/_12sdp"
+                        android:layout_marginBottom="@dimen/_12sdp" />
+
+                    <ImageButton
+                        android:background="?attr/selectableItemBackground"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        app:srcCompat="@drawable/ic_driver_notes"
+                        android:onClick="@{viewModel::onClickNotesToDriver}" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <Button
+                style="?attr/buttonBarButtonStyle"
+                android:background="@drawable/btn_primary"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_marginStart="@dimen/_12sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:enabled="@{viewModel.isDriversAvailable}"
+                android:onClick="@{viewModel::onclickConfirm}"
+                android:textAllCaps="true"
+                android:textSize="@dimen/_12sdp"
+                android:textColor="@color/clr_white"
+                android:fontFamily="@font/sf_semibold"
+                android:text="@{viewModel.translationModel.txt_book_now}" />
+
+        </LinearLayout>
+
+        <include
+            android:id="@+id/progressBar"
+            layout="@layout/progress_dialog"
+            android:visibility="@{viewModel.mIsLoading ? View.VISIBLE : View.GONE}" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+<!--    <RelativeLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:clickable="true"-->
+<!--        android:focusable="true"-->
+<!--        tools:ignore="ContentDescription, UseCompoundDrawables">-->
+
+<!--        <RelativeLayout-->
+<!--            android:id="@+id/toolbar"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="?android:attr/actionBarSize"-->
+<!--            android:background="@drawable/app_background">-->
+
+<!--            <RelativeLayout-->
+<!--                android:id="@+id/left_arrow"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_centerVertical="true"-->
+<!--                android:onClick="@{viewModel::onclickBackBtn}">-->
+
+<!--                <ImageView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="@dimen/_20sdp"-->
+<!--                    android:layout_marginStart="@dimen/_18sdp"-->
+<!--                    android:layout_marginTop="@dimen/_8sdp"-->
+<!--                    android:layout_marginBottom="@dimen/_8sdp"-->
+<!--                    app:srcCompat="@drawable/ic_back_white" />-->
+
+<!--            </RelativeLayout>-->
+
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_centerVertical="true"-->
+<!--                android:layout_marginStart="25dp"-->
+<!--                android:layout_marginLeft="25dp"-->
+<!--                android:layout_toEndOf="@+id/left_arrow"-->
+<!--                android:layout_toRightOf="@+id/left_arrow"-->
+<!--                android:text="@string/app_name"-->
+<!--                android:textColor="@color/while_light"-->
+<!--                android:textSize="18sp"-->
+<!--                android:textStyle="bold"-->
+<!--                tools:ignore="RtlHardcoded" />-->
+
+<!--        </RelativeLayout>-->
+
+<!--        <com.user.client.utilz.MapLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_above="@+id/car_card"-->
+<!--            android:layout_below="@+id/toolbar">-->
+
+<!--            <fragment-->
+<!--                android:id="@+id/ride_map"-->
+<!--                android:name="com.google.android.gms.maps.SupportMapFragment"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent" />-->
+
+<!--        </com.user.client.utilz.MapLayout>-->
+
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/CarsRecyclerView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_above="@+id/car_card"-->
+<!--            android:layoutDirection="ltr"-->
+<!--            android:visibility="@{viewModel.isScanEnabled?View.GONE:View.VISIBLE}">-->
+
+<!--        </androidx.recyclerview.widget.RecyclerView>-->
+
+
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_below="@+id/toolbar"-->
+<!--            android:layout_alignParentEnd="true"-->
+<!--            android:text="@{viewModel.numberofBasicDriver}"-->
+<!--            android:textColor="@color/clr_red"-->
+<!--            android:visibility="@{BuildConfig.DEBUG?View.VISIBLE:View.GONE}" />-->
+
+<!--        <RelativeLayout-->
+<!--            android:id="@+id/car_card"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_above="@+id/ride_lay">-->
+
+<!--            <androidx.cardview.widget.CardView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="@dimen/_115sdp">-->
+
+<!--                <RelativeLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent">-->
+<!--                    &lt;!&ndash;-->
+<!--                                        android:visibility="@{viewModel.istypeDataAVailable?View.VISIBLE:View.INVISIBLE}"&ndash;&gt;-->
+<!--                    <TextView-->
+<!--                        android:id="@+id/time"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginStart="@dimen/_12sdp"-->
+<!--                        android:layout_marginTop="@dimen/_8sdp"-->
+<!--                        android:text="@{viewModel.duration_min}"-->
+<!--                        android:textColor="@color/colorPrimary"-->
+<!--                        android:textSize="@dimen/_12sdp"-->
+<!--                        android:textStyle="bold"-->
+<!--                        app:textfont="@{`Poppins.ttf`}" />-->
+
+<!--                    <ImageView-->
+<!--                        android:id="@+id/car_img"-->
+<!--                        android:layout_width="@dimen/_70sdp"-->
+<!--                        android:layout_height="@dimen/_49sdp"-->
+<!--                        android:layout_below="@+id/time"-->
+<!--                        android:layout_marginStart="12dp"-->
+<!--                        app:childcarimageUrl="@{viewModel.carImage}" />-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/car_model_txt"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginStart="@dimen/_12sdp"-->
+<!--                        android:layout_marginTop="9dp"-->
+<!--                        android:layout_toEndOf="@+id/time"-->
+<!--                        android:text="@{viewModel.CarType}"-->
+<!--                        android:textColor="@color/bg_clr_bill_orange"-->
+<!--                        android:textSize="15sp"-->
+<!--                        app:textfont="@{`Poppins.ttf`}" />-->
+
+<!--                    <ImageView-->
+<!--                        android:id="@+id/eta_info"-->
+<!--                        android:background="?attr/selectableItemBackgroundBorderless"-->
+<!--                        android:layout_width="20dp"-->
+<!--                        android:layout_height="20dp"-->
+<!--                        android:layout_marginStart="@dimen/_5sdp"-->
+<!--                        android:layout_marginTop="10dp"-->
+<!--                        android:layout_toEndOf="@+id/car_model_txt"-->
+<!--                        android:onClick="@{viewModel.onclickInfoETA}"-->
+<!--                        app:tint="@color/clr_red"-->
+<!--                        app:srcCompat="@drawable/ic_info_dark" />-->
+
+<!--                    <RelativeLayout-->
+<!--                        android:id="@+id/fare_lay"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_below="@+id/time"-->
+<!--                        android:layout_alignParentEnd="true"-->
+<!--                        android:layout_marginEnd="16dp"-->
+<!--                        android:layout_marginBottom="5dp">-->
+
+<!--                        <TextView-->
+<!--                            android:id="@+id/fare"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_alignParentEnd="true"-->
+<!--                            android:layout_centerVertical="true"-->
+<!--                            android:text="@{viewModel.isShareRide?viewModel.totalSharePrice:viewModel.TotalPrize}"-->
+<!--                            android:textColor="@color/fare_color"-->
+<!--                            android:textSize="@dimen/_13sdp"-->
+<!--                            android:visibility="@{viewModel.isEtaAVailable?View.VISIBLE:View.INVISIBLE}"-->
+<!--                            app:textfont="@{`Poppins.ttf`}" />-->
+
+<!--                        <ProgressBar-->
+<!--                            style="@style/CircularProgress"-->
+<!--                            android:layout_width="@dimen/_20sdp"-->
+<!--                            android:layout_height="@dimen/_20sdp"-->
+<!--                            android:layout_alignParentEnd="true"-->
+<!--                            android:visibility="@{viewModel.isEtaAVailable?View.INVISIBLE:!viewModel.hideProgress?View.INVISIBLE:View.VISIBLE}" />-->
+
+<!--                    </RelativeLayout>-->
+
+<!--                    <RelativeLayout-->
+<!--                        android:id="@+id/promo_fare_lay"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_below="@+id/fare_lay"-->
+<!--                        android:layout_alignParentEnd="true"-->
+<!--                        android:layout_marginEnd="16dp"-->
+<!--                        android:layout_marginBottom="5dp"-->
+<!--                        android:visibility="@{viewModel.isPromoAvail?View.VISIBLE:View.INVISIBLE}">-->
+
+<!--                        <TextView-->
+<!--                            android:id="@+id/promo_farefare"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_alignParentEnd="true"-->
+<!--                            android:layout_centerVertical="true"-->
+<!--                            android:text="@{viewModel.promoAmnt}"-->
+<!--                            android:textColor="@color/colorPrimary"-->
+<!--                            android:textSize="@dimen/_13sdp"-->
+<!--                            app:textfont="@{`Poppins.ttf`}" />-->
+
+<!--                    </RelativeLayout>-->
+
+<!--                    <View-->
+<!--                        android:id="@+id/separator"-->
+<!--                        android:layout_width="fill_parent"-->
+<!--                        android:layout_height="0.01dip"-->
+<!--                        android:layout_below="@+id/promo_fare_lay"-->
+<!--                        android:background="@color/clr_gray" />-->
+
+
+<!--                    <LinearLayout-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="@dimen/_38sdp"-->
+<!--                        android:layout_below="@+id/separator"-->
+<!--                        android:orientation="horizontal">-->
+
+<!--                        <LinearLayout-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:gravity="center"-->
+<!--                            android:onClick="@{viewModel::onClickPromocode}"-->
+<!--                            android:visibility="@{!viewModel.isDropEmpty?View.GONE:viewModel.isPromoApply?View.GONE:View.VISIBLE}">-->
+
+<!--                            <TextView-->
+<!--                                android:id="@+id/promocode"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_gravity="center_vertical"-->
+<!--                                android:layout_marginStart="@dimen/_10sdp"-->
+<!--                                android:layout_marginLeft="@dimen/_10sdp"-->
+<!--                                android:text="@{viewModel.translationModel.Txt_title_Promocode}"-->
+<!--                                android:textAllCaps="true"-->
+<!--                                android:textSize="@dimen/_13sdp"-->
+<!--                                tools:ignore="RtlHardcoded" />&lt;!&ndash;viewModel.is_CorporateUser?viewModel.translationModel.text_corporate:&ndash;&gt;-->
+
+<!--                        </LinearLayout>-->
+
+<!--                        <LinearLayout-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:gravity="center"-->
+<!--                            android:onClick="@{viewModel::onclickRideType}"-->
+<!--                            android:visibility="gone">-->
+
+<!--                            <TextView-->
+<!--                                android:id="@+id/FP_RideType"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_gravity="center_vertical"-->
+<!--                                android:layout_marginStart="@dimen/_10sdp"-->
+<!--                                android:layout_marginLeft="@dimen/_10sdp"-->
+<!--                                android:text="@{viewModel.isShareRide?viewModel.translationModel.txt_shareride:viewModel.translationModel.txt_normal_ride}"-->
+<!--                                android:textAllCaps="true"-->
+<!--                                android:textSize="@dimen/_13sdp"-->
+<!--                                tools:ignore="RtlHardcoded" />&lt;!&ndash;viewModel.is_CorporateUser?viewModel.translationModel.text_corporate:&ndash;&gt;-->
+
+<!--                            <ImageView-->
+<!--                                android:id="@+id/FP_RideTypeArrow"-->
+<!--                                android:layout_width="@dimen/_8sdp"-->
+<!--                                android:layout_height="@dimen/_8sdp"-->
+<!--                                android:layout_marginStart="@dimen/_8sdp"-->
+<!--                                android:layout_marginLeft="@dimen/_8sdp"-->
+<!--                                android:visibility="@{viewModel.is_CorporateUser?View.GONE:View.VISIBLE}"-->
+<!--                                app:srcCompat="@drawable/ic_arrow_down"-->
+<!--                                tools:ignore="RtlHardcoded" />-->
+
+<!--                        </LinearLayout>-->
+
+<!--                        <View-->
+<!--                            android:id="@+id/ver_separator"-->
+<!--                            android:layout_width="0.1dip"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:background="@color/clr_gray" />-->
+
+<!--                        <LinearLayout-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="@dimen/_38sdp"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:gravity="center_vertical|center_horizontal"-->
+<!--                            android:onClick="@{viewModel.onclickPayment}">-->
+
+<!--                            <ImageView-->
+<!--                                android:id="@+id/FP_Paymentsymbol"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                app:srcCompat="@drawable/ic_warning" />-->
+
+<!--                            <TextView-->
+<!--                                android:id="@+id/FP_PaymentTXt"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_gravity="center_vertical"-->
+<!--                                android:layout_marginStart="@dimen/_10sdp"-->
+<!--                                android:text="@{viewModel.translationModel.txt_Payment}"-->
+<!--                                android:textSize="@dimen/_13sdp" />-->
+<!--                            &lt;!&ndash;-->
+<!--                                                            android:text="@string/txt_Payment"&ndash;&gt;-->
+<!--                            <ImageView-->
+<!--                                android:id="@+id/FP_PaymentArrow"-->
+<!--                                android:layout_width="@dimen/_8sdp"-->
+<!--                                android:layout_height="@dimen/_8sdp"-->
+<!--                                android:layout_marginStart="@dimen/_8sdp"-->
+<!--                                app:srcCompat="@drawable/ic_arrow_down" />-->
+
+<!--                        </LinearLayout>-->
+
+<!--                    </LinearLayout>-->
+
+<!--                </RelativeLayout>-->
+
+<!--            </androidx.cardview.widget.CardView>-->
+
+<!--        </RelativeLayout>-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/ride_lay"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            android:background="@color/colorPrimary"-->
+<!--            android:gravity="center"-->
+<!--            android:minHeight="@dimen/_35sdp"-->
+<!--            android:onClick="@{viewModel.onclickConfirm}"-->
+<!--            android:text="@{viewModel.translationModel.txt_confirm}"-->
+<!--            android:textAllCaps="true"-->
+<!--            android:textColor="@color/buttonTextColor"-->
+<!--            android:textSize="@dimen/_13sdp" />-->
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            android:background="@color/while_light"-->
+<!--            android:visibility="gone"-->
+<!--            android:baselineAligned="false">-->
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                android:visibility="@{viewModel.isScanEnabled?View.GONE:View.VISIBLE}">-->
+
+<!--                <Button-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:background="@color/secondry_color"-->
+<!--                    android:clickable="@{viewModel.is_enableBooking}"-->
+<!--                    android:onClick="@{viewModel::onclickRideLater}"-->
+<!--                    android:text="@string/txt_Ridelater"-->
+<!--                    android:textColor="@color/clr_white"-->
+<!--                    app:textfont="@{`Poppins.ttf`}" />-->
+
+<!--            </LinearLayout>-->
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1">-->
+
+<!--                <Button-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:background="@color/colorPrimary"-->
+<!--                    android:clickable="@{viewModel.is_enableBooking}"-->
+<!--                    android:onClick="@{viewModel::onclickRideNow}"-->
+<!--                    android:text="@string/txt_RideNow"-->
+<!--                    android:textColor="@color/while_light"-->
+<!--                    app:textfont="@{`Poppins.ttf`}" />-->
+
+<!--            </LinearLayout>-->
+
+<!--        </LinearLayout>-->
+
+<!--        <include-->
+<!--            android:id="@+id/progressBar"-->
+<!--            layout="@layout/progress_dialog"-->
+<!--            android:visibility="@{viewModel.mIsLoading ? View.VISIBLE : View.GONE}" />-->
+
+<!--    </RelativeLayout>-->
+
+</layout>

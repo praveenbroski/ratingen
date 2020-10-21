@@ -1,0 +1,169 @@
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.ui.drawerscreen.refferalscreen.RefferalFragViewModel"/>
+
+    </data>
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/clr_white"
+    android:clickable="true"
+    tools:context="taxi.ratingen.ui.drawerscreen.refferalscreen.RefferalCodeFrag">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/_20sdp"
+        android:layout_marginRight="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:orientation="vertical"
+
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{viewModel.translationModel.text_title_Referralcode}"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/_22sdp"
+            app:textfont="@{`Laksaman.ttf`}" />
+<!--
+            android:text="@string/text_title_Referralcode"-->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_8sdp"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="@{viewModel.translationModel.Txt_ExistingReferral}"
+            android:textColor="@color/clr_graydark"
+            android:textSize="@dimen/_13sdp"
+            app:textfont="@{`Padauk.ttf`}" />
+<!--
+            android:text="@string/Txt_ExistingReferral"-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+             android:gravity="center"
+            android:layout_marginTop="@dimen/_60sdp"
+
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@{viewModel.translationModel.Rs}"
+                android:textStyle="bold"
+                android:text="@{viewModel.CurrencySymbol}"
+                android:textColor="@color/colorPrimary"
+                android:textColorHint="@color/colorPrimary"
+                android:textSize="@dimen/_45sdp"/><!--
+                android:hint="@string/Rs"-->
+            <androidx.legacy.widget.Space
+                android:layout_width="@dimen/_5sdp"
+                android:layout_height="match_parent"
+
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@={viewModel.Prize}"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/_45sdp"
+                />
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginLeft="@dimen/_8sdp"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:layout_marginRight="@dimen/_8sdp"
+            android:layout_marginEnd="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_40sdp"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@{viewModel.translationModel.Txt_YourReferral}"
+                android:textColor="@color/clr_graydark"
+                android:textSize="@dimen/_13sdp"
+                app:textfont="@{`Padauk.ttf`}" /><!--
+                android:text="@string/Txt_YourReferral"-->
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:background="@drawable/referralcodebgrd"
+                android:layout_marginTop="@dimen/_25sdp"
+
+                android:layout_height="wrap_content">
+
+
+                <ImageView
+                    android:layout_width="@dimen/_35sdp"
+                    android:layout_height="@dimen/_25sdp"
+                    android:layout_margin="@dimen/_3sdp"
+                    app:srcCompat="@drawable/ic_card_grey" />
+
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="@={viewModel.code}"
+
+                    android:textColor="@color/clr_black"
+                    android:textSize="@dimen/_15sdp"
+                    app:textfont="@{`Padauk.ttf`}" />
+
+                <ImageView
+                    android:layout_width="@dimen/_35sdp"
+                    android:layout_height="@dimen/_25sdp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:onClick="@{viewModel.onclickShare}"
+                    android:layout_alignParentRight="true"
+                    app:srcCompat="@drawable/ic_share" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:text="@{viewModel.translationModel.Txt_ShareReferralBonus}"
+                android:textColor="@color/clr_graydark"
+                android:textSize="@dimen/_13sdp"
+                app:textfont="@{`Padauk.ttf`}" />
+<!--
+                android:text="@string/Txt_ShareReferralBonus"-->
+
+        </LinearLayout>
+
+    </LinearLayout>
+    <include
+        android:id="@+id/progressBar"
+        layout="@layout/progress_dialog"
+        android:visibility="@{viewModel.mIsLoading ? View.VISIBLE : View.GONE}" />
+
+</RelativeLayout>
+</layout>

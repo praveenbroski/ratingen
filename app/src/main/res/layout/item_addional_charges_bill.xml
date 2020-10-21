@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.ui.drawerscreen.adapter.AddChrargeAdapViewModel" />
+    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/_18sdp"
+        android:weightSum="10"
+        android:paddingRight="@dimen/_18sdp"
+        android:paddingTop="@dimen/_4sdp">
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_weight="7"
+            android:gravity="left|start"
+            android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{viewModel.name}"
+            android:gravity="left|start"
+            android:textSize="@dimen/_14sdp"
+            android:textColor="@color/clr_orange_drk"
+            android:textStyle="bold"
+            app:textfont="@{`Padauk.ttf`}" />
+        </RelativeLayout>
+        <!--
+                                            android:text="@string/text_setvice_tax"-->
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:gravity="end"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="@{viewModel.amount}"
+                android:textSize="@dimen/_14sdp"
+                android:textColor="@color/clr_orange_drk"
+                android:textStyle="bold"
+                app:textfont="@{`Padauk.ttf`}" />
+        </RelativeLayout>
+    </LinearLayout>
+</layout>

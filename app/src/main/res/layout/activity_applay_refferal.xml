@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout>
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.ui.applyrefferal.ApplyRefferalViewModel" />
+
+    </data>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="taxi.ratingen.ui.applyrefferal.ApplayRefferal">
+    <RelativeLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_16sdp"
+        android:layout_marginRight="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_16sdp"
+        >
+    <TextView
+        android:id="@+id/AC_AR_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:layout_marginTop="@dimen/_15sdp"
+        app:textfont="@{`Laksaman.ttf`}"
+        android:text="@{viewModel.translationModel.text_title_Referral}"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/_22sdp" />
+<!--
+        android:text="@string/text_title_Referral"-->
+
+
+        <EditText
+            android:id="@+id/AC_AR_edit_Refferal"
+            style="@style/EditTextTheme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@={viewModel.Refferalcode}"
+            app:Editfont="@{`Padauk.ttf`}"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:textDirection="ltr"
+            android:layoutDirection="ltr"
+            android:layout_below="@+id/AC_AR_title"
+            android:hint="@{viewModel.translationModel.Hint_Enter_Refferal}"
+            android:inputType="text" />
+<!--
+            android:hint="@string/Hint_Enter_Refferal"-->
+        <TextView
+            android:id="@+id/text_forgt_pwd_signin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/_140sdp"
+            android:gravity="center_horizontal"
+            android:layout_below="@+id/AC_AR_edit_Refferal"
+            android:text="@{viewModel.translationModel.Txt_ApplyRefferalMsg}"
+            android:textColor="@color/clr_black2"
+            android:textSize="@dimen/_14sdp"
+            app:textfont="@{`Padauk.ttf`}" />
+<!--
+            android:text="@string/Txt_ApplyRefferalMsg"-->
+        </RelativeLayout>
+    <LinearLayout
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/clr_white"
+        android:orientation="horizontal">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_35sdp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:onClick="@{viewModel.onclickskip}"
+            android:text="@{viewModel.translationModel.txt_skip}"
+            android:textColor="@color/buttonTextColor"
+            android:textSize="@dimen/_13sdp" /><!--
+            android:text="@string/txt_skip"-->
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/clr_white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_35sdp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:onClick="@{viewModel.onclickApply}"
+            android:text="@{viewModel.translationModel.txt_Apply}"
+            android:textColor="@color/buttonTextColor"
+            android:textSize="@dimen/_13sdp" /><!--
+            android:text="@string/txt_Apply"-->
+    </LinearLayout>
+
+    <include
+        android:id="@+id/progressBar"
+        layout="@layout/progress_dialog"
+
+        android:visibility="@{viewModel.mIsLoading ? View.VISIBLE : View.GONE}" />
+</RelativeLayout>
+</layout>

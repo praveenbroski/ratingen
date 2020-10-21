@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.ui.drawerscreen.profilescrn.edit.NameMailModel" />
+
+    </data>
+
+    <RelativeLayout
+        android:background="@color/clr_white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:fitsSystemWindows="true">
+
+        <include
+            android:id="@+id/layout_toolbar"
+            layout="@layout/toolbar" />
+
+        <TextView
+            android:id="@+id/tv_update_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layout_toolbar"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:layout_marginStart="@dimen/_14sdp"
+            android:layout_marginEnd="@dimen/_14sdp"
+            android:textColor="@color/clr_222B45"
+            app:textfont="@{`sf_semibold.otf`}"
+            android:textSize="@dimen/_20sdp"
+            android:text="@{viewModel.mode == 0 ? viewModel.translationModel.txt_update_first_name : viewModel.mode == 1 ? viewModel.translationModel.txt_update_last_name : viewModel.mode == 2 ? viewModel.translationModel.txt_update_email : viewModel.translationModel.txt_update_phone}" />
+
+        <RelativeLayout
+            android:id="@+id/rl_update_text_field"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_below="@+id/tv_update_title"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:layout_marginStart="@dimen/_24sdp"
+            android:layout_marginEnd="@dimen/_24sdp">
+
+            <RelativeLayout
+                android:id="@+id/rl_cc"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:onClick="@{viewModel::CountryChoose}"
+                android:visibility="@{viewModel.mode == 3 ? View.VISIBLE : View.GONE}">
+
+                <ImageView
+                    android:id="@+id/editFlag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:minWidth="@dimen/_15sdp"
+                    android:visibility="gone"
+                    app:countryFlag="@{viewModel.countryFlag}" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/editFlag"
+                    android:layout_marginStart="8dp"
+                    app:textfont="@{`sf_regular.otf`}"
+                    android:textSize="20sp"
+                    android:textColor="@color/clr_black"
+                    android:layoutDirection="ltr"
+                    android:maxLength="5"
+                    android:text="@={viewModel.Countrycode}" />
+
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/v_s_cc"
+                android:background="@color/clr_CCCCCC"
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@+id/rl_cc"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_marginBottom="@dimen/_8sdp"
+                android:visibility="@{viewModel.mode == 3 ? View.VISIBLE : View.GONE}" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_update_val"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:backgroundTint="@color/et_update_selector"
+                android:layout_toEndOf="@+id/v_s_cc"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_24sdp"
+                android:singleLine="true"
+                android:imeOptions="actionDone"
+                android:onTextChanged="@{viewModel.onTextChanged}"
+                android:hint="@{viewModel.mode == 0 ? viewModel.translationModel.txt_first_name_hint : viewModel.mode == 1 ? viewModel.translationModel.txt_last_name_hint : viewModel.mode == 2 ? viewModel.translationModel.txt_mail_hint : viewModel.translationModel.txt_phone_hint}"
+                app:textfont="@{`sf_regular.otf`}"
+                android:textSize="20sp"
+                android:textColor="@color/clr_black"
+                android:text="@{viewModel.extraData}" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btn_text_clear"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:padding="@dimen/_8sdp"
+                app:srcCompat="@drawable/ic_x"
+                android:onClick="@{viewModel::clearText}" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_update_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rl_update_text_field"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:layout_marginStart="@dimen/_24sdp"
+            android:layout_marginEnd="@dimen/_24sdp"
+            android:textColor="@color/clr_828282"
+            app:textfont="@{`sf_regular.otf`}"
+            android:textSize="@dimen/_12sdp"
+            android:text="@{viewModel.mode == 0 ? viewModel.translationModel.txt_update_first_name_desc : viewModel.mode == 1 ? viewModel.translationModel.txt_update_last_name_desc : viewModel.mode == 2 ? viewModel.translationModel.txt_update_email_desc : viewModel.translationModel.txt_update_phone_desc}" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:background="@drawable/btn_black_bg"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_35sdp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/_46sdp"
+            android:layout_marginStart="@dimen/_18sdp"
+            android:layout_marginEnd="@dimen/_18sdp"
+            android:enabled="@{viewModel.isSubmitEnable}"
+            android:onClick="@{viewModel::onClickUpdate}"
+            android:textAllCaps="true"
+            android:textColor="@color/clr_white"
+            app:textfont="@{`sf_semibold.otf`}"
+            android:textSize="@dimen/_12sdp"
+            android:text="@{viewModel.translationModel.txt_update}"/>
+
+        <include
+            android:id="@+id/progressBar"
+            layout="@layout/progress_dialog"
+            android:visibility="@{viewModel.mIsLoading ? View.VISIBLE : View.GONE}" />
+
+    </RelativeLayout>
+
+</layout>

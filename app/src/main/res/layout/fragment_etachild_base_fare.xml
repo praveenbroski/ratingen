@@ -1,0 +1,236 @@
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View"/>
+
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.ui.drawerscreen.ridescreen.etabasefare.EtachildBaseViewModel" />
+
+    </data>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="taxi.ratingen.ui.drawerscreen.ridescreen.etabasefare.EtachildBaseFare">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_18sdp"
+            android:layout_marginLeft="@dimen/_18sdp"
+            android:layout_marginRight="@dimen/_18sdp"
+            android:layout_marginStart="@dimen/_18sdp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@{viewModel.v_type}"
+                android:textColor="@color/clr_black"
+                android:textSize="@dimen/_16sdp"
+                android:padding="@dimen/_10sdp"
+                android:textStyle="normal"
+                app:textfont="@{`Padauk.ttf`}" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_6sdp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="@color/clr_black2"
+                    android:textSize="@dimen/_13sdp"
+                    android:text="@{viewModel.translationModel.txt_Basefare}"
+                    android:textStyle="normal"
+                    app:textfont="@{`Padauk.ttf`}" />
+<!--
+                    android:text="@string/txt_Basefare"-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.currency}"
+                        android:textColor="@color/clr_black2"
+                        android:textSize="@dimen/_13sdp"
+                        android:textStyle="bold" />
+
+                    <!--     android:text="@={viewModel.TotalPrize}"-->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@={viewModel.BaseFare}"
+                        android:textColor="@color/clr_black2"
+                        android:textSize="@dimen/_13sdp" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@{viewModel.RatePerKmTitle}"
+                    android:textColor="@color/clr_black2"
+                    android:textSize="@dimen/_13sdp"
+
+                    android:textStyle="normal"
+                    app:textfont="@{`Padauk.ttf`}" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.currency}"
+                        android:textColor="@color/clr_black2"
+                        android:textSize="@dimen/_13sdp"
+                        android:textStyle="bold" />
+
+                    <!--     android:text="@={viewModel.TotalPrize}"-->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@={viewModel.RatePerKm}"
+                        android:textColor="@color/clr_black2"
+                        android:textSize="@dimen/_13sdp" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="@color/clr_black2"
+                    android:textSize="@dimen/_13sdp"
+                    android:text="@{viewModel.translationModel.txt_Ridetime}"
+                    android:textStyle="normal"
+                    app:textfont="@{`Padauk.ttf`}" />
+<!--
+                    android:text="@string/txt_Ridetime"-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.currency}"
+                        android:textColor="@color/clr_black2"
+                        android:textSize="@dimen/_13sdp"
+                        android:textStyle="bold" />
+
+                    <!--     android:text="@={viewModel.Ridetimecharge}"-->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@={viewModel.Ridetimecharge}"
+                        android:textColor="@color/clr_black2"
+                        android:textSize="@dimen/_13sdp" />
+
+                </LinearLayout>
+
+
+
+
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@{viewModel.translationModel.txt_Taxesextra}"
+                android:textColor="@color/clr_graydark"
+                android:gravity="center_horizontal"
+                android:textSize="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:textStyle="normal"
+                app:textfont="@{`Padauk.ttf`}" /><!--
+                android:text="@string/txt_Taxesextra"-->
+
+
+
+        </LinearLayout>
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/clr_white"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_weight="1"
+                android:background="@color/clr_black1"
+                android:gravity="center"
+                android:onClick="@{viewModel.onclickFareDetails}"
+                android:text="@{viewModel.translationModel.txt_FareDetails}"
+                android:textAllCaps="true"
+                android:textColor="@color/buttonTextColor"
+                android:textSize="@dimen/_13sdp" /><!--
+                android:text="@string/txt_FareDetails"-->
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/clr_graydark" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_weight="1"
+                android:background="@color/clr_black1"
+                android:gravity="center"
+                android:onClick="@{viewModel.onclickBaseGotIt}"
+                android:textAllCaps="true"
+                android:text="@{viewModel.translationModel.txt_Gotit}"
+                android:textColor="@color/buttonTextColor"
+                android:textSize="@dimen/_13sdp" /><!--
+                android:text="@string/txt_Gotit"-->
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>
+</layout>

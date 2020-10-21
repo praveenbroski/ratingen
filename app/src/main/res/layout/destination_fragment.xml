@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout  xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.ui.drawerscreen.mapscreen.destination.DestinationViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/clr_white"
+        android:clickable="true"
+        android:focusable="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appBarLayout"
+                android:background="@color/clr_white"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    style="@style/Toolbar"
+                    app:title="@{viewModel.dropAddress}"
+                    app:titleTextAppearance="@style/Toolbar.TitleText"
+                    app:titleTextColor="@color/clr_222B45"
+                    app:navigationIcon="@drawable/back_nav"
+                    app:titleMarginStart="0dp"
+                    app:contentInsetStartWithNavigation="0dp">
+
+                    <ImageButton
+                        android:id="@+id/img_btn_search"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="15dp"
+                        android:padding="5dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        app:srcCompat="@drawable/ic_search_gray"
+                        android:onClick="@{viewModel::onClickSearchLocation}" />
+
+                </androidx.appcompat.widget.Toolbar>
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/appBarLayout"
+                android:layout_above="@+id/dest_bottom"
+                android:layout_marginBottom="@dimen/_minus15sdp">
+
+                <fragment
+                    android:id="@+id/mapView"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_above="@+id/center_view">
+
+                    <ImageView
+                        android:layout_below="@+id/dest_pin"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="-12dp"
+                        android:layout_centerHorizontal="true"
+                        app:srcCompat="@drawable/ic_circle_red_border_white" />
+
+                    <RelativeLayout
+                        android:id="@+id/dest_pin"
+                        android:background="@drawable/ic_drop_marker"
+                        android:layout_width="39dp"
+                        android:layout_height="57dp">
+
+                        <ImageView
+                            android:layout_width="19.5dp"
+                            android:layout_height="19.5dp"
+                            android:layout_marginTop="9.75dp"
+                            android:layout_centerHorizontal="true"
+                            app:srcCompat="@drawable/ic_dest_icon" />
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+                <View
+                    android:id="@+id/center_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_centerVertical="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:background="@drawable/curved_border_small"
+                    android:drawableStart="@drawable/layer_private_key"
+                    android:drawablePadding="@dimen/_12sdp"
+                    android:layout_marginEnd="@dimen/_8sdp"
+                    android:gravity="center"
+                    android:minHeight="@dimen/_35sdp"
+                    android:onClick="@{viewModel.onClickScanQr}"
+                    android:padding="@dimen/_7sdp"
+                    android:text="@{viewModel.translationModel.txt_ride_with_key}"
+                    android:textAllCaps="false"
+                    android:textColor="@color/buttonTextColor"
+                    android:textSize="@dimen/_11sdp" />
+
+            </RelativeLayout>
+
+            <ImageButton
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:layout_above="@+id/dest_bottom"
+                android:padding="@dimen/_9sdp"
+                android:elevation="@dimen/_5sdp"
+                android:background="@drawable/curved_border_dark_white"
+                app:srcCompat="@drawable/ic_gps_fixed"
+                android:onClick="@{viewModel::onClickCurrentLocation}" />
+
+            <LinearLayout
+                android:id="@+id/dest_bottom"
+                android:background="@drawable/curved_border_top_white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_alignParentBottom="true"
+                android:elevation="@dimen/_5sdp"
+                android:paddingTop="@dimen/_5sdp"
+                android:paddingBottom="@dimen/_12sdp"
+                android:paddingLeft="@dimen/_16sdp"
+                android:paddingRight="@dimen/_16sdp"
+                android:fadingEdgeLength="@dimen/_5sdp">
+
+                <TextView
+                    android:text="@{viewModel.translationModel.txt_choos_des}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:textSize="@dimen/_20sdp"
+                    android:fontFamily="@font/sf_semibold"
+                    android:textColor="@color/clr_222B45" />
+
+                <TextView
+                    android:text="@{viewModel.translationModel.txt_loc_map_des}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:singleLine="false"
+                    android:textSize="@dimen/_13sdp"
+                    android:fontFamily="@font/sf_regular"
+                    android:textColor="@color/clr_222B45" />
+
+                <Button
+                    style="?android:attr/borderlessButtonStyle"
+                    android:background="@drawable/btn_primary"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_35sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:textColor="@color/clr_white"
+                    android:fontFamily="@font/sf_semibold"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/_12sdp"
+                    android:text="@{viewModel.translationModel.txt_set_des}"
+                    android:onClick="@{viewModel::onClickSetDestination}" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

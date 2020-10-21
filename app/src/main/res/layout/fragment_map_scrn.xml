@@ -1,0 +1,765 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="androidx.databinding.ObservableMap" />
+
+        <import type="android.view.View" />
+
+        <import type="taxi.ratingen.utilz.CommonUtils" />
+
+
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.ui.drawerscreen.mapscrn.MapScrnViewModel" />
+
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/Parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="taxi.ratingen.ui.drawerscreen.mapscrn.MapScrn"
+        tools:ignore="UselessParent, UseCompoundDrawables, ContentDescription">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <taxi.ratingen.utilz.MapLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <fragment
+                    android:id="@+id/map"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </taxi.ratingen.utilz.MapLayout>
+
+            <LinearLayout
+                android:id="@+id/GestureCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_15sdp"
+                android:layout_marginLeft="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_78sdp"
+                android:layout_marginEnd="@dimen/_15sdp"
+                android:layout_marginRight="@dimen/_15sdp"
+                android:background="@drawable/bg_rectangle"
+                android:elevation="8dp"
+                android:visibility="@{viewModel.IsGesture ? View.VISIBLE : View.GONE}">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:layout_marginBottom="@dimen/_12sdp"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/FMS_Gesture_Init"
+                        android:layout_width="5dp"
+                        android:layout_height="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_8sdp"
+                        app:srcCompat='@{viewModel.observableArrayMap["Drawable"].equals("Fav")? @drawable/ic_liked : viewModel.observableArrayMap["Drawable"].equals("Drop") ? @drawable/reddot :@drawable/greendot}' />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/_8sdp"
+                        android:ellipsize="end"
+                        android:hint="@string/txt_gettingAddr"
+                        android:maxWidth="@dimen/_240sdp"
+                        android:maxLines="1"
+                        android:text='@{viewModel.observableArrayMap["Address"]}'
+                        android:textColor="@color/clr_black"
+                        android:textColorHint="@color/clr_black"
+                        android:textSize="@dimen/_13sdp"
+                        app:textfont="@{`Padauk.ttf`}" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginLeft="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_51sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:layout_marginRight="@dimen/_8sdp"
+                android:background="@color/colorPrimary"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/_55sdp"
+                android:visibility="@{viewModel.enableLocationPopupPickup?View.VISIBLE:View.GONE}">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_4sdp"
+                    android:text="@{viewModel.translationModel.text_location_enable_desc}"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/buttonTextColor"
+                    app:textfont="@{`Padauk.ttf`}" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/while_light" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{viewModel::onclickCurrentLocation}">
+
+                    <TextView
+                        android:id="@+id/text_locationbtn_mapscrn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:gravity="center"
+                        android:padding="@dimen/_8sdp"
+                        android:text="@{viewModel.translationModel.text_turn_location_on}"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/buttonTextColor"
+                        app:textfont="@{`Padauk.ttf`}" />
+
+                    <ImageView
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="@dimen/_30sdp"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="@dimen/_4sdp"
+                        android:layout_toEndOf="@+id/text_locationbtn_mapscrn"
+                        android:padding="@dimen/_8sdp"
+                        app:srcCompat="@drawable/ic_right_arrow_angle" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/Pickcard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_15sdp"
+                android:layout_marginLeft="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_58sdp"
+                android:layout_marginEnd="@dimen/_15sdp"
+                android:layout_marginRight="@dimen/_15sdp"
+                android:background="@drawable/bg_rectangle"
+                android:elevation="8dp"
+                android:onClick="@{viewModel.onclickPick}"
+                android:visibility="@{viewModel.IsGesture ? View.GONE : View.VISIBLE}">
+
+                <LinearLayout
+                    android:id="@+id/PickSubParent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginBottom="@dimen/_5sdp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="@dimen/_8sdp"
+                            android:layout_height="@dimen/_25sdp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="@dimen/_8sdp"
+                            android:scaleType="fitStart"
+                            app:srcCompat="@drawable/ic_pickup_streched" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/Pick_Title"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/_8sdp"
+                                    android:ellipsize="end"
+                                    android:maxWidth="@dimen/_240sdp"
+                                    android:maxLines="1"
+                                    android:text="@string/txt_PickupFrom"
+                                    android:textColor="@color/clr_graydark"
+                                    android:textSize="@dimen/_10sdp" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/Pick_Txt_Address"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_8sdp"
+                                android:layout_marginTop="@dimen/_3sdp"
+                                android:ellipsize="end"
+                                android:hint="@string/txt_DropAddress"
+                                android:maxWidth="@dimen/_240sdp"
+                                android:maxLines="1"
+                                android:onClick="@{viewModel.onclickPick}"
+                                android:text="@={viewModel.mPickupAddress}"
+                                android:textColor="@color/clr_black"
+                                android:textColorHint="@color/clr_black"
+                                android:textSize="@dimen/_13sdp"
+                                app:PickAddress="@{viewModel.mPickupAddress}"
+                                app:textfont="@{`Padauk.ttf`}" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/Pick_Fav"
+                            android:layout_width="@dimen/_14sdp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/_10sdp"
+                            android:onClick="@{viewModel.onclickPickFav}"
+                            app:srcCompat="@{viewModel.PickFavImage ? @drawable/ic_liked : @drawable/ic_heart}" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/pickupDownArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/Pickcard"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-2dp"
+                android:adjustViewBounds="true"
+                android:elevation="8dp"
+                android:visibility="@{viewModel.IsGesture ? View.GONE : View.VISIBLE}"
+                app:srcCompat="@drawable/ic_down_arrow_map" />
+
+            <View
+                android:id="@+id/Pick_dotline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/Marker"
+                android:layout_below="@+id/pickupDownArrow"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-7dp"
+                android:adjustViewBounds="true"
+                android:background="@drawable/ic_dotline"
+                android:layerType="software"
+                app:IsFavchange="@{viewModel.IsFavourite}"
+                app:PickTxtchange="@{viewModel.mPickupAddress}"
+                app:PickanimatedVisibility="@{viewModel.IsIdle}"
+                app:cardchange="@{viewModel.PickDropCard}" />
+
+            <View
+                android:id="@+id/pickupdothalf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/Marker"
+                android:layout_below="@+id/pickupDownArrow"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-7dp"
+                android:adjustViewBounds="true"
+                android:background="@drawable/ic_dotline"
+                android:layerType="software"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/Drop_Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/Pickcard"
+                android:layout_marginStart="@dimen/_15sdp"
+                android:layout_marginLeft="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_15sdp"
+                android:layout_marginRight="@dimen/_15sdp"
+                android:background="@drawable/bg_rectangle"
+                android:elevation="8dp"
+                android:onClick="@{viewModel.onclickDrop}"
+                android:visibility="@{viewModel.IsGesture? View.GONE : viewModel.enableLocationPopupPickup?View.GONE:View.VISIBLE}">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginBottom="@dimen/_5sdp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="@dimen/_8sdp"
+                            android:layout_height="@dimen/_30sdp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="@dimen/_8sdp"
+                            android:scaleType="fitStart"
+                            app:srcCompat="@drawable/ic_drop_streched" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/Drop_Title_Txt"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="@dimen/_8sdp"
+                                    android:ellipsize="end"
+                                    android:maxWidth="@dimen/_240sdp"
+                                    android:maxLines="1"
+                                    android:text="@string/txt_Dropat"
+                                    android:textColor="@color/clr_graydark"
+                                    android:textSize="@dimen/_10sdp" />
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/Drop_Txt_Address"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_8sdp"
+                                android:layout_marginTop="@dimen/_3sdp"
+                                android:ellipsize="end"
+                                android:hint="@string/txt_DropAddress"
+                                android:maxWidth="@dimen/_240sdp"
+                                android:maxLines="1"
+                                android:onClick="@{viewModel.onclickDrop}"
+                                android:text="@={viewModel.mDropupAddress}"
+                                android:textColor="@color/clr_black"
+                                android:textColorHint="@color/clr_black"
+                                android:textSize="@dimen/_13sdp"
+                                app:DropAddress="@{viewModel.mDropupAddress}"
+                                app:textfont="@{`Padauk.ttf`}" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/Drop_Fav"
+                            android:layout_width="@dimen/_14sdp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/_10sdp"
+                            android:onClick="@{viewModel.onclickDropFav}"
+                            app:srcCompat="@{viewModel.DropFavImage ? @drawable/ic_liked : @drawable/ic_heart}" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/dropDownArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/Drop_Card"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-2dp"
+                android:adjustViewBounds="true"
+                android:elevation="8dp"
+                android:visibility="@{viewModel.IsGesture ? View.GONE : View.VISIBLE}"
+                app:srcCompat="@drawable/ic_down_arrow_map" />
+
+            <View
+                android:id="@+id/Drop_dotline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/Marker"
+                android:layout_below="@+id/dropDownArrow"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-7dp"
+                android:adjustViewBounds="true"
+                android:background="@drawable/ic_dotline"
+                android:layerType="software"
+                app:DropTxtchange="@{viewModel.mDropupAddress}"
+                app:DropanimatedVisibility="@{viewModel.IsIdle}"
+                app:IsFavchange="@{viewModel.IsFavourite}"
+                app:cardchange="@{viewModel.PickDropCard}" />
+
+            <LinearLayout
+                android:id="@+id/FMS_FavCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_15sdp"
+                android:layout_marginLeft="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_78sdp"
+                android:layout_marginEnd="@dimen/_15sdp"
+                android:layout_marginRight="@dimen/_15sdp"
+                android:background="@drawable/bg_rectangle"
+                android:elevation="8dp"
+                android:visibility="@{viewModel.IsFavourite ? View.VISIBLE : View.GONE}">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_12sdp"
+                    android:baselineAligned="false"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <RadioGroup
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:checkedButton="@+id/FMS_Radio_Home"
+                            android:onCheckedChanged="@{viewModel.onRadioGropChanged}"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/FMS_Radio_Home"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:paddingStart="@dimen/_5sdp"
+                                android:paddingLeft="@dimen/_5sdp"
+                                android:text="@{viewModel.translationModel.txt_Home}"
+                                android:textColor="@color/clr_black"
+                                android:textSize="@dimen/_13sdp"
+                                app:textfont="@{`Padauk.ttf`}" />
+
+                            <RadioButton
+                                android:id="@+id/FMS_Radio_Work"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:paddingStart="@dimen/_5sdp"
+                                android:paddingLeft="@dimen/_5sdp"
+                                android:text="@{viewModel.translationModel.txt_Work}"
+                                android:textColor="@color/clr_black"
+                                android:textSize="@dimen/_13sdp"
+                                app:textfont="@{`Padauk.ttf`}" />
+
+                            <RadioButton
+                                android:id="@+id/FMS_Radio_Other"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:paddingStart="@dimen/_5sdp"
+                                android:paddingLeft="@dimen/_5sdp"
+                                android:text="@{viewModel.translationModel.txt_Other}"
+                                android:textColor="@color/clr_black"
+                                android:textSize="@dimen/_13sdp"
+                                app:textfont="@{`Padauk.ttf`}" />
+
+                        </RadioGroup>
+
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5sdp">
+
+                        <ImageView
+                            android:id="@+id/FMS_FavLiked"
+                            android:layout_width="@dimen/_16sdp"
+                            android:layout_height="@dimen/_16sdp"
+                            android:layout_marginStart="@dimen/_5sdp"
+                            android:layout_marginTop="@dimen/_1sdp"
+                            app:srcCompat="@drawable/ic_liked" />
+
+                        <EditText
+                            android:id="@+id/FMS_Edit_Favtitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_31sdp"
+                            android:layout_marginStart="@dimen/_5sdp"
+                            android:layout_toEndOf="@+id/FMS_FavLiked"
+                            android:afterTextChanged="@{viewModel.onFavNickNameChanged}"
+                            android:hint="@string/hint_NameyourFav"
+                            android:paddingTop="@dimen/_1sdp"
+                            android:text=""
+                            android:textColor="@color/clr_black"
+                            android:textColorHint="@color/clr_line"
+                            android:textSize="@dimen/_13sdp"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/FavAdrress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/FMS_Edit_Favtitle"
+                            android:layout_marginStart="@dimen/_30sdp"
+                            android:layout_marginEnd="@dimen/_5sdp"
+                            android:ellipsize="end"
+                            android:maxLines="2"
+                            android:text='@{viewModel.observableArrayMap["Address"]}'
+                            android:textColor="@color/clr_graydark"
+                            android:textSize="@dimen/_13sdp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/FavAdrress"
+                            android:layout_marginTop="@dimen/_8sdp"
+                            android:layout_marginEnd="@dimen/_15sdp"
+                            android:layout_toStartOf="@+id/FMS_Fav_Save"
+                            android:onClick="@{viewModel.onclickFavCancel}"
+                            android:text="@{viewModel.translationModel.text_cancel}"
+                            android:textAllCaps="true"
+                            android:textColor="@color/clr_primarylite"
+                            android:textSize="@dimen/_13sdp" />
+
+                        <TextView
+                            android:id="@+id/FMS_Fav_Save"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/FavAdrress"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="@dimen/_8sdp"
+                            android:layout_marginEnd="@dimen/_10sdp"
+                            android:onClick="@{viewModel.onclickFavSave}"
+                            android:text="@{viewModel.translationModel.txt_save}"
+                            android:textAllCaps="true"
+                            android:textColor="@color/clr_primarylite"
+                            android:textSize="@dimen/_13sdp" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/FavDownArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/FMS_FavCard"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-2dp"
+                android:adjustViewBounds="true"
+                android:elevation="8dp"
+                android:visibility="@{viewModel.IsFavourite ? View.VISIBLE : View.GONE}"
+                app:srcCompat="@drawable/ic_down_arrow_map" />
+
+            <View
+                android:id="@+id/Fav_dotline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/Marker"
+                android:layout_below="@+id/FavDownArrow"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-7dp"
+                android:adjustViewBounds="true"
+                android:background="@drawable/ic_dotline"
+                android:layerType="software"
+                app:IsFavLinenDownArrow="@{viewModel.IsFavGesture}"
+                app:IsFavLinenDownArrowone="@{viewModel.IsFavourite}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/Drop_Card"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:background="@drawable/curved_border_small"
+                android:drawableStart="@drawable/layer_private_key"
+                android:drawablePadding="@dimen/_12sdp"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:gravity="center"
+                android:minHeight="@dimen/_35sdp"
+                android:onClick="@{viewModel.onClickScanQr}"
+                android:padding="@dimen/_7sdp"
+                android:text="@{viewModel.translationModel.txt_ride_with_key}"
+                android:textAllCaps="false"
+                android:textColor="@color/buttonTextColor"
+                android:textSize="@dimen/_11sdp"
+                android:visibility="@{!viewModel.Istypedata?View.INVISIBLE:CommonUtils.IsEmpty(viewModel.mDropupAddress.get())?View.GONE:viewModel.IsGesture?View.GONE:View.VISIBLE}" />
+
+            <LinearLayout
+                android:id="@+id/Linear_Bottom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/_15sdp"
+                    android:paddingTop="@dimen/_5sdp"
+                    android:paddingBottom="@dimen/_5sdp"
+                    tools:ignore="RelativeOverlap">
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:backgroundTint="@color/clr_white"
+                        app:rippleColor="#E2E2E2"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:fabSize="mini"
+                        android:onClick="@{viewModel.mapTypeClick}"
+                        app:srcCompat="@{!viewModel.mapType?@drawable/ic_sat_antenna:@drawable/ic_roads}" />
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:backgroundTint="@color/clr_white"
+                        app:rippleColor="#E2E2E2"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:fabSize="mini"
+                        android:visibility="@{viewModel.isLocationAvailable?View.VISIBLE:View.GONE}"
+                        android:onClick="@{viewModel.onclickCurrentLocation}"
+                        app:srcCompat="@drawable/ic_gps_fixed" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/clr_yellow"
+                        android:gravity="center_horizontal"
+                        android:padding="@dimen/_5sdp"
+                        android:text="@{viewModel.translationModel.txt_Servicenotavailable}"
+                        android:textColor="@color/clr_black"
+                        android:textSize="@dimen/_12sdp"
+                        android:visibility="@{!viewModel.Istypedata ? View.VISIBLE : View.GONE}" />
+
+                    <ProgressBar
+                        style="?android:attr/progressBarStyleLarge"
+                        android:layout_width="@dimen/_40sdp"
+                        android:layout_height="@dimen/_40sdp"
+                        android:layout_centerInParent="true"
+                        android:visibility="@{viewModel.isProgressShown?View.VISIBLE: View.GONE}" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorPrimary"
+                        android:gravity="center"
+                        android:minHeight="@dimen/_35sdp"
+                        android:onClick="@{viewModel.onclickConfirm}"
+                        android:text="@{viewModel.translationModel.txt_confirm}"
+                        android:textAllCaps="true"
+                        android:textColor="@color/buttonTextColor"
+                        android:textSize="@dimen/_13sdp"
+                        android:visibility="gone" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layoutDirection="rtl"
+                    android:visibility="@{!viewModel.Istypedata?View.GONE:CommonUtils.IsEmpty(viewModel.mPickupAddress.get())?View.GONE:View.VISIBLE}"
+                    android:weightSum="2">
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/app_background"
+                        android:onClick="@{viewModel::onclickRideLater}"
+                        android:text="@{viewModel.translationModel.txt_Ridelater}"
+                        android:textColor="@color/clr_white"
+                        app:textfont="@{`Poppins.ttf`}" />
+
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/app_background"
+                        android:onClick="@{viewModel::onclickRideNow}"
+                        android:text="@{viewModel.translationModel.txt_RideNow}"
+                        android:textColor="@color/while_light"
+                        app:textfont="@{`Poppins.ttf`}" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btn_click_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/Marker"
+                android:layout_centerInParent="true"
+                android:textAlignment="center"
+                android:paddingStart="@dimen/_2sdp"
+                android:paddingEnd="@dimen/_2sdp"
+                android:paddingBottom="@dimen/_1sdp"
+                android:background="@drawable/bg_click_confirm"
+                android:onClick="@{viewModel::onConfirmClick}"
+                android:text="@{viewModel.translationModel.txt_click_confirm}"
+                android:textAllCaps="false"
+                android:textSize="@dimen/_10sdp"
+                android:textColor="@color/clr_white"
+                android:visibility="@{viewModel.canShowConfirm ? View.VISIBLE : View.GONE}"
+                app:textfont="@{`Poppins.ttf`}" />
+
+            <ImageView
+                android:id="@+id/Marker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:adjustViewBounds="true"
+                app:srcCompat="@{!viewModel.PickDropCard?@drawable/ic_pickup:@drawable/ic_drop}" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</layout>

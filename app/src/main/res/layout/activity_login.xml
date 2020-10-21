@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.ui.login.LoginViewModel" />
+
+    </data>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/login_toolbar"
+            layout="@layout/toolbar" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/login_toolbar">
+
+            <ScrollView
+                android:id="@+id/sc_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_30sdp"
+                        android:src="@drawable/ic_taxiappz_logo" />
+
+                  <!--  <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_logo_text" />
+-->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_20sdp"
+                        android:layout_marginRight="@dimen/_20sdp"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{viewModel.translationModel.text_log_in}"
+                            android:textSize="@dimen/_22sdp"
+                            app:textfont="@{`Laksaman.ttf`}" />
+<!--
+                            android:text="@string/text_log_in"-->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_13sdp"
+                            android:gravity="center">
+
+
+                            <ImageView
+                                android:id="@+id/loginFlag"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
+                                android:visibility="gone" />
+
+                            <EditText
+                                android:id="@+id/login_countrycode"
+                                style="@style/EditTextTheme"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginRight="-3dp"
+                                android:cursorVisible="false"
+                                android:descendantFocusability="blocksDescendants"
+                                android:focusable="false"
+                                android:focusableInTouchMode="false"
+                                android:layoutDirection="ltr"
+                                android:text="@={viewModel.Countrycode}"
+                                android:textDirection="ltr"
+                                android:visibility="gone"
+                                app:Editfont="@{`Padauk.ttf`}" />
+
+                            <EditText
+                                android:id="@+id/login_emailorPhone"
+                                style="@style/EditTextTheme"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="-3dp"
+                                android:layout_weight="1"
+                                android:afterTextChanged="@{viewModel.onUsernameChanged}"
+                                android:focusable="true"
+                                android:hint="@{viewModel.translationModel.hint_emailorPhone}"
+                                android:inputType="textWebEmailAddress"
+                                android:layoutDirection="ltr"
+                                android:maxLength="35"
+                                android:textDirection="ltr"
+                                app:Editfont="@{`Padauk.ttf`}" /><!--
+                                android:hint="@string/hint_emailorPhone"-->
+
+                        </LinearLayout>
+
+
+                        <EditText
+                            android:id="@+id/edit_pass_signup"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="******"
+                            android:inputType="textPassword"
+                            android:layoutDirection="ltr"
+                            android:maxLength="35"
+                            android:text="@={viewModel.password}"
+                            android:textDirection="ltr"
+                            app:Editfont="@{`Padauk.ttf`}" />
+
+                        <TextView
+                            android:id="@+id/text_forgt_pwd_signin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginTop="@dimen/_3sdp"
+                            android:onClick="@{viewModel::onclickForgot}"
+                            android:padding="@dimen/_4sdp"
+                            android:text="@{viewModel.translationModel.Txt_Forgot}"
+                            android:textColor="@color/colorPrimaryDark"
+                            android:textSize="@dimen/_14sdp"
+                            app:textfont="@{`Padauk.ttf`}" />
+<!--
+                            android:text="@string/Txt_Forgot"-->
+                        <Button
+                            android:id="@+id/btn_login_signin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/_30sdp"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="@dimen/_8sdp"
+                            android:background="@drawable/curved_border_background_dark"
+                            android:onClick="@{viewModel::onclicklogin}"
+                            android:paddingLeft="@dimen/_40sdp"
+                            android:paddingRight="@dimen/_40sdp"
+                            android:text="@{viewModel.translationModel.text_log_in}"
+                            android:textAllCaps="false"
+                            android:textColor="@color/clr_white"
+                            app:Buttonfont="@{`Padauk.ttf`}" /><!--
+                            android:text="@string/text_log_in"-->
+
+
+                    </LinearLayout>
+
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:orientation="vertical">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_1sdp"
+                            android:background="@color/colorPrimary" />
+
+                        <TextView
+                            android:id="@+id/txt_enter_social_login"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            android:onClick="@{viewModel::onClickSocial}"
+
+                            android:padding="@dimen/_5sdp"
+                            android:text="@{viewModel.translationModel.text_enter_social}"
+                            android:textSize="@dimen/_16sdp"
+                            android:textColor="@color/clr_black"
+                            app:textfont="@{`Padauk.ttf`}" />
+<!--
+                            android:text="@string/text_enter_social"-->
+
+                    </LinearLayout>
+                </LinearLayout>
+            </ScrollView>
+        </RelativeLayout>
+
+
+        <include
+            android:id="@+id/progressBar"
+            layout="@layout/progress_dialog"
+            android:visibility="@{viewModel.mIsLoading ? View.VISIBLE : View.GONE}" />
+    </RelativeLayout>
+
+</layout>

@@ -1,0 +1,288 @@
+<layout>
+    <data>
+
+
+        <import type="android.view.View" />
+
+
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.ui.drawerscreen.payment.PaymentFragViewModel" />
+        <variable
+            name="constants"
+            type="taxi.ratingen.utilz.Constants" />
+
+    </data>
+
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/clr_white"
+        android:clickable="true"
+        tools:context="taxi.ratingen.ui.drawerscreen.payment.PaymentFrag">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_20sdp"
+            android:layout_marginRight="@dimen/_20sdp"
+            android:layout_marginTop="?android:attr/actionBarSize"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.translationModel.txt_Payment}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/_22sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                app:textfont="@{`Laksaman.ttf`}" />
+            <!--
+                            android:text="@string/txt_Payment"-->
+            <!--<TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_8sdp"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@{viewModel.translationModel.Txt_choosepayment}"
+                android:textColor="@color/clr_graydark"
+                android:textSize="@dimen/_13sdp"
+                app:textfont="@{`Padauk.ttf`}" />--><!--
+                android:text="@string/Txt_choosepayment"-->
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_15sdp"
+                android:layout_marginStart="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="@dimen/_35sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:scaleX="0.75"
+                    android:scaleY="0.75"
+                    app:srcCompat="@drawable/ic_add_cash" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:onClick="@{viewModel.onclickAddMoney}"
+                    android:text="@{viewModel.translationModel.Txt_AddMoney}"
+                    android:textColor="@color/clr_black"
+                    android:textSize="@dimen/_15sdp" /><!--
+                    android:text="@string/Txt_AddMoney"-->
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_15sdp"
+                android:layout_marginStart="@dimen/_15sdp"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:orientation="horizontal"
+                android:onClick="@{viewModel.onclickAddcard}">
+
+
+                <ImageView
+                    android:layout_width="@dimen/_35sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    app:srcCompat="@drawable/ic_card_yellow" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:text="@{viewModel.translationModel.Txt_AddCard}"
+                    android:textColor="@color/clr_black"
+                    android:textSize="@dimen/_15sdp" /><!--
+                    android:text="@string/Txt_AddCard"-->
+
+
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_8sdp"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="Preferred Payment"
+                android:textColor="@color/clr_graydark"
+                android:textSize="@dimen/_13sdp"
+                app:textfont="@{`Padauk.ttf`}" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_18sdp"
+                android:layout_marginStart="@dimen/_18sdp"
+                android:layout_marginRight="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_15sdp"
+                android:onClick="@{() ->viewModel.changePrefferedPayment(1)}"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:paddingLeft="@dimen/_2sdp"
+                    android:paddingRight="@dimen/_2sdp"
+                    app:srcCompat="@drawable/ic_cash" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:text="@{viewModel.translationModel.txt_cash}"
+                    android:textColor="@color/clr_black"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/_15sdp" /><!--
+                    android:text="@string/Txt_AddCard"-->
+
+                <ImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="@dimen/_20sdp"
+                    android:src="@{viewModel.prefCash?@drawable/ic_tick_circle:@drawable/ic_untick_circle}" />
+
+
+            </LinearLayout>
+           <!-- <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_18sdp"
+                android:layout_marginStart="@dimen/_18sdp"
+                android:layout_marginRight="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_15sdp"
+                android:onClick="@{() ->viewModel.changePrefferedPayment(2)}"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    app:srcCompat="@drawable/ic_card_green" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:onClick="@{viewModel.onclickAddcard}"
+                    android:text="@{viewModel.translationModel.txt_wallet}"
+                    android:textColor="@color/clr_black"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/_15sdp" />&lt;!&ndash;
+                    android:text="@string/Txt_AddCard"&ndash;&gt;
+
+                <ImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="@dimen/_20sdp"
+                    android:src="@{viewModel.prefWallet?@drawable/ic_tick_circle:@drawable/ic_untick_circle"/>
+
+
+            </LinearLayout>-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_18sdp"
+                android:layout_marginStart="@dimen/_18sdp"
+                android:layout_marginRight="@dimen/_15sdp"
+                android:layout_marginEnd="@dimen/_15sdp"
+                android:onClick="@{() ->viewModel.changePrefferedPayment(0)}"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:orientation="horizontal">
+
+
+                <ImageView
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    app:srcCompat="@drawable/ic_card_yellow" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:text="@{viewModel.translationModel.txt_card}"
+                    android:textColor="@color/clr_black"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/_15sdp" /><!--
+                    android:text="@string/Txt_AddCard"-->
+
+                <ImageView
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@{viewModel.prefCard?@drawable/ic_tick_circle:@drawable/ic_untick_circle}"
+                    android:layout_height="@dimen/_20sdp"/>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_50sdp"
+                android:orientation="vertical"
+                android:visibility="@{!viewModel.IsReclyer ? View.GONE:View.VISIBLE}">
+
+
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_8sdp"
+                    android:layout_marginStart="@dimen/_8sdp"
+                    android:text="@{viewModel.translationModel.Txt_selectpayment}"
+                    android:textColor="@color/clr_graydark"
+                    android:textSize="@dimen/_13sdp"
+                    app:textfont="@{`Padauk.ttf`}" />
+                <!--
+                                    android:text="@string/Txt_selectpayment"-->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/paymentRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_165sdp"
+                    android:layout_marginLeft="@dimen/_15sdp"
+                    android:layout_marginStart="@dimen/_15sdp"
+                    android:layout_marginTop="@dimen/_12sdp" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <include
+            android:id="@+id/progressBar"
+            layout="@layout/progress_dialog"
+            android:visibility="@{viewModel.mIsLoading ? View.VISIBLE : View.GONE}" />
+
+    </RelativeLayout>
+</layout>

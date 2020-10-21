@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.ui.companyvalidation.dialog.DialogCompanyViewModel" />
+    </data>
+
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="@dimen/_250sdp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_border"
+        android:padding="@dimen/_4sdp">
+
+        <Button
+            android:id="@+id/btn_company_key"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_below="@+id/layout_fname_lanme_signup"
+            android:layout_weight="1"
+            android:background="@color/clr_black"
+            android:gravity="center"
+            android:text="@string/text_enter_company_details"
+            android:textAllCaps="false"
+            android:visibility="gone"
+            android:textColor="@color/clr_white"
+            app:Buttonfont="@{`Padauk.ttf`}" />
+
+        <EditText
+            android:id="@+id/edit_key_company"
+            style="@style/EditTextTheme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_company_key"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:hint="@string/hint_key"
+            android:inputType="text"
+            android:layoutDirection="ltr"
+            android:onTextChanged="@{viewModel.onTextChanged}"
+            android:text="@={viewModel.companyKey}"
+            android:textDirection="ltr"
+            android:visibility="@{viewModel.isRequest?View.GONE:View.VISIBLE}"
+            app:Editfont="@{`Padauk.ttf`}" />
+
+        <EditText
+            android:id="@+id/edit_name_company"
+            style="@style/EditTextTheme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edit_key_company"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:hint="@string/text_name"
+            android:inputType="textCapSentences"
+            android:layoutDirection="ltr"
+            android:text="@={viewModel.name}"
+            android:textDirection="ltr"
+            android:visibility="@{viewModel.isRequest?View.VISIBLE:View.GONE}"
+            app:Editfont="@{`Padauk.ttf`}" />
+
+        <EditText
+            android:id="@+id/edit_email_company"
+            style="@style/EditTextTheme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edit_name_company"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:hint="@string/hint_email"
+            android:inputType="textEmailAddress"
+            android:layoutDirection="ltr"
+            android:text="@={viewModel.email}"
+            android:textDirection="ltr"
+            android:visibility="@{viewModel.isRequest?View.VISIBLE:View.GONE}"
+            app:Editfont="@{`Padauk.ttf`}" />
+
+        <LinearLayout
+            android:id="@+id/edit_phone_company"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edit_email_company"
+            android:gravity="center"
+            android:visibility="@{viewModel.isRequest?View.VISIBLE:View.GONE}">
+
+            <ImageView
+                android:id="@+id/img_flag_signup"
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:padding="2dp" />
+
+            <EditText
+                android:id="@+id/edit_country_code_signup"
+                style="@style/EditTextTheme"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:background="@android:color/transparent"
+                android:clickable="false"
+                android:enabled="false"
+                android:inputType="number"
+                android:text="@={viewModel.countrycode}"
+                android:textColor="@android:color/darker_gray"
+                app:Editfont="@{`Padauk.ttf`}" />
+            <!--
+                                            android:layout_marginLeft="@dimen/_12sdp"-->
+            <EditText
+                android:id="@+id/edit_phone_signup"
+                style="@style/EditTextTheme"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:gravity="center_vertical"
+                android:hint="@string/text_contact_number"
+                android:inputType="number"
+                android:layoutDirection="ltr"
+                android:text="@={viewModel.phone}"
+                android:textDirection="ltr"
+                app:Editfont="@{`Padauk.ttf`}"
+                tools:ignore="TextFields" />
+            <!--
+                                            android:text="@={viewModel.phonenumber}"
+                                            android:hint="@string/hint_phone_number"-->
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/submit_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edit_phone_company"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:orientation="horizontal"
+            android:visibility="@{viewModel.isRequestSubmit?View.VISIBLE:View.GONE}">
+
+            <Button
+                android:id="@+id/btn_submit"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:gravity="center"
+                android:onClick="@{viewModel::onSubmit}"
+                android:text="Submit"
+                android:textAllCaps="false"
+                android:textColor="@color/clr_white"
+                app:Buttonfont="@{`Padauk.ttf`}" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/submit_btn"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_submit_company"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:gravity="center"
+                android:onClick="@{viewModel::onSubmit}"
+                android:text="@{viewModel.isRequest?@string/text_cancel:@string/text_submit}"
+                android:visibility="@{viewModel.isRequestSubmit?View.GONE:View.VISIBLE}"
+                android:textAllCaps="false"
+                android:textColor="@color/clr_white"
+                app:Buttonfont="@{`Padauk.ttf`}" />
+
+            <Space
+                android:layout_width="@dimen/_4sdp"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_toRightOf="@+id/btn_submit_company"
+                android:layout_weight="1"
+                android:background="@color/clr_black"
+                android:gravity="center"
+                android:onClick="@{viewModel::onRequest}"
+                android:visibility="@{viewModel.isRequestSubmit?View.GONE:View.VISIBLE}"
+                android:text="@string/text_request"
+                android:textAllCaps="false"
+                android:textColor="@color/clr_white"
+                app:Buttonfont="@{`Padauk.ttf`}" />
+
+        </LinearLayout>
+
+        <ProgressBar
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_centerHorizontal="true"
+            android:indeterminate="true"
+            android:layout_centerVertical="true"
+            android:indeterminateTintMode="src_atop"
+            android:indeterminateTint="#000000"
+            android:visibility="@{viewModel.mIsLoading ? View.VISIBLE : View.GONE}" />
+
+    </RelativeLayout>
+
+</layout>

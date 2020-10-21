@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView android:layout_gravity="center_horizontal|bottom"
+    android:layout_marginTop="@dimen/_30sdp"
+    android:layout_width="@dimen/_110sdp"
+    app:cardBackgroundColor="@color/clr_black"
+    app:cardCornerRadius="@dimen/_2sdp"
+    app:cardElevation="0dp"
+    android:layout_height="5dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+</androidx.cardview.widget.CardView>

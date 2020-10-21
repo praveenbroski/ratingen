@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "3611252931",
+    "firebase_url": "https://taxiratingen.firebaseio.com",
+    "project_id": "taxiratingen",
+    "storage_bucket": "taxiratingen.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:3611252931:android:3c7b547b474284ea4cea76",
+        "android_client_info": {
+          "package_name": "taxi.ratingen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "3611252931-b1lusrqr7lalfpptbh6iq0kecqhtcjup.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "taxi.ratingen",
+            "certificate_hash": "80c8eca01147a462c4e11307855dc0f7f018a5d4"
+          }
+        },
+        {
+          "client_id": "3611252931-41bgbfk82bottn9sg59devc100a5p9v3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQFBX0d1JeJLAOIei-43tH5uLrDjnipEQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "3611252931-41bgbfk82bottn9sg59devc100a5p9v3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

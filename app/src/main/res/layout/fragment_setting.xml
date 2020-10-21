@@ -1,0 +1,85 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.ui.drawerscreen.setting.SettingFragViewModel" />
+    </data>
+
+    <FrameLayout
+        android:background="@color/clr_white"
+        android:clickable="true"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        tools:context="com.tapngo.driver.ui.DrawerScreen.Fragmentz.Setting.SettingFragment">
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginTop="?android:attr/actionBarSize"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <TextView
+                android:gravity="start|left"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_8sdp"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginTop="16dp"
+                android:layout_width="wrap_content"
+                android:text="@{viewModel.translationModel.text_general}"
+                app:textfont="@{`Laksaman.ttf`}"
+                android:textAllCaps="true"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/clr_black" /><!--
+                android:text="@string/text_general"-->
+
+
+
+            <LinearLayout
+                android:gravity="start|center_vertical"
+                android:layout_height="40dp"
+                android:layout_margin="@dimen/_16sdp"
+                android:layout_marginLeft="@dimen/_16sdp"
+                android:layout_marginRight="@dimen/_16sdp"
+                android:layout_width="match_parent"
+                android:onClick="@{viewModel::onClickLanguageChange}"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:gravity="center_vertical|start"
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:paddingLeft="@dimen/_10sdp"
+                    app:textfont="@{`Padauk.ttf`}"
+                    android:paddingStart="@dimen/_10sdp"
+                    android:text="@{viewModel.translationModel.txt_Lang}"
+                    android:textSize="@dimen/_14sdp" />
+<!--
+                    android:text="@string/txt_Lang"-->
+                <TextView
+                    android:gravity="start|left"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_8sdp"
+                    android:layout_marginStart="@dimen/_8sdp"
+                    android:layout_weight="1"
+                    app:textfont="@{`Padauk.ttf`}"
+                    android:layout_width="wrap_content"
+                    android:text="@{viewModel.txt_Language_update}"
+                    android:textSize="@dimen/_14sdp" />
+
+                <ImageView
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_height="@dimen/_23sdp"
+                    android:layout_width="wrap_content"
+                    android:paddingEnd="@dimen/_4sdp"
+                    android:paddingRight="@dimen/_4sdp"
+                    app:srcCompat="@drawable/ic_language"
+                    tools:ignore="VectorDrawableCompat" />
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+</layout>

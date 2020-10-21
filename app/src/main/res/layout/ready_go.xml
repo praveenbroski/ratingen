@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.ui.getReady.GetReadyViewModel" />
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/app_gradient">
+
+        <ImageView
+            android:layout_marginTop="@dimen/_65sdp"
+            android:id="@+id/tick_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@drawable/tick_grey_circle" />
+
+        <TextView
+            android:id="@+id/ready_go"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tick_img"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_12sdp"
+            android:layout_marginEnd="@dimen/_15sdp"
+            android:fontFamily="@font/sf_semibold"
+            android:gravity="center"
+            android:text="@{viewModel.translationModel.txt_ready_go}"
+            android:textColor="@color/clr_222B45"
+            android:textSize="@dimen/_20sdp" />
+
+        <TextView
+            android:id="@+id/ready_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ready_go"
+            android:layout_marginStart="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginEnd="@dimen/_15sdp"
+            android:fontFamily="@font/sf_semibold"
+            android:gravity="center"
+            android:text="@{viewModel.translationModel.txt_thanks_create}"
+            android:textColor="@color/clr_222B45"
+            android:textSize="@dimen/_12sdp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_below="@+id/ready_desc"
+            android:layout_marginStart="@dimen/_25sdp"
+            android:layout_marginTop="@dimen/_27sdp"
+            android:layout_marginEnd="@dimen/_25sdp"
+            android:background="@drawable/app_background_white"
+            android:fontFamily="@font/sf_semibold"
+            android:gravity="center"
+            android:onClick="@{viewModel::getStarted}"
+            android:text="@{viewModel.translationModel.txt_get_start}"
+            android:textAllCaps="true"
+            android:textColor="@color/clr_FB4A46"
+            android:textSize="@dimen/_16sdp" />
+
+    </RelativeLayout>
+</layout>

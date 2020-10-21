@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.ui.wallethistory.WalletHistoryViewModel" />
+
+    </data>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:background="@color/clr_F7F9FC">
+
+        <LinearLayout
+            android:id="@+id/ll_header"
+            android:background="@color/clr_white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:elevation="@dimen/_1sdp"
+            tools:targetApi="lollipop">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:navigationIcon="@drawable/back_nav"
+                app:titleTextColor="@color/titleTextColor"
+                android:background="@color/clr_white" />
+
+            <TextView
+                android:id="@+id/txt_title_wallet_history"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:layout_marginStart="@dimen/_16sdp"
+                android:layout_marginEnd="@dimen/_16sdp"
+                android:textColor="@color/clr_222B45"
+                android:textAllCaps="false"
+                app:textfont="@{`sf_semibold.otf`}"
+                android:textSize="@dimen/_20sdp"
+                android:text="@{viewModel.translationModel.txt_wallet_history}" />
+
+            <LinearLayout
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_35sdp"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:onClick="@{viewModel::allClick}">
+
+                    <TextView
+                        android:id="@+id/all"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="@{viewModel.translationModel.txt_all}"
+                        android:textAlignment="center"
+                        app:textfont="@{`sf_semibold.otf`}"
+                        android:textAllCaps="true"
+                        android:textColor="@{!viewModel.tabClick ? @color/clr_FB4A46 : @color/clr_ACB1C0}"
+                        android:textSize="@dimen/_12sdp" />
+
+                    <View
+                        android:background="@{!viewModel.tabClick ? @color/clr_FB4A46 : @color/clr_transparent}"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_3sdp"
+                        android:layout_marginStart="@dimen/_25sdp"
+                        android:layout_marginEnd="@dimen/_25sdp"
+                        android:layout_alignParentBottom="true" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:onClick="@{viewModel::cancellClick}">
+
+                    <TextView
+                        android:id="@+id/cancel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="@{viewModel.translationModel.txt_cancelled}"
+                        android:textAlignment="center"
+                        app:textfont="@{`sf_semibold.otf`}"
+                        android:textAllCaps="true"
+                        android:textColor="@{viewModel.tabClick ? @color/clr_FB4A46 : @color/clr_ACB1C0}"
+                        android:textSize="@dimen/_12sdp" />
+
+                    <View
+                        android:background="@{viewModel.tabClick ? @color/clr_FB4A46 : @color/clr_transparent}"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_3sdp"
+                        android:layout_marginStart="@dimen/_25sdp"
+                        android:layout_marginEnd="@dimen/_25sdp"
+                        android:layout_alignParentBottom="true" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/wallet_history_recycle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/captain_amount"
+            android:layout_below="@+id/ll_header"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:visibility="@{viewModel.tabClick?View.GONE:View.VISIBLE}" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/cancelRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/captain_amount"
+            android:layout_below="@+id/ll_header"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginBottom="@dimen/_8sdp" />
+
+        <LinearLayout
+            android:id="@+id/captain_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:orientation="horizontal"
+            android:visibility="@{!viewModel.tabClick?View.GONE:View.VISIBLE}"
+            android:weightSum="3">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_8sdp"
+                android:layout_marginLeft="@dimen/_8sdp"
+                android:layout_weight="1"
+                app:cardCornerRadius="@dimen/_5sdp"
+                app:cardMaxElevation="@dimen/_2sdp"
+                app:cardUseCompatPadding="true">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_back">
+
+                    <TextView
+                        android:id="@+id/captain_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        app:textfont="@{`sf_semibold.otf`}"
+                        android:text="@{viewModel.translationModel.txt_total}"
+                        android:textAlignment="center"
+                        android:textColor="@color/clr_black"
+                        android:textSize="@dimen/_12sdp" />
+
+                    <TextView
+                        android:id="@+id/captain_amnt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/captain_txt"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        app:textfont="@{`sf_regular.otf`}"
+                        android:text="@{viewModel.totalAmount}"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/_12sdp" />
+
+                    <Space
+                        android:id="@+id/cap__space"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_8sdp"
+                        android:layout_below="@+id/captain_amnt" />
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_3sdp"
+                android:layout_marginLeft="@dimen/_3sdp"
+                android:layout_weight="1"
+                app:cardCornerRadius="@dimen/_5sdp"
+                app:cardMaxElevation="@dimen/_2sdp"
+                app:cardUseCompatPadding="true">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_back">
+
+                    <TextView
+                        android:id="@+id/customer_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:singleLine="true"
+                        app:textfont="@{`sf_semibold.otf`}"
+                        android:text="@{viewModel.translationModel.txt_paid}"
+                        android:textAlignment="center"
+                        android:textColor="@color/clr_black"
+                        android:textSize="@dimen/_12sdp" />
+
+                    <TextView
+                        android:id="@+id/cust_amnt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/customer_txt"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        app:textfont="@{`sf_regular.otf`}"
+                        android:text="@{viewModel.paidAmount}"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/_12sdp" />
+
+                    <Space
+                        android:id="@+id/cust_space"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_8sdp"
+                        android:layout_below="@+id/cust_amnt" />
+
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_8sdp"
+                android:layout_marginRight="@dimen/_8sdp"
+                android:layout_weight="1"
+                app:cardCornerRadius="@dimen/_5sdp"
+                app:cardMaxElevation="@dimen/_2sdp"
+                app:cardUseCompatPadding="true">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_back">
+
+                    <TextView
+                        android:id="@+id/net_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        app:textfont="@{`sf_semibold.otf`}"
+                        android:text="@{viewModel.translationModel.txt_net}"
+                        android:textAlignment="center"
+                        android:textColor="@color/clr_black"
+                        android:textSize="@dimen/_12sdp" />
+
+                    <TextView
+                        android:id="@+id/net_amnt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/net_txt"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        app:textfont="@{`sf_regular.otf`}"
+                        android:text="@{viewModel.netAmount}"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/_12sdp" />
+
+                    <Space
+                        android:id="@+id/net_space"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_8sdp"
+                        android:layout_below="@+id/net_amnt" />
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/no_item_found"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_header"
+            android:background="@color/clr_FB4A46"
+            android:layout_marginTop="10dp"
+            android:paddingTop="@dimen/_12sdp"
+            android:paddingBottom="@dimen/_12sdp"
+            android:paddingStart="@dimen/_20sdp"
+            android:paddingEnd="@dimen/_20sdp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:textSize="@dimen/_12sdp"
+                android:textColor="@color/clr_222B45"
+                android:text="@{viewModel.translationModel.text_wallethistory_empty}"
+                app:textfont="@{`sf_regular.otf`}"/>
+
+        </RelativeLayout>
+
+<!--        <LinearLayout-->
+<!--            android:id="@+id/no_item_found"-->
+<!--            android:layout_centerInParent="true"-->
+<!--            android:orientation="vertical"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:visibility="gone"-->
+<!--            android:layout_height="wrap_content">-->
+
+<!--            <ImageView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:src="@drawable/no_transactions"-->
+<!--                android:alpha="30"-->
+<!--                android:layout_height="@dimen/_140sdp"/>-->
+
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:layout_marginTop="@dimen/_8sdp"-->
+<!--                android:gravity="center"-->
+<!--                android:text="@{viewModel.translationModel.text_wallethistory_empty}"-->
+<!--                app:textfont="@{`sf_regular.otf`}"/>-->
+
+<!--        </LinearLayout>-->
+
+    </RelativeLayout>
+
+</layout>

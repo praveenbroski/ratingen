@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    tools:context="taxi.ratingen.ui.drawerscreen.DrawerAct">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <import type="taxi.ratingen.utilz.CommonUtils" />
+
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.ui.drawerscreen.DrawerViewModel" />
+    </data>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/app_background_no_curve"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        tools:ignore="ContentDescription, HardcodedText, RtlHardcoded">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:paddingTop="@dimen/_18sdp"
+                android:paddingBottom="@dimen/_18sdp">
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="@dimen/_50sdp"
+                    android:layout_centerInParent="true"
+                    android:padding="@dimen/_3sdp"
+                    android:background="@drawable/ic_menu_ham"
+                    app:srcCompat="@drawable/invoice_profile"
+                    app:imageUrl="@{viewModel.Imageurl}" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/_8sdp">
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/view_name_line"
+                    android:layout_marginBottom="@dimen/_3sdp"
+                    android:hint="@string/text_firstname"
+                    android:text='@{String.format("%s %s", viewModel.firstName, viewModel.lastName)}'
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textColor="@color/clr_white"
+                    android:textSize="@dimen/_15sdp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/sf_semibold" />
+
+                <View
+                    android:id="@+id/view_name_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_centerVertical="true"
+                    android:background="@color/clr_white" />
+
+                <TextView
+                    android:id="@+id/phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/view_name_line"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:hint="@{viewModel.translationModel.hint_phone_number}"
+                    android:textDirection="locale"
+                    android:text='@{viewModel.Phone}'
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textColor="@color/clr_FF9391"
+                    android:textSize="@dimen/_12sdp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/sf_semibold" />
+
+                <ProgressBar
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_centerInParent="true"
+                    android:visibility="@{viewModel.isRatingCalled?View.VISIBLE:View.GONE}" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+<!--        <ProgressBar-->
+<!--            android:layout_width="@dimen/_20sdp"-->
+<!--            android:layout_height="@dimen/_20sdp"-->
+<!--            android:layout_centerInParent="true"-->
+<!--            android:visibility="@{viewModel.isRatingCalled?View.VISIBLE:View.GONE}" />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/imageView"-->
+<!--            android:layout_width="@dimen/_60sdp"-->
+<!--            android:layout_height="@dimen/_60sdp"-->
+<!--            android:layout_marginStart="@dimen/_12sdp"-->
+<!--            android:layout_marginTop="@dimen/_25sdp"-->
+<!--            app:imageUrl="@{viewModel.Imageurl}"-->
+<!--            app:srcCompat="@drawable/ic_menu_ham" />-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/name"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignParentEnd="true"-->
+<!--            android:layout_marginStart="@dimen/_12sdp"-->
+<!--            android:layout_marginTop="@dimen/_25sdp"-->
+<!--            android:layout_marginEnd="@dimen/_12sdp"-->
+<!--            android:layout_toEndOf="@+id/imageView"-->
+<!--            android:hint="@string/text_firstname"-->
+<!--            android:text='@{String.format("%s %s", viewModel.firstName, viewModel.lastName)}'-->
+<!--            android:textAppearance="@style/TextAppearance.AppCompat.Body1"-->
+<!--            android:textColor="@color/clr_white"-->
+<!--            android:textSize="@dimen/_15sdp"-->
+<!--            android:textStyle="bold"-->
+<!--            app:textfont="@{`Laksaman.ttf`}" />-->
+
+<!--        <RelativeLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_below="@+id/name"-->
+<!--            android:layout_marginStart="@dimen/_12sdp"-->
+<!--            android:layout_marginEnd="@dimen/_12sdp"-->
+<!--            android:layout_toEndOf="@+id/imageView">-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/imageView2"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_centerVertical="true"-->
+<!--                app:srcCompat="@drawable/ic_user_star" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/rating"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_alignParentEnd="true"-->
+<!--                android:layout_marginStart="@dimen/_2sdp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:layout_toEndOf="@+id/imageView2"-->
+<!--                android:hint="4.8"-->
+<!--                android:text="@{viewModel.rating}"-->
+<!--                android:textAppearance="@style/TextAppearance.AppCompat.Body1"-->
+<!--                android:textColor="@color/clr_white"-->
+<!--                android:textSize="@dimen/_15sdp"-->
+<!--                android:textStyle="bold"-->
+<!--                android:visibility="@{!viewModel.isRatingCalled?View.VISIBLE:View.GONE}"-->
+<!--                app:textfont="@{`Laksaman.ttf`}" />-->
+
+<!--        </RelativeLayout>-->
+
+<!--        <TextView-->
+<!--            android:id="@+id/textView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_below="@+id/imageView"-->
+<!--            android:layout_marginStart="@dimen/_12sdp"-->
+<!--            android:layout_marginTop="@dimen/_5sdp"-->
+<!--            android:layout_marginEnd="@dimen/_12sdp"-->
+<!--            android:text="@={viewModel.Email}"-->
+<!--            android:textColor="@color/clr_white"-->
+<!--            android:textSize="@dimen/_13sdp"-->
+<!--            android:visibility="@{CommonUtils.IsEmpty(viewModel.Email)?View.GONE:View.VISIBLE}"-->
+<!--            app:textfont="@{`Padauk.ttf`}" />-->
+
+<!--        <Space-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="@dimen/_5sdp"-->
+<!--            android:layout_below="@+id/textView" />-->
+
+    </RelativeLayout>
+
+</layout>

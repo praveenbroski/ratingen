@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="taxi.ratingen.ui.getstarted.GetStartedScreen">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/clr_white">
+
+        <LinearLayout
+            android:id="@+id/logo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="@dimen/_40sdp"
+                android:src="@drawable/ic_taxiappz_logo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_16sdp"
+                android:fontFamily="@font/sf_semibold"
+                android:gravity="center_horizontal"
+                android:text="@string/app_name"
+                android:visibility="gone"
+                android:textAllCaps="true"
+                android:textColor="@color/clr_black"
+                android:textSize="@dimen/_14sdp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_18sdp"
+                android:layout_marginTop="100dp"
+                android:layout_marginRight="@dimen/_18sdp"
+                android:background="@drawable/rectangle_border"
+                android:clickable="true"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="@dimen/_8sdp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    android:clickable="false"
+                    app:srcCompat="@drawable/ic_language" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_12sdp"
+                    android:clickable="false"
+                    android:gravity="center_horizontal"
+                    android:text="@{CommonUtils.IsEmpty(viewModel.txt_Language_update.get())?viewModel.translationModel.text_select_language:viewModel.txt_Language_update.get()}"
+                    android:textColor="@color/clr_black"
+                    android:textSize="@dimen/_12sdp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_select_country"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_18sdp"
+                android:layout_marginTop="@dimen/_12sdp"
+                android:layout_marginRight="@dimen/_18sdp"
+                android:background="@drawable/rectangle_border"
+                android:gravity="center"
+                android:onClick="@{viewModel::selectCountry}"
+                android:orientation="horizontal"
+                android:padding="@dimen/_8sdp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="@dimen/_18sdp"
+                    android:layout_height="@dimen/_18sdp"
+                    app:srcCompat="@drawable/ic_flag" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_12sdp"
+                    android:gravity="center_horizontal"
+                    android:text="@{CommonUtils.IsEmpty(viewModel.txt_country_update.get())?viewModel.translationModel.text_select_country:viewModel.txt_country_update.get()}"
+                    android:textColor="@color/clr_black"
+                    android:textSize="@dimen/_12sdp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/lang_card"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/logo"
+            android:layout_marginTop="@dimen/_30sdp"
+            app:cardElevation="@dimen/_10sdp">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/choose_lang"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_15sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:fontFamily="@font/sf_bold"
+                    android:text="@{viewModel.translationModel.txt_choose_language}"
+                    android:textColor="@color/clr_222B45"
+                    android:textSize="@dimen/_16sdp" />
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/lang_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/choose_lang" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/set_lang"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_above="@id/space"
+                    android:layout_marginLeft="@dimen/_18sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:layout_marginRight="@dimen/_18sdp"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:onClick="@{viewModel::initiateNavigation}"
+                    android:orientation="horizontal"
+                    app:cardBackgroundColor="@color/clr_FB4A46"
+                    app:cardCornerRadius="@dimen/_3sdp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/sf_medium"
+                        android:gravity="center_horizontal"
+                        android:padding="@dimen/_8sdp"
+                        android:text="@{viewModel.translationModel.txt_set_lang}"
+                        android:textAllCaps="true"
+                        android:textColor="@color/buttonTextColor"
+                        android:textSize="@dimen/_12sdp" />
+                </androidx.cardview.widget.CardView>
+
+
+                <Space
+                    android:id="@+id/space"
+                    android:layout_alignParentBottom="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_20sdp" />
+
+
+            </RelativeLayout>
+
+
+        </androidx.cardview.widget.CardView>
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleInverse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="@dimen/_25sdp"
+            android:visibility="@{viewModel.isLoading?View.VISIBLE:View.GONE}" />
+
+    </RelativeLayout>
+
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <import type="taxi.ratingen.utilz.CommonUtils" />
+
+        <variable
+            name="viewModel"
+            type="taxi.ratingen.ui.getstarted.GetStartedViewModel" />
+
+    </data>
+
+
+</layout>

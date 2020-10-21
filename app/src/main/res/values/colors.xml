@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--<color name="colorPrimary">#F15A29</color>-->
+    <color name="colorPrimary">#FD556F</color>
+    <color name="clr_primarylite">#445454</color>
+    <color name="colorPrimaryDark">#32344b</color>
+    <color name="colorPrimaryTrans">#BFFD556F</color>
+    <color name="colorPrimaryDarkTrans">#BF040707</color>
+    <!--<color name="colorPrimaryDarkActionbar">#ff6f6f</color>-->
+    <color name="colorAccent">#040707</color>
+    <color name="btn_bg_dark">#000000</color>
+    <color name="colorPrimaryAlternate">#ff9370</color>
+    <color name="colorPrimaryAlternate_light">#91ffb9</color>
+    <color name="colorPrimaryDark_click">#32344b</color>
+    <color name="clr_gray">#384957</color>
+    <color name="buttonTextColor">#ffffff</color>
+    <color name="titleTextColor">#ffffff</color>
+    <color name="normalTextColor">#FD556F</color>
+    <color name="clr_transparent">#00000000</color>
+    <color name="clr_white">#ffffff</color>
+    <color name="clr_aliceblue">#fafcfd</color>
+    <color name="clr_green">#006400</color>
+    <color name="clr_yellow">#FFFF66</color>
+    <color name="clr_red">#DC143C</color>
+    <color name="clr_red_dark">#BD092D</color>
+    <color name="bt_error_red">#DC143C</color>
+    <color name="clr_pickup_drop">#d1818b</color>
+    <color name="clr_black">#000000</color>
+    <color name="clr_black1">#000000</color>
+    <color name="clr_gray_light2">#807d7d</color>
+    <color name="clr_orange_drk">#17A049</color>
+    <color name="bg_clr_bill_orange">#000000</color>
+    <color name="bg_clr_bill_orange_trans">#EFEEF4</color>
+    <color name="clr_black2">#252424</color>
+    <color name="while_light">#f1efef</color>
+    <color name="textcolorPrimary">#17A049</color>
+    <color name="clr_black_t">#a8000000</color>
+    <color name="clr_divider_history">#57b9b6b6</color>
+    <color name="clr_divider">#91eceded</color>
+    <color name="clr_line">#d9cac7c7</color>
+    <color name="color_bg_gray">#E8E8E8</color>
+    <color name="clr_line1">#cccaca</color>
+    <color name="clr_line2">#efefef</color>
+    <color name="clr_graydark">#808080</color>
+    <color name="skyblue">#51b6dc</color>
+    <color name="clr_pickup_circle">#FFFF3939</color>
+    <color name="clr_trans_red">#96ab0000</color>
+    <color name="clr_waiting_bg">#ccffc107</color>
+
+    <!--Ramesh-->
+    <color name="ride_nw_bg">#169F48</color>
+    <color name="fare_color">#2C2E3D</color>
+    <color name="text_light_color">#AEAEAE</color>
+    <!--<color name="secondry_color">#00A79D</color>-->
+    <color name="secondry_color">#2B719C</color>
+
+    <color name="darkblue">#0371C9</color>
+    <color name="color_date_selected">#FE3939</color>
+    <color name="clr_date_time_cancel">#7F7F7F</color>
+    <color name="clr_top_text">#909090</color>
+    <color name="clr_top_selected">#FEFEFE</color>
+
+    <!--New Design Colors-->
+
+    <color name="clr_222B45">#222B45</color>
+    <color name="clr_FD716F">#FD716F</color>
+    <color name="clr_FB4A46">#FB4A46</color>
+    <color name="clr_CA2925">#CA2925</color>
+    <color name="clr_FA8886">#FA8886</color>
+    <color name="clr_8992A3">#8992A3</color>
+    <color name="clr_8F9BB3">#8F9BB3</color>
+    <color name="clr_ACB1C0">#ACB1C0</color>
+    <color name="clr_F2F2F2">#F2F2F2</color>
+    <color name="clr_D8D8D8">#D8D8D8</color>
+    <color name="clr_E4E9F2">#E4E9F2</color>
+    <color name="clr_F6F7FD">#F6F7FD</color>
+    <color name="clr_EDF1F7">#EDF1F7</color>
+    <color name="clr_F7F9FC">#F7F9FC</color>
+    <color name="clr_C5CEE0">#C5CEE0</color>
+    <color name="clr_4D222B45">#4D222B45</color>
+    <color name="clr_08000000">#08000000</color>
+    <color name="clr_FFF7F7">#FFF7F7</color>
+    <color name="clr_9AE4E9F2">#9AE4E9F2</color>
+    <color name="clr_333333">#333333</color>
+    <color name="clr_B8BDC5">#B8BDC5</color>
+    <color name="clr_9CA1B2">#9CA1B2</color>
+    <color name="clr_F1F2F6">#F1F2F6</color>
+    <color name="clr_80F7F8FA">#80F7F8FA</color>
+    <color name="clr_828282">#828282</color>
+    <color name="clr_5497FF">#5497FF</color>
+    <color name="clr_555555">#555555</color>
+    <color name="clr_CCCCCC">#CCCCCC</color>
+    <color name="clr_form_disabled">#ECE9E9</color>
+    <color name="clr_027D61">#027D61</color>
+    <color name="clr_4CE5B1">#4CE5B1</color>
+    <color name="clr_1ED195">#1ED195</color>
+    <color name="clr_A9F6DC">#A9F6DC</color>
+    <color name="clr_D5BEBD">#D5BEBD</color>
+    <color name="clr_FF9391">#FF9391</color>
+
+</resources>
