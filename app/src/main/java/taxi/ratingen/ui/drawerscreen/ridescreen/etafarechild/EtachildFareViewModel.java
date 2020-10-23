@@ -121,39 +121,44 @@ public class EtachildFareViewModel extends BaseNetwork<BaseResponse, EtachildFar
         if (mParam2 != null) {
             if (mParam2.currency != null)
                 currency.set(mParam2.currency);
-            if (mParam2.name != null)
-                vType.set(mParam2.name);
+            if (mParam2.getName() != null)
+                vType.set(mParam2.getName());
 
             calculateFare(mParam2, mParam3);
         }
     }
 
     private void calculateFare(TypeNew mParam2, Route mParam3) {
-        if (mParam2.typePrices.size() > 0) {
-            TypeNew.TypePrice rideNowPrice = mParam2.typePrices.get(0);
-            if (rideNowPrice.priceType != null && rideNowPrice.priceType == 1) {
+        if (mParam2.getZoneTypePrice().getData().size() > 0) {
+            TypeNew.TypePrice rideNowPrice = null;
+            for (TypeNew.TypePrice typePrice: mParam2.getZoneTypePrice().getData()) {
+                if (typePrice.getPriceType() != null && typePrice.getPriceType() == 1) {
+                    rideNowPrice = typePrice;
+                }
+            }
+            if (rideNowPrice != null) {
                 double divideBy;
-                if (mParam2.unit == 1)
+                if (mParam2.getUnit() == 1)
                     divideBy = 1000f;
                 else
                     divideBy = 1609.34f;
 
                 double chargeableDistance;
                 if (mParam3.getDistanceValue() >= 1)
-                    chargeableDistance = (mParam3.getDistanceValue() / divideBy) - rideNowPrice.baseDistance;
+                    chargeableDistance = (mParam3.getDistanceValue() / divideBy) - rideNowPrice.getBaseDistance();
                 else
                     chargeableDistance = 0;
 
-                double distPrice = chargeableDistance * rideNowPrice.pricePerDistance;
+                double distPrice = chargeableDistance * rideNowPrice.getPricePerDistance();
                 double chargeableTime = (mParam3.getDurationValue() / 60f);
-                double timePrice = chargeableTime * rideNowPrice.pricePerDistance;
-                double rideMinFare = rideNowPrice.basePrice + distPrice + timePrice;
+                double timePrice = chargeableTime * rideNowPrice.getPricePerDistance();
+                double rideMinFare = rideNowPrice.getBasePrice() + distPrice + timePrice;
 //                double rideMaxFare = rideMinFare + (rideMinFare / 100f);
 
-                BaseFare.set(rideNowPrice.basePrice + "");
-                RatePerKm.set(rideNowPrice.pricePerDistance + "");
+                BaseFare.set(rideNowPrice.getBasePrice() + "");
+                RatePerKm.set(rideNowPrice.getPricePerDistance() + "");
                 Ridetimecharge.set(CommonUtils.doubleDecimalFromat(timePrice));
-                waitingTimeCharge.set(rideNowPrice.waitingCharge + "");
+                waitingTimeCharge.set(rideNowPrice.getWaitingCharge() + "");
                 FaredetailsAmt.set(CommonUtils.doubleDecimalFromat(rideMinFare));
                 Taxesamt.set("0");
                 Totalfare.set(CommonUtils.doubleDecimalFromat(rideMinFare));

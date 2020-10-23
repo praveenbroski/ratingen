@@ -19,7 +19,6 @@ import java.util.List;
  */
 
 public interface RideConfirmNavigator extends BaseView {
-
     void goback();
 
     //    public void ShowDropLayout(boolean hide);
@@ -31,7 +30,7 @@ public interface RideConfirmNavigator extends BaseView {
 
     void ShowPaymentProgress(boolean hide);
 
-    void onClickPayment(Type type);
+    void onClickPayment(TypeNew type);
 
     void onClickNofSeat(ShareRideDetails shareRideDetails, String cr);
 
@@ -47,7 +46,7 @@ public interface RideConfirmNavigator extends BaseView {
 
     void logoutApp();
 
-    void addcarList(List<TypeNew> types, int default_selected_type);
+    void addcarList(List<Type> types, int default_selected_type);
 
 
     BaseActivity getBaseAct();
@@ -70,7 +69,7 @@ public interface RideConfirmNavigator extends BaseView {
 
     void openAlert(String currency, double driverAddCharges);
 
-    void onclickpromoCode(Integer id);
+    void onclickpromoCode(String id);
 
     void promoAvail();
 

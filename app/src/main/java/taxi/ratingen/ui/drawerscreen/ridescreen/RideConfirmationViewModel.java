@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
 
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -42,6 +44,7 @@ import taxi.ratingen.retro.responsemodel.Type;
 import taxi.ratingen.retro.responsemodel.TypeNew;
 import taxi.ratingen.utilz.CommonUtils;
 import taxi.ratingen.utilz.Constants;
+import taxi.ratingen.utilz.FirebaseHelper;
 import taxi.ratingen.utilz.SocketHelper;
 import taxi.ratingen.utilz.exception.CustomException;
 import taxi.ratingen.utilz.MyComponent;
@@ -81,7 +84,7 @@ import static com.google.android.gms.maps.model.JointType.ROUND;
  */
 
 public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideConfirmNavigator>
-        implements SocketHelper.SocketListener {
+        implements SocketHelper.SocketListener, FirebaseHelper.FirebaseObserver {
 
     private static final String TAG = "RideConfirmation";
     public Type type;
@@ -125,9 +128,10 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
     private double lastlatitude = 0.0, lastlongitude = 0.0;
     String scancontent = "";
     int DriverTypeId = 0;
-    private int typeId, reqId;
+    private String typeId;
+    private String reqId;
     List<Type> getTypesResponse;
-    List<TypeNew> getTypeNewResponse;
+    List<TypeNew> getTypeNewResponse = new ArrayList<>();
     int rideType = 1;
     String dateFormat = "";
     String bookedId = "";
@@ -142,8 +146,8 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
     public PolylineOptions lineOptionsDest1, lineOptionDesDark;
     Polyline polyLineDest1, polyLineDestDark;
 
-    public RideConfirmationViewModel(GitHubService gitHubService,
-                                     SharedPrefence sharedPrefence, HashMap<String, String> hashMap, Context context, GitHubMapService gitHubMapService, Socket socket, Gson gson) {
+    public RideConfirmationViewModel(GitHubService gitHubService, SharedPrefence sharedPrefence,
+                                     HashMap<String, String> hashMap, Context context, GitHubMapService gitHubMapService, Gson gson) {
         super(gitHubService, sharedPrefence, gson);
         this.hashMap = hashMap;
         this.sharedPrefence = sharedPrefence;
@@ -211,10 +215,11 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
 
         if (!CommonUtils.IsEmpty(scanContent)) {
             isScanEnabled.set(true);
-            ETANetWorkcall(scanContent, rideType, "");
+            is_enableBooking.set(true);
+//            ETANetWorkcall(scanContent, rideType, "");
         }
 
-//        getTypesAPI();
+        getTypesAPI();
 
         if (dropAddr == null || dropAddr.isEmpty()) {
             isDropEmpty.set(false);
@@ -223,7 +228,6 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
         this.googleMap = googleMap;
         changeMapStyle();
         SetValues();
-
     }
 
     /** Changes style and appearance of {@link GoogleMap} from json resource **/
@@ -236,23 +240,22 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
 
     /** Assigns values from API to variables **/
     public void SetValues() {
-        //  SetSocketListener();
-        socketMessageModel.id = sharedPrefence.Getvalue(SharedPrefence.ID);
-        socketMessageModel.clientId = sharedPrefence.Getvalue(SharedPrefence.COMPANY_ID);
-        socketMessageModel.clientToken = sharedPrefence.Getvalue(SharedPrefence.COMPANY_KEY);
-        socketMessageModel.pick_lat = pickup.latitude;
-        socketMessageModel.pick_lng = pickup.longitude;
-        Types(SocketHelper.getLastLoadedTypes());
-        //mSocket.emit("types", gson.toJson(socketMessageModel));
+//        //  SetSocketListener();
+//        socketMessageModel.id = sharedPrefence.Getvalue(SharedPrefence.ID);
+//        socketMessageModel.pick_lat = pickup.latitude;
+//        socketMessageModel.pick_lng = pickup.longitude;
+//        Types(SocketHelper.getLastLoadedTypes());
+//        //mSocket.emit("types", gson.toJson(socketMessageModel));
+
         setPikupDropBoundMarkers(true);
         if (!CommonUtils.IsEmpty(pickupAddr))
             PickAddress.set(pickupAddr);
         if (!CommonUtils.IsEmpty(dropAddr))
             DropAddress.set(dropAddr);
         NofSeat.set("Choose Seat ");
-        getTypesAPI();
-//        FirebaseHelper.addObservers(this);
-//        addLastKnownMarkers();
+        FirebaseHelper.addObservers(this);
+        SocketHelper.init(sharedPrefence, this, TAG, false);
+        addLastKnownMarkers();
     }
 
     /** Adds pickup and drop marker on {@link GoogleMap} **/
@@ -298,7 +301,7 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
                     routeDest = new Route();
                     CommonUtils.parseRoute(response.body(), routeDest);
                     getmNavigator().setRouteData(routeDest);
-                    final ArrayList<Step > step = routeDest.getListStep();
+                    final ArrayList<Step> step = routeDest.getListStep();
                     System.out.println("step size=====> " + step.size());
                     pointsDest = new ArrayList<>();
                     lineOptionsDest1 = new PolylineOptions();
@@ -432,67 +435,67 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
     }
 
     public void newETACall(TypeNew typeNew, int rideType, String bookedId) {
-        Log.v("http", "Ride fare: " + typeNew.etaPrice);
-        this.bookedId = bookedId;
-        this.typeNew = typeNew;
-        if (!CommonUtils.IsEmpty(dropAddr)) {
-            DropProceed.set(true);
-            DropAddress.set(dropAddr);
-        }
-        if (getmNavigator().isNetworkConnected()) {
-            if (pickup != null && this.typeNew != null) {
-                hashMap.clear();
-                if (!bookedId.equalsIgnoreCase(""))
-                    hashMap.put(Constants.NetworkParameters.promo_booked_id, this.bookedId);
-                hashMap.put(Constants.NetworkParameters.request_type, "" + rideType);
-                hashMap.put(Constants.NetworkParameters.id, sharedPrefence.Getvalue(SharedPrefence.ID));
-                hashMap.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
-                hashMap.put(Constants.NetworkParameters.type_id, "" + this.typeNew.zoneId);
-                hashMap.put(Constants.NetworkParameters.car_id, "" + this.typeNew.typeId);
-                hashMap.put(Constants.NetworkParameters.olat, "" + pickup.latitude);
-                hashMap.put(Constants.NetworkParameters.olng, "" + pickup.longitude);
-                if (drop != null) {
-                    hashMap.put(Constants.NetworkParameters.dlat, "" + drop.latitude);
-                    hashMap.put(Constants.NetworkParameters.dlng, "" + drop.longitude);
-                }
-
-                JSONArray jDrivers = new JSONArray();
-                if (getmNavigator().getNewSelectedCar() != null) {
-                    try {
-                        for (String key: driverDatas.keySet()) {
-                            JSONObject jData = new JSONObject(driverDatas.get(key));
-                            String d_id = jData.getString("id");
-                            Marker marker = driverPins.get(key);
-                            int typeId = jData.getInt("type");
-
-                            if (typeId == getmNavigator().getNewSelectedCar().typeId) {
-                                JSONObject jDriver = new JSONObject();
-                                jDriver.put("driver_id", d_id);
-                                jDriver.put("driver_lat", marker.getPosition().latitude);
-                                jDriver.put("driver_lng", marker.getPosition().longitude);
-
-                                jDrivers.put(jDriver);
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    Log.v("FatalLog", "getmNavigator().getNewSelectedCar() null");
-                }
-                if (jDrivers.length() == 0) {
-                    getmNavigator().setNoDrivers();
-                    return;
-                }
-                hashMap.put("drivers", jDrivers.toString());
-
-                isEtaAVailable.set(false);
-//                getNewETANetworkCall();
-            }
-        } else {
-            if (getmNavigator() != null)
-                getmNavigator().showNetworkMessage();
-        }
+//        Log.v("http", "Ride fare: " + typeNew.etaPrice);
+//        this.bookedId = bookedId;
+//        this.typeNew = typeNew;
+//        if (!CommonUtils.IsEmpty(dropAddr)) {
+//            DropProceed.set(true);
+//            DropAddress.set(dropAddr);
+//        }
+//        if (getmNavigator().isNetworkConnected()) {
+//            if (pickup != null && this.typeNew != null) {
+//                hashMap.clear();
+//                if (!bookedId.equalsIgnoreCase(""))
+//                    hashMap.put(Constants.NetworkParameters.promo_booked_id, this.bookedId);
+//                hashMap.put(Constants.NetworkParameters.request_type, "" + rideType);
+//                hashMap.put(Constants.NetworkParameters.id, sharedPrefence.Getvalue(SharedPrefence.ID));
+//                hashMap.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.AccessToken));
+//                hashMap.put(Constants.NetworkParameters.type_id, "" + this.typeNew.zoneId);
+//                hashMap.put(Constants.NetworkParameters.car_id, "" + this.typeNew.typeId);
+//                hashMap.put(Constants.NetworkParameters.olat, "" + pickup.latitude);
+//                hashMap.put(Constants.NetworkParameters.olng, "" + pickup.longitude);
+//                if (drop != null) {
+//                    hashMap.put(Constants.NetworkParameters.dlat, "" + drop.latitude);
+//                    hashMap.put(Constants.NetworkParameters.dlng, "" + drop.longitude);
+//                }
+//
+//                JSONArray jDrivers = new JSONArray();
+//                if (getmNavigator().getNewSelectedCar() != null) {
+//                    try {
+//                        for (String key: driverDatas.keySet()) {
+//                            JSONObject jData = new JSONObject(driverDatas.get(key));
+//                            String d_id = jData.getString("id");
+//                            Marker marker = driverPins.get(key);
+//                            String typeId = jData.getString("type");
+//
+//                            if (typeId == getmNavigator().getNewSelectedCar().typeId) {
+//                                JSONObject jDriver = new JSONObject();
+//                                jDriver.put("driver_id", d_id);
+//                                jDriver.put("driver_lat", marker.getPosition().latitude);
+//                                jDriver.put("driver_lng", marker.getPosition().longitude);
+//
+//                                jDrivers.put(jDriver);
+//                            }
+//                        }
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                } else {
+//                    Log.v("FatalLog", "getmNavigator().getNewSelectedCar() null");
+//                }
+//                if (jDrivers.length() == 0) {
+//                    getmNavigator().setNoDrivers();
+//                    return;
+//                }
+//                hashMap.put("drivers", jDrivers.toString());
+//
+//                isEtaAVailable.set(false);
+////                getNewETANetworkCall();
+//            }
+//        } else {
+//            if (getmNavigator() != null)
+//                getmNavigator().showNetworkMessage();
+//        }
     }
 
     public void getTypesAPI() {
@@ -504,7 +507,6 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
             hashMap.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
             hashMap.put(Constants.NetworkParameters.PICK_LAT, "" + pickup.latitude);
             hashMap.put(Constants.NetworkParameters.PICK_LNG, "" + pickup.longitude);
-            Log.v("fatal_log", hashMap.toString());
             getTypesNetworkCall();
         } else {
             getmNavigator().showNetworkMessage();
@@ -531,8 +533,7 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
     /** Calls when payment is clicked. Opens choose payment {@link com.google.android.material.bottomsheet.BottomSheetDialog} **/
     public void onclickPayment(View view) {
         if (!is_CorporateUser.get())
-            getmNavigator().onClickPayment(type);
-//            getmNavigator().onClickPayment(typeNew);
+            getmNavigator().onClickPayment(typeNew);
 
     }
 
@@ -573,7 +574,7 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
     /** Called when confirm button is clicked. Calls create request API **/
     public void OnClickConfirmBooking(String dateSelected) {
         this.dateFormat = dateSelected;
-//        if (typeNew != null) {
+        if (typeNew != null) {
             //        this.view = view;
             if (!CommonUtils.IsEmpty(paymentOption.get())) {
                 if (isShareRide.get())
@@ -590,8 +591,7 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
 //                return;
                 hashMap.put(Constants.NetworkParameters.id, sharedPrefence.Getvalue(SharedPrefence.ID));
                 hashMap.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
-                hashMap.put(Constants.NetworkParameters.type, "" + type.id);
-//                hashMap.put(Constants.NetworkParameters.type, "" + typeNew.zoneId);
+                hashMap.put(Constants.NetworkParameters.type, "" + typeNew.getZoneId());
                 hashMap.put(Constants.NetworkParameters.platitude, "" + pickup.latitude);
                 hashMap.put(Constants.NetworkParameters.plongitude, "" + pickup.longitude);
                 if (isPromoAvail.get())
@@ -627,11 +627,11 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
                 if (CommonUtils.IsEmpty(paymentOption.get()) && view != null && view.getContext() != null)
                     getmNavigator().showSnackBar(view, getmNavigator().getBaseAct().getTranslatedString(R.string.Validate_SelectPayment));
             }
-//        }
+        }
     }
 
-    /** Users reverse geo-coding get {@link android.location.Location} from address string
-     * @param place Address string that needs to be converted to {@link android.location.Location} object **/
+    /** Users reverse geo-coding get {@link Location} from address string
+     * @param place Address string that needs to be converted to {@link Location} object **/
     private void getLocationFromAddress(final String place) {
         LatLng loc = null;
         Geocoder gCoder = new Geocoder(mcontext);
@@ -702,103 +702,24 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
     @Override
     public void onSuccessfulApi(long taskId, BaseResponse response) {
         setIsLoading(false);
-
         is_enableBooking.set(true);
 
         if (response != null && response.success) {
-            if (response.successMessage.equalsIgnoreCase("Eta_For_Trip")) {
-                baseResponse = response;
-
-                if (response.show_price == 0) {
-                    hideProgress.set(false);
-                    isEtaAVailable.set(false);
-                } else {
-                    hideProgress.set(true);
-                    isEtaAVailable.set(true);
-                }
-
-                if (response.is_accept_share_ride == 1 && !IsFrom.get())
-                    isShareDriver.set(true);
-                else
-                    isShareDriver.set(false);
-
-                if (baseResponse.is_private_key_trip) {
-                    DriverTypeId = baseResponse.driver_type_id;
-
-                    for (Type type : getTypesResponse)
-                        if (type.id.equals(DriverTypeId)) {
-                            this.type = type;
-                            getmNavigator().setUpPayment(type.paymenttype);
-                        }
-
-                }
-                shareRideDetails = response.share_ride_details;
-                if (type != null) {
-                    CarType.set(type.name);
-                    if (!CommonUtils.IsEmpty(type.icon))
-                        carImage.set(BuildConfig.BASE_VEHICLE_IMG_URL+type.icon);
-                }
-                currency.set(response.currency);
-
-                if (response.promo_available != 1) {
-                    isPromoAvail.set(false);
-                    isPromoApply.set(false);
-                    if (response.approximate_value != null && response.approximate_value == 1)
-                        TotalPrize.set(currency.get() + CommonUtils.doubleDecimalFromat(response.min_amount) + " - " + currency.get() + CommonUtils.doubleDecimalFromat(response.max_amount));
-                    else
-                        TotalPrize.set("" + response.total);
-                } else {
-                    isPromoAvail.set(true);
-                    isPromoApply.set(true);
-                    TotalPrize.set(currency.get() + CommonUtils.doubleDecimalFromat(response.min_amount) + " - " + currency.get() + CommonUtils.doubleDecimalFromat(response.max_amount));
-                    promoAmnt.set(currency.get() + CommonUtils.doubleDecimalFromat(response.promo_min_amount) + " - " + currency.get() + CommonUtils.doubleDecimalFromat(response.promo_max_amount));
-                    getmNavigator().promoAvail();
-                }
-
-                if (!CommonUtils.IsEmpty(response.driver_arival_estimation))
-                    if (!response.driver_arival_estimation.contains("-") && !response.driver_arival_estimation.contains("NA")) {
-                        isDurationAvailable.set(true);
-                        duration_min.set(getmNavigator().getAttachedcontext() != null ? (getmNavigator().getBaseAct().getTranslatedString(R.string.driver_away_txt)+" "+response.driver_arival_estimation) : response.driver_arival_estimation);
-                    } else
-                        duration_min.set(response.driver_arival_estimation);
-
-                totalSharePrice.set("" + CommonUtils.doubleDecimalFromat(response.share_ride_price));
-                istypeDataAVailable.set(true);
-
-                getmNavigator().refreshTypesAdapter(TotalPrize.get(), duration_min.get());
-
-            } else if (response.successMessage.equalsIgnoreCase("Create_Request_successfully")) {
-                if (getmNavigator().isAttached()) {
-                    getmNavigator().showMessage(getmNavigator().getBaseAct().getTranslatedString(R.string.Txt_RideCreated));
-                    getmNavigator().ShowWaitingDialog("" + response.request.id);
-                }
-            } else if (response.successMessage.equalsIgnoreCase("Trip_registered_successfully")) {
-//                if (typeNew != null)
-//                    typeId = typeNew.zoneId;
-//                reqId = response.request_id;
-//                //  getmNavigator().openAlert(response.currency, response.DriverAddCharges);
-//                if (typeNew != null)
-//                    getmNavigator().scheduleSucess("" + typeNew.zoneId, "" + response.request_id, sharedPrefence.Getvalue(SharedPrefence.ID), sharedPrefence.Getvalue(SharedPrefence.TOKEN), pickup.latitude, pickup.longitude);
-
-                if (type != null)
-                    typeId = type.id;
-                reqId = response.request_id;
-                //  getmNavigator().openAlert(response.currency, response.DriverAddCharges);
-                if (type != null)
-                    getmNavigator().scheduleSucess("" + type.id, "" + response.request_id, sharedPrefence.Getvalue(SharedPrefence.ID), sharedPrefence.Getvalue(SharedPrefence.TOKEN), pickup.latitude, pickup.longitude);
-            } else if (response.successMessage.equalsIgnoreCase("user_declined"))
-                getmNavigator().openBlockedAlert();
-            else if (response.successMessage.equalsIgnoreCase("trip_registered_within_period"))
-                getmNavigator().openTripRegisteredAlert(response.getTripRegisteredDetails());
-            else if (response.successMessage.equalsIgnoreCase("types_listed")) {
+            if (response.successMessage.equalsIgnoreCase("types_listed")&& response.message.equalsIgnoreCase("success")) {
                 if (response.getNewTypes() != null) {
-                    getTypeNewResponse = response.getNewTypes();
+//                    String typesResponse = CommonUtils.arrayToString((ArrayList<Object>) response.data);
+                    getTypeNewResponse.addAll(response.getNewTypes());
                     for (TypeNew typeNew: getTypeNewResponse) {
-                        if (typeNew.typePrices.size() > 0) {
-                            TypeNew.TypePrice rideNowPrice = typeNew.typePrices.get(0);
-                            if (rideNowPrice.priceType != null && rideNowPrice.priceType == 1) {
+                        if (typeNew.getZoneTypePrice()!=null&&typeNew.getZoneTypePrice().getData().size() > 0) {
+                            TypeNew.TypePrice rideNowPrice = null;
+                            for (TypeNew.TypePrice typePrice: typeNew.getZoneTypePrice().getData()) {
+                                if (typePrice.getPriceType() != null && typePrice.getPriceType() == 1) {
+                                    rideNowPrice = typePrice;
+                                }
+                            }
+                            if (rideNowPrice != null) {
                                 double divideBy;
-                                if (typeNew.unit == 1)
+                                if (typeNew.getUnit() == 1)
                                     divideBy = 1000f;
                                 else
                                     divideBy = 1609.34f;
@@ -806,19 +727,19 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
                                 double chargeableDistance;
                                 if (routeDest != null) {
                                     if (routeDest.getDistanceValue() >= 1)
-                                        chargeableDistance = (routeDest.getDistanceValue() / divideBy) - rideNowPrice.baseDistance;
+                                        chargeableDistance = (routeDest.getDistanceValue() / divideBy) - rideNowPrice.getBaseDistance();
                                     else
                                         chargeableDistance = 0;
                                 } else
                                     chargeableDistance = 0;
 
-                                double distPrice = chargeableDistance * rideNowPrice.pricePerDistance;
+                                double distPrice = chargeableDistance * rideNowPrice.getPricePerDistance();
                                 double chargeableTime = 0;
                                 if (routeDest != null) {
                                     chargeableTime = (routeDest.getDurationValue() / 60f);
                                 }
-                                double timePrice = chargeableTime * rideNowPrice.pricePerDistance;
-                                double rideMinFare = rideNowPrice.basePrice + distPrice + timePrice;
+                                double timePrice = chargeableTime * rideNowPrice.getPricePerDistance();
+                                double rideMinFare = rideNowPrice.getBasePrice() + distPrice + timePrice;
                                 double rideMaxFare = rideMinFare + ((rideMinFare / 100f) * 8);
                                 typeNew.etaPrice = typeNew.currency + CommonUtils.doubleDecimalFromat(rideMinFare) + " - " +
                                         typeNew.currency + CommonUtils.doubleDecimalFromat(rideMaxFare);
@@ -832,22 +753,67 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
                     getmNavigator().addCarListNew(getTypeNewResponse, 2);
                     calculateETA();
                     if (getTypeNewResponse.size() > 0) {
-                        if (response.getNewTypes().get(0) != null && response.getNewTypes().get(0).preferredPayment != null) {
-                            sharedPrefence.saveInt(SharedPrefence.PREFFERED_PAYMENT, response.getNewTypes().get(0).preferredPayment);
+                        if (getTypeNewResponse.get(0) != null && getTypeNewResponse.get(0).getPreferredPayment() != null) {
+                            sharedPrefence.saveInt(SharedPrefence.PREFFERED_PAYMENT, getTypeNewResponse.get(0).getPreferredPayment());
+                        }
+                    }
+                    if (!CommonUtils.IsEmpty(scancontent)) {
+                        isScanEnabled.set(true);
+                        is_enableBooking.set(true);
+//            ETANetWorkcall(scanContent, rideType, "");
+                    }
+                }
+            }else if (response.successMessage.equalsIgnoreCase("user_declined"))
+                getmNavigator().openBlockedAlert();
+            else if (response.successMessage.equalsIgnoreCase("trip_registered_within_period"))
+                getmNavigator().openTripRegisteredAlert(response.getTripRegisteredDetails());
+            else if (response.successMessage.equalsIgnoreCase("Create_Request_successfully")) {
+                if (getmNavigator().isAttached()) {
+                    getmNavigator().showMessage(getmNavigator().getBaseAct().getTranslatedString(R.string.Txt_RideCreated));
+                    getmNavigator().ShowWaitingDialog("" + response.request.id);
+                }
+            }else if (response.successMessage.equalsIgnoreCase("ride promocode available")) {
+                String bookedID = response.promoCodeQueue.getPromoBookedId();
+                getmNavigator().promoCodeSet(bookedID);
+            } else if (response.successMessage.equalsIgnoreCase("Trip_registered_successfully")) {
+//                if (typeNew != null)
+//                    typeId = typeNew.zoneId;
+//                reqId = response.request_id;
+//                //  getmNavigator().openAlert(response.currency, response.DriverAddCharges);
+//                if (typeNew != null)
+//                    getmNavigator().scheduleSucess("" + typeNew.zoneId, "" + response.request_id, sharedPrefence.Getvalue(SharedPrefence.ID), sharedPrefence.Getvalue(SharedPrefence.TOKEN), pickup.latitude, pickup.longitude);
+
+                if (typeNew != null)
+                    typeId = typeNew.getTypeId()+"";
+                reqId = response.request_id+"";
+                //  getmNavigator().openAlert(response.currency, response.DriverAddCharges);
+                if (typeNew != null)
+                    getmNavigator().scheduleSucess("" + typeNew.getTypeId(), "" + response.request_id, sharedPrefence.Getvalue(SharedPrefence.ID), sharedPrefence.Getvalue(SharedPrefence.TOKEN), pickup.latitude, pickup.longitude);
+            }  /*else if (response.message.equalsIgnoreCase("request_in_progress")) {
+                getmNavigator().enableCorporateUser(sharedPrefence.GetBoolean(SharedPrefence.IS_CORPORATE_USER));
+                ReqInProgress model = CommonUtils.getSingleObject(new Gson().toJson(response.data), ReqInProgress.class);
+
+                if (model != null && model.getOnTripRequest() != null) {
+                    String requestString = gson.toJson(model.getOnTripRequest());
+                    TaxiRequestModel.Result metaRequest = CommonUtils.getSingleObject(requestString, TaxiRequestModel.Result.class);
+                    if (metaRequest != null) {
+                        if (metaRequest.resultData != null) {
+                            if (metaRequest.resultData.isLater != null && metaRequest.resultData.isLater == 1) {
+//                                 getmNavigator().openRideLaterAlert(metaRequest.requestData, metaRequest.requestData.driverDetail.driverData);
+                            } else {
+                                getmNavigator().showTripFragment(metaRequest.resultData, metaRequest.resultData.driverDetail.driverData);
+                            }
                         }
                     }
                 }
-            } else if (response.successMessage.equalsIgnoreCase("ride promocode available")) {
-                String bookedID = response.promoCodeQueue.getPromoBookedId();
-                getmNavigator().promoCodeSet(bookedID);
-            }
+            }*/
         }
 
     }
 
     private void calculateETA() {
         if (getTypeNewResponse != null) {
-            HashMap<Integer, List<Float>> distances = new HashMap<>();
+            HashMap<String, List<Float>> distances = new HashMap<>();
             for (TypeNew typeNew: getTypeNewResponse) {
                 List<Float> distanceList = new ArrayList<>();
                 for (String driverId: driverPins.keySet()) {
@@ -855,8 +821,8 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
                     try {
                         JSONObject jsonObject = new JSONObject(driverData);
                         if (jsonObject.has("type")) {
-                            int typeId = jsonObject.getInt("type");
-                            if (typeId == typeNew.typeId) {
+                            String typeId = jsonObject.getString("type");
+                            if (typeId.equalsIgnoreCase(typeNew.getTypeId())) {
                                 String[] arr = jsonObject.getString("l")
                                         .replace("[", "")
                                         .replace("]", "")
@@ -878,12 +844,12 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    distances.put(typeNew.typeId, distanceList);
+                    distances.put(typeNew.getTypeId(), distanceList);
                 }
             }
             Log.v("http_log", distances.toString());
             for (TypeNew typeNew: getTypeNewResponse) {
-                int typeId = typeNew.typeId;
+                String typeId = typeNew.getTypeId();
                 if (distances.get(typeId) != null) {
                     List<Float> distanceList = distances.get(typeId);
                     if (distanceList.size() > 0) {
@@ -935,6 +901,22 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
             getmNavigator().showMessage(e);
 //            getmNavigator().goback();
         }
+
+//        else if (e.getCode() == 728) {
+//
+//        } else if (e.getCode() == 725)
+//            getmNavigator().showMessage(e);
+//        else if (e.getCode() == 723)
+//            getmNavigator().showMessage(e);
+//        else if (e.getCode() == 9004) {
+//            setIsLoading(true);
+//            userBlockedApi();
+//        } else if (e.getCode() == 9005)
+//            getmNavigator().showMessage(e);
+
+//        } else
+//            getmNavigator().showMessage(e);
+
         istypeDataAVailable.set(true);
     }
 
@@ -943,6 +925,65 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
     public HashMap<String, String> getMap() {
         return hashMap;
     }
+
+
+   /* public void SetSocketListener() {
+        mSocket.on(Socket.EVENT_CONNECT, onConnect);
+        mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
+        mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
+        mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
+        mSocket.on("types", types);
+        mSocket.on("cancelled_request", cancelled_request);
+        mSocket.connect();
+
+    }*/
+
+    private Emitter.Listener onConnect = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            Log.i(TAG, "connected");
+            JSONObject object = new JSONObject();
+            try {
+                object.put(Constants.NetworkParameters.id, CommonUtils.IsEmpty(userID) ? sharedPrefence.Getvalue(SharedPrefence.ID) : userID);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Log.i(TAG, "start_connect = " + object.toString());
+        }
+    };
+
+    private Emitter.Listener onDisconnect = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            Log.i(TAG, "diconnected");
+        }
+    };
+
+    private Emitter.Listener onConnectError = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            Log.i(TAG, "diconnected" + (args.length > 0 ? args[0] : ""));
+        }
+    };
+
+    private Emitter.Listener types = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+
+
+        }
+    };
+    private Emitter.Listener cancelled_request = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+
+            if (args != null && args.length > 0 && args[0] != null && !CommonUtils.IsEmpty(args[0].toString())) {
+                Log.i(TAG, "keyss---------Cancel" + args[0]);
+                getmNavigator().notifyNoDriverMessage();
+            }
+        }
+    };
 
     /** Set drivers {@link com.google.android.gms.maps.model.Marker} on {@link GoogleMap}
      * @param cars {@link List} of {@link Car}s **/
@@ -999,7 +1040,30 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
         this.view = view;
     }
 
-   /** Stops {@link ScheduledFuture} timer **/
+   /* public void startTypesTimer() {
+        ScheduledExecutorService service = Executors
+                .newSingleThreadScheduledExecutor();
+        scheduledFuture =
+                service.scheduleAtFixedRate(typesRunnable, 6, 6, TimeUnit.SECONDS);
+    }*/
+
+   /* Runnable typesRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (!mSocket.connected())
+                SetSocketListener();
+            if (pickup != null && pickup.longitude != 0.0 && pickup.latitude != 0.0) {
+                socketMessageModel.id = sharedPrefence.Getvalue(SharedPrefence.ID);
+                socketMessageModel.client_id = sharedPrefence.Getvalue(SharedPrefence.COMPANY_ID);
+                socketMessageModel.client_token = sharedPrefence.Getvalue(SharedPrefence.COMPANY_KEY);
+                socketMessageModel.lat = pickup.latitude;
+                socketMessageModel.lng = pickup.longitude;
+                mSocket.emit("types", gson.toJson(socketMessageModel));
+            }
+        }
+    };*/
+
+    /** Stops {@link ScheduledFuture} timer **/
     void stopTypesTimer() {
         if (scheduledFuture != null)
             if (!scheduledFuture.isCancelled())
@@ -1013,15 +1077,15 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
             return;
         CarType.set(driverDetails.name);
         if (!CommonUtils.IsEmpty(driverDetails.icon))
-            carImage.set(BuildConfig.BASE_VEHICLE_IMG_URL+driverDetails.icon);
+            carImage.set(BuildConfig.BASE_VEHICLE_IMG_URL + driverDetails.icon);
     }
 
     void setDriverDetailsNew(TypeNew driverDetails) {
         if (driverDetails == null)
             return;
-        CarType.set(driverDetails.name);
-        if (!CommonUtils.IsEmpty(driverDetails.icon))
-            carImage.set(driverDetails.icon);
+        CarType.set(driverDetails.getName());
+        if (!CommonUtils.IsEmpty(driverDetails.getIcon()))
+            carImage.set(driverDetails.getIcon());
     }
 
     /** API call to get top drivers **/
@@ -1039,8 +1103,7 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
     /** Click listener for ride confirmation button. Calls create request API **/
     public void onclickConfirm(View view) {
         if (rideType == 1) {
-//            if (typeNew != null) {
-            if (type != null) {
+            if (typeNew != null) {
                 if (!CommonUtils.IsEmpty(paymentOption.get())) {
                     if (isShareRide.get())
                         if (nofUser == null || nofUser == 0) {
@@ -1055,7 +1118,7 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
                         hashMap.put(Constants.NetworkParameters.privateKey, scancontent);
                     hashMap.put(Constants.NetworkParameters.id, sharedPrefence.Getvalue(SharedPrefence.ID));
                     hashMap.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
-                    hashMap.put(Constants.NetworkParameters.type, "" + type.id);
+                    hashMap.put(Constants.NetworkParameters.type, "" + typeNew.getTypeId());
 //                    hashMap.put(Constants.NetworkParameters.type, "" + typeNew.zoneId);
                     hashMap.put(Constants.NetworkParameters.platitude, "" + pickup.latitude);
                     hashMap.put(Constants.NetworkParameters.plongitude, "" + pickup.longitude);
@@ -1077,34 +1140,34 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
                         hashMap.put(Constants.NetworkParameters.driver_notes, "" + driverNotes.get());
                     }
 
-//                    /* Add driver details to the request **/
-//                    JSONArray jDrivers = new JSONArray();
-//                    if (getmNavigator().getNewSelectedCar() != null) {
-//                        try {
-//                            for (String key: driverDatas.keySet()) {
-//                                JSONObject jData = new JSONObject(driverDatas.get(key));
-//                                String d_id = jData.getString("id");
-//                                Marker marker = driverPins.get(key);
-//                                int typeId = jData.getInt("type");
-//
-//                                if (typeId == getmNavigator().getNewSelectedCar().typeId) {
-//                                    JSONObject jDriver = new JSONObject();
-//                                    jDriver.put("driver_id", d_id);
-//                                    jDriver.put("driver_lat", marker.getPosition().latitude);
-//                                    jDriver.put("driver_lng", marker.getPosition().longitude);
-//
-//                                    jDrivers.put(jDriver);
-//                                }
-//                            }
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                    if (jDrivers.length() == 0) {
-//                        getmNavigator().showMessage(getmNavigator().getBaseAct().getTranslatedString(R.string.Txt_NoDriverFound));
-//                        return;
-//                    }
-//                    hashMap.put("drivers", jDrivers.toString());
+                    /* Add driver details to the request **/
+                    JSONArray jDrivers = new JSONArray();
+                    if (getmNavigator().getNewSelectedCar() != null) {
+                        try {
+                            for (String key: driverDatas.keySet()) {
+                                JSONObject jData = new JSONObject(driverDatas.get(key));
+                                String d_id = jData.getString("id");
+                                Marker marker = driverPins.get(key);
+                                String typeId = jData.getString("type");
+
+                                if (typeId.equalsIgnoreCase(getmNavigator().getNewSelectedCar().getTypeId())) {
+                                    JSONObject jDriver = new JSONObject();
+                                    jDriver.put("driver_id", d_id);
+                                    jDriver.put("driver_lat", marker.getPosition().latitude);
+                                    jDriver.put("driver_lng", marker.getPosition().longitude);
+
+                                    jDrivers.put(jDriver);
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (jDrivers.length() == 0) {
+                        getmNavigator().showMessage(getmNavigator().getBaseAct().getTranslatedString(R.string.Txt_NoDriverFound));
+                        return;
+                    }
+                    hashMap.put("drivers", jDrivers.toString());
 
                     setIsLoading(true);
                     CreateRequestNetwork();
@@ -1128,10 +1191,10 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
 
     /** Click listener for Apply promo code **/
     public void onClickPromocode(View view) {
-        if (type != null && type.id != null)
-            getmNavigator().onclickpromoCode(type.id);
-//        if (typeNew != null && typeNew.zoneId != null)
-//            getmNavigator().onclickpromoCode(typeNew.zoneId);
+//        if (type != null && type.id != null)
+//            getmNavigator().onclickpromoCode(type.id);
+        if (typeNew != null && typeNew.getZoneId() != null)
+            getmNavigator().onclickpromoCode(typeNew.getZoneId());
     }
 
     /* Click listener for schedule */
@@ -1145,65 +1208,70 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
     }
 
 
-        /** {@link SocketHelper} callback when types data receives
-         * @param typesString String data of {@link Type} **/
-    @Override
-    public void Types(final String typesString) {
-        if (getmNavigator().getBaseAct() != null)
-            getmNavigator().getBaseAct().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    //JSONObject data = (JSONObject) args[0];
-                    BaseResponse baseResponse = gson.fromJson(typesString, BaseResponse.class);
-                    if (baseResponse != null && baseResponse.success) {
-//                        Istypedata.set(true);
+//        /** {@link SocketHelper} callback when types data receives
+//         * @param typesString String data of {@link Type} **/
+//    @Override
+//    public void Types(final String typesString) {
+//        if (getmNavigator().getBaseAct() != null)
+//            getmNavigator().getBaseAct().runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    //JSONObject data = (JSONObject) args[0];
+//                    BaseResponse baseResponse = gson.fromJson(typesString, BaseResponse.class);
+//                    if (baseResponse != null && baseResponse.success) {
+////                        Istypedata.set(true);
 //                        getmNavigator().addcarList(baseResponse.getTypes(), baseResponse.default_selected_type);
-                        // getmNavigator().addcarList(baseResponse.getTypes());
-                        if (baseResponse.getTypes() != null)
-                            if (baseResponse.getTypes().size() > 0) {
-                                getTypesResponse = baseResponse.getTypes();
+//                        // getmNavigator().addcarList(baseResponse.getTypes());
+//                        if (baseResponse.getTypes() != null)
+//                            if (baseResponse.getTypes().size() > 0) {
+//                                getTypesResponse = baseResponse.getTypes();
+//
+//
+//                                final List<Car> driverlist = new ArrayList<>();
+//                                if (getmNavigator().GetSelectedCarObj() != null) {
+//                                    if (getmNavigator().GetSelectedCarObj().drivers != null) {
+//                                        String result = "";
+//                                        for (Car driverS : getmNavigator().GetSelectedCarObj().drivers)
+//                                            if (driverS != null)
+//                                                result = result + "," + driverS.id;
+//                                        Log.e(TAG, "keys listOfDriver=" + result);
+//                                        driverlist.addAll(getmNavigator().GetSelectedCarObj().drivers);
+//                                    }
+//                                } else
+//                                    for (Type type : baseResponse.getTypes()) {
+//                                        if (type != null)
+//                                            if (type.drivers != null)
+//                                                driverlist.addAll(type.drivers);
+//                                    }
+//                                Log.e(TAG, "keys-- Types Size=" + driverlist.size());
+//                                if (driverlist != null && getmNavigator() != null && getmNavigator().getBaseAct() != null)
+//                                    getmNavigator().getBaseAct().runOnUiThread(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            if (driverlist != null) {
+//                                                if (googleMap != null) {
+//                                                    googleMap.clear();
+//                                                }
+//                                                setDriverMarkers(driverlist);
+//                                            }
+//                                        }
+//                                    });
+//                                if (baseResponse.getTypes().get(0) != null && baseResponse.getTypes().get(0).preferred_payment != null)
+//                                    sharedPrefence.saveInt(SharedPrefence.PREFFERED_PAYMENT, baseResponse.getTypes().get(0).preferred_payment);
+//                            }
+//                    }
+//                }
+//            });
+//
+//    }
 
-
-                                final List<Car> driverlist = new ArrayList<>();
-                                if (getmNavigator().GetSelectedCarObj() != null) {
-                                    if (getmNavigator().GetSelectedCarObj().drivers != null) {
-                                        String result = "";
-                                        for (Car driverS : getmNavigator().GetSelectedCarObj().drivers)
-                                            if (driverS != null)
-                                                result = result + "," + driverS.id;
-                                        Log.e(TAG, "keys listOfDriver=" + result);
-                                        driverlist.addAll(getmNavigator().GetSelectedCarObj().drivers);
-                                    }
-                                } else
-                                    for (Type type : baseResponse.getTypes()) {
-                                        if (type != null)
-                                            if (type.drivers != null)
-                                                driverlist.addAll(type.drivers);
-                                    }
-                                Log.e(TAG, "keys-- Types Size=" + driverlist.size());
-                                if (driverlist != null && getmNavigator() != null && getmNavigator().getBaseAct() != null)
-                                    getmNavigator().getBaseAct().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if (driverlist != null) {
-                                                if (googleMap != null) {
-                                                    googleMap.clear();
-                                                }
-                                                setDriverMarkers(driverlist);
-                                            }
-                                        }
-                                    });
-                                if (baseResponse.getTypes().get(0) != null && baseResponse.getTypes().get(0).preferred_payment != null)
-                                    sharedPrefence.saveInt(SharedPrefence.PREFFERED_PAYMENT, baseResponse.getTypes().get(0).preferred_payment);
-                            }
-                    }
-                }
-            });
+    @Override
+    public void Types(String typesString) {
 
     }
 
     @Override
-    public void TripStatus(String trip_status) {
+    public void TripStatus(final String trip_status) {
         Log.i(TAG, "Trip_Status" + trip_status);
         if (getmNavigator().getBaseAct() != null) {
             getmNavigator().getBaseAct().runOnUiThread(new Runnable() {
@@ -1212,11 +1280,10 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
                     JSONObject data = null;
                     try {
                         data = new JSONObject(trip_status);
-                    } catch (JSONException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
-//                        System.out.println("+get_cars+" + data.toString());
                     if (data != null) {
                         BaseResponse baseResponse = gson.fromJson(data.toString(), BaseResponse.class);
                         if (baseResponse != null && baseResponse.successMessage != null
@@ -1281,7 +1348,177 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
 
     }
 
-    public void applyPromoAPICall(Integer zoneId, String promocode) {
+    @Override
+    public void driverEnteredFence(String key, GeoLocation location, String response) {
+        Log.v("fatal_log", "Driver entered1: " + response);
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            if (jsonObject.has("is_active")) {
+                long updatedAt = jsonObject.getLong("updated_at");
+                long currentTime = new Date().getTime();
+                long diff = (currentTime - updatedAt) / 1000;
+                if (diff < (5 * 60)) {
+                    double bearing = jsonObject.getDouble("bearing");
+                    if (driverPins.containsKey(key)) {
+                        Marker driverPin = driverPins.get(key);
+                        driverPin.remove();
+
+                        bitmapDescriptorFactory = BitmapDescriptorFactory.fromResource(R.drawable.ic_new_car);
+                        markeroption.position(new LatLng(location.latitude, location.longitude)).anchor(0.5f, 0.5f).rotation((float) bearing).icon(bitmapDescriptorFactory).visible(false);
+                        Marker marker = googleMap.addMarker(markeroption);
+
+                        driverPins.put(key, marker);
+                        driverDatas.put(key, response);
+                    } else {
+                        bitmapDescriptorFactory = BitmapDescriptorFactory.fromResource(R.drawable.ic_new_car);
+                        markeroption.position(new LatLng(location.latitude, location.longitude)).anchor(0.5f, 0.5f).rotation((float) bearing).icon(bitmapDescriptorFactory).visible(false);
+                        Marker marker = googleMap.addMarker(markeroption);
+
+                        driverPins.put(key, marker);
+                        driverDatas.put(key, response);
+                    }
+                    showFirebaseCarMarkers();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addLastKnownMarkers() {
+        for (String key: driverPins.keySet()) {
+            Marker marker = driverPins.get(key);
+            bitmapDescriptorFactory = BitmapDescriptorFactory.fromResource(R.drawable.ic_new_car);
+            markeroption.position(marker.getPosition()).anchor(0.5f, 0.5f).rotation(marker.getRotation()).icon(bitmapDescriptorFactory);
+            Marker nMarker = googleMap.addMarker(markeroption);
+            driverPins.put(key, nMarker);
+            nMarker.setVisible(false);
+        }
+    }
+
+    public void showFirebaseCarMarkers() {
+        for (String key: driverPins.keySet()) {
+            driverPins.get(key).setVisible(false);
+            FirebaseHelper.removeObserverFor(key);
+        }
+
+        int driverCount = 0;
+        for (String key: driverPins.keySet()) {
+            String driverId = key;
+            String driverData = driverDatas.get(driverId);
+            try {
+                JSONObject jsonObject = new JSONObject(driverData);
+                if (jsonObject.has("type")) {
+                    String typeId = jsonObject.getString("type");
+                    if (getmNavigator().getNewSelectedCar() != null) {
+                        if (getmNavigator().getNewSelectedCar().getTypeId().equals(typeId)) {
+                            Marker marker = driverPins.get(key);
+                            marker.setVisible(true);
+                            driverCount++;
+                            FirebaseHelper.addObserverFor(driverId);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        isDriversAvailable.set(driverCount > 0);
+    }
+
+    @Override
+    public void driverExitedFence(String key, String response) {
+        if (driverPins.containsKey(key)) {
+            Marker marker = driverPins.get(key);
+            marker.remove();
+            driverPins.remove(key);
+            driverDatas.remove(key);
+
+            FirebaseHelper.removeObserverFor(key);
+        }
+    }
+
+    @Override
+    public void driverMovesInFence(String key, GeoLocation location, String response) {
+        Log.v("fatal_log", "Driver moves1: " + response);
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            if (jsonObject.has("is_active")) {
+                boolean isActive = jsonObject.getBoolean("is_active");
+                if (isActive) {
+                    if (driverPins.containsKey(key)) {
+                        Log.v("fatal_log", "If");
+                        Marker driverPin = driverPins.get(key);
+                        driverPin.setPosition(new LatLng(location.latitude, location.longitude));
+                        driverPin.setRotation((float) jsonObject.getDouble("bearing"));
+
+                        driverPins.put(key, driverPin);
+                        driverDatas.put(key, response);
+
+                        showFirebaseCarMarkers();
+                    } else {
+                        Log.v("fatal_log", "Else");
+                        long updatedAt = jsonObject.getLong("updated_at");
+                        long currentTime = new Date().getTime();
+                        long diff = (currentTime - updatedAt) / 1000;
+                        if (diff < (5 * 60)) {
+                            double bearing = jsonObject.getDouble("bearing");
+                            bitmapDescriptorFactory = BitmapDescriptorFactory.fromResource(R.drawable.ic_new_car);
+                            markeroption.position(new LatLng(location.latitude, location.longitude)).anchor(0.5f, 0.5f).rotation((float) bearing).icon(bitmapDescriptorFactory).visible(false);
+                            Marker marker = googleMap.addMarker(markeroption);
+                            driverPins.put(key, marker);
+                            driverDatas.put(key, response);
+
+                            FirebaseHelper.addObserverFor(key);
+
+                            showFirebaseCarMarkers();
+                        }
+                    }
+                } else {
+                    if (driverPins.containsKey(key)) {
+                        Marker marker = driverPins.get(key);
+                        marker.remove();
+                        driverPins.remove(key);
+                        driverDatas.remove(key);
+
+                        FirebaseHelper.removeObserverFor(key);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void driverWentOffline(String key) {
+        Log.v("fatal_log", "driverWentOffline1: " + key);
+        try {
+            if (driverPins.containsKey(key)) {
+                Marker driverPin = driverPins.get(key);
+                driverPin.remove();
+                driverPins.remove(key);
+                driverDatas.remove(key);
+
+                FirebaseHelper.removeObserverFor(key);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void driverDataUpdated(String key, String response) {
+        Log.v("fatal_log", "driverDataUpdated1: " + response);
+    }
+
+    @Override
+    public void tripStatusReceived(String response) {
+
+    }
+
+    public void applyPromoAPICall(String zoneId, String promocode) {
         if (getmNavigator().isNetworkConnected()) {
             setIsLoading(true);
             hashMap.clear();

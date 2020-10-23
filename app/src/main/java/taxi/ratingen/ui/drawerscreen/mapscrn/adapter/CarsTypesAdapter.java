@@ -18,15 +18,14 @@ import java.util.List;
  * Created by root on 11/16/17.
  */
 
-public class   CarsTypesAdapter extends RecyclerView.Adapter<BaseViewHolder> {
+public class CarsTypesAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
+    //    ArrayList<Type> types;
     ArrayList<TypeNew> types;
-//    ArrayList<TypeNew> types;
     RideConfirmationFragment mapScrn;
-    public Integer selectedCarId;
+    public String selectedCarId;
 
     public CarsTypesAdapter(RideConfirmationFragment mapScrn, ArrayList<TypeNew> types) {
-//    public CarsTypesAdapter(RideConfirmationFragment mapScrn, ArrayList<TypeNew> types) {
         this.types = types;
         this.mapScrn = mapScrn;
 
@@ -49,47 +48,43 @@ public class   CarsTypesAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         return types.size();
     }
 
-    public ArrayList<TypeNew> getTypes() {
-        return types;
-    }
-
-    /** populate {@link Type} list **/
-    public void addList(List<TypeNew> type) {
-        this.types.clear();
-        if (type != null && type.size() > 0)
-            for (TypeNew typeCar : type) {
-//                assert typeCar.getDrivers() != null;
-//                if (typeCar.getDrivers().size() > 0) {
-                    selectedCarId = typeCar.typeId;
-                    break;
-//                }
-            /*if (typeCar != null && !TextUtils.isEmpty(typeCar.duration)&&!typeCar.duration.equalsIgnoreCase("--")) {
-                    selectedCarId = typeCar.id;
-                    break;
-                }*/
-            }
-//        if (selectedCarId == null && type.get(0) != null)
-//            selectedCarId = type.get(0).id;
-        this.types.addAll(type);
-        notifyDataSetChanged();
-    }
-
-//    /** populate {@link TypeNew} list **/
-//    public void  addList(List<TypeNew> types) {
+//    /** populate {@link Type} list **/
+//    public void addList(List<Type> type) {
 //        this.types.clear();
-//        this.types.addAll(types);
+//        if (this.selectedCarId == null && type != null && type.size() > 0)
+//            for (Type typeCar : type) {
+//                assert typeCar.drivers != null;
+//                if (typeCar.drivers.size() > 0) {
+//                    selectedCarId = typeCar.id;
+//                    break;
+//                }
+//            /*if (typeCar != null && !TextUtils.isEmpty(typeCar.duration)&&!typeCar.duration.equalsIgnoreCase("--")) {
+//                    selectedCarId = typeCar.id;
+//                    break;
+//                }*/
+//            }
+////        if (selectedCarId == null && type.get(0) != null)
+////            selectedCarId = type.get(0).id;
+//        this.types.addAll(type);
 //        notifyDataSetChanged();
 //    }
 
+    /** populate {@link TypeNew} list **/
+    public void  addList(List<TypeNew> types) {
+        this.types.clear();
+        this.types.addAll(types);
+        notifyDataSetChanged();
+    }
+
     /** get selected car for ride **/
     public Type getSelectedCar() {
-        Iterator it = types.iterator();
-
-        while (it.hasNext()) {
-            Type obj = (Type) it.next();
-            if (obj.id == selectedCarId)
-                return obj;
-        }
+//        Iterator it = types.iterator();
+//
+//        while (it.hasNext()) {
+//            Type obj = (Type) it.next();
+//            if (obj.id == selectedCarId)
+//                return obj;
+//        }
         return null;
     }
 
@@ -99,7 +94,7 @@ public class   CarsTypesAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
         while (it.hasNext()) {
             TypeNew obj = (TypeNew) it.next();
-            if (obj.zoneId == selectedCarId)
+            if (obj.getZoneId().equalsIgnoreCase(selectedCarId))
                 return obj;
         }
         return null;
@@ -119,16 +114,17 @@ public class   CarsTypesAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
         @Override
         public void onBind(int position) {
-            types.get(position).isselected = (types.get(position).typeId == selectedCarId);
-            if (types.get(position).typeId == selectedCarId)
+            types.get(position).isselected = (types.get(position).getZoneId().equals(selectedCarId));
+            if (types.get(position).getZoneId().equals(selectedCarId))
                 types.set(position, types.get(position));
+//            final Type request = types.get(position);
             final TypeNew request = types.get(position);
-//            final TypeNew request = types.get(position);
             childCarsTypesViewModel = new ChildCarsTypesViewModel(request, this);
             mBinding.setViewModel(childCarsTypesViewModel);
             mBinding.executePendingBindings();
         }
 
+        /** called when a car is selected **/
         @Override
         public void onItemCarClick(TypeNew typ) {
 //            Log.d("Adapter","keys--"+typ.preferred_payment);
@@ -136,13 +132,15 @@ public class   CarsTypesAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             Iterator it = types.iterator();
 
             while (it.hasNext()) {
-                Type obj = (Type) it.next();
-                obj.isselected = obj.id == typ.typeId;
+                TypeNew obj = (TypeNew) it.next();
+                obj.isselected = obj.getZoneId().equals(typ.getZoneId());
             }
-            selectedCarId = typ.typeId;
+            selectedCarId = typ.getZoneId();
             if (mapScrn != null)
-                mapScrn.carSlected(typ);
+                mapScrn.typeSelected(typ);
+//                mapScrn.carSlected(typ);
             notifyDataSetChanged();
+//            }
         }
 
         @Override
@@ -151,31 +149,7 @@ public class   CarsTypesAdapter extends RecyclerView.Adapter<BaseViewHolder> {
                 mapScrn.fareDetailsClicked(request);
         }
 
-//        /** called when a car is selected **/
-//        @Override
-//        public void onItemCarClick(TypeNew typ) {
-////            Log.d("Adapter","keys--"+typ.preferred_payment);
-////            if(typ.drivers!=null&&typ.drivers.size()>0) {
-//            Iterator it = types.iterator();
-//
-//            while (it.hasNext()) {
-//                TypeNew obj = (TypeNew) it.next();
-//                obj.isselected = obj.zoneId == typ.zoneId;
-//            }
-//            selectedCarId = typ.zoneId;
-//            if (mapScrn != null)
-//                mapScrn.typeSelected(typ);
-////                mapScrn.carSlected(typ);
-//            notifyDataSetChanged();
-////            }
-//        }
-
-//        @Override
-//        public void onClickFareDetails(TypeNew request) {
-//            if (mapScrn != null)
-//                mapScrn.fareDetailsClicked(request);
-//        }
-
     }
 
 }
+

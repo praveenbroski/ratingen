@@ -18,7 +18,6 @@ import taxi.ratingen.retro.responsemodel.TypeNew;
 
 public class ChildCarsTypesViewModel {
     TypeNew request;
-//    TypeNew request;
     public ObservableField<String> name;
     public ObservableField<String> carurl;
     public ObservableBoolean Isselected;
@@ -26,17 +25,17 @@ public class ChildCarsTypesViewModel {
     public ObservableField<String> etaTime = new ObservableField<>("NA");
     public ObservableBoolean isDriverAvailable=new ObservableBoolean(true);
     public CarsTypesViewModelListener mListener;
-    public ChildCarsTypesViewModel(TypeNew request, CarsTypesViewModelListener listener) {
-//    public ChildCarsTypesViewModel(TypeNew request,CarsTypesViewModelListener listener) {
+    //    public ChildCarsTypesViewModel(TypeNew request,CarsTypesViewModelListener listener) {
+    public ChildCarsTypesViewModel(TypeNew request,CarsTypesViewModelListener listener) {
         this.request=request;
         this.mListener=listener;
-        name=new ObservableField<>(request.name);
+        name=new ObservableField<>(request.getName());
 //        carurl=new ObservableField<>(BuildConfig.BASE_VEHICLE_IMG_URL+request.icon);
-        carurl = new ObservableField<>(request.icon);
-        Isselected=new ObservableBoolean(request.isselected==null?false:request.isselected);
+        carurl = new ObservableField<>(request.getIcon());
+        Isselected=new ObservableBoolean(request.isselected == null ? false : request.isselected);
         rideFare.set(request.etaPrice);
         etaTime.set(request.etaTime);
-        isDriverAvailable.set((request.getDrivers()!=null&&request.getDrivers().size()>0));
+//        isDriverAvailable.set((request.drivers!=null&&request.drivers.size()>0));
     }
 
     /** called when a car in list of cars clicked **/
@@ -63,3 +62,4 @@ public class ChildCarsTypesViewModel {
         void onClickFareDetails(TypeNew request);
     }
 }
+

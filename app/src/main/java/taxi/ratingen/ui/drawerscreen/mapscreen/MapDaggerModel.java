@@ -111,11 +111,10 @@ public class MapDaggerModel {
     RideConfirmationViewModel provideRideConfirmationViewModel(@Named(Constants.ourApp) GitHubService gitHubService,
                                                                @Named(Constants.googleMap) GitHubMapService gitHubMapService,
                                                                SharedPrefence sharedPrefence,
-                                                               Socket socket,
                                                                HashMap<String, String> hashMap,
                                                                Context context,
                                                                Gson gson) {
-        return new RideConfirmationViewModel(gitHubService, sharedPrefence, hashMap, context, gitHubMapService, socket, gson);
+        return new RideConfirmationViewModel(gitHubService, sharedPrefence, hashMap, context, gitHubMapService, gson);
     }
 
     @Provides

@@ -29,7 +29,6 @@ public class FirebaseHelper {
     static boolean isInsideTrip = false;
 
     static DatabaseReference ref;
-    //    static DatabaseReference locRef;
     static DatabaseReference requestRef;
     static GeoFire geoRef;
     static GeoQuery geoQuery;
@@ -50,9 +49,7 @@ public class FirebaseHelper {
 
     private static void setupReferences() {
         ref = FirebaseDatabase.getInstance().getReference("drivers");
-//        locRef = FirebaseDatabase.getInstance().getReference("driver_locations");
         requestRef = FirebaseDatabase.getInstance().getReference("requests");
-//        geoRef = new GeoFire(locRef);
         geoRef = new GeoFire(ref);
     }
 
@@ -63,6 +60,7 @@ public class FirebaseHelper {
         } else {
             Log.v("fatal_log", "failed to remove query listeners");
         }
+
         geoQuery = geoRef.queryAtLocation(new GeoLocation(latLng.latitude, latLng.longitude), 10);
         queryEventListener = new GeoQueryEventListener() {
             @Override
