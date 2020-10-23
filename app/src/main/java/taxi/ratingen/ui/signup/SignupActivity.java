@@ -136,10 +136,12 @@ SignupActivity extends BaseActivity<ActivitySignupBinding, SignupViewModel> impl
      * @param b boolean parameter
      * @param s String parameter **/
     @Override
-    public void openOtpPage(boolean b, String s) {
+    public void openOtpPage(boolean b, String s, String iso2) {
 
 //        startActivity(new Intent(this, GetReadyAct.class));
-        startActivity(new Intent(this, OTPActivity.class).putExtra(Constants.isLogin, b).putExtra(Constants.PhonewithCountry, s));
+        startActivity(new Intent(this, OTPActivity.class)
+                .putExtra(Constants.isLogin, b)
+                .putExtra(Constants.PhonewithCountry, s).putExtra(Constants.Country,  iso2));
 
     }
 
@@ -232,13 +234,13 @@ SignupActivity extends BaseActivity<ActivitySignupBinding, SignupViewModel> impl
         builder.create().show();
     }
 
-    public void onCountrySelected(String flag, String code, String name, String countryId) {
+    public void onCountrySelected(String flag, String code, String name, String countryId, String iso2) {
         CountryCode = code;
-        this.countryShort = name;
+        this.countryShort = iso2;
         loginViewModel.countryFlag.set(flag);
         loginViewModel.Countrycode.set(code);
         loginViewModel.CountryId.set(countryId);
-        loginViewModel.CountryShort.set(name);
+        loginViewModel.CountryShort.set(iso2);
     }
     @Override
     public AndroidInjector<Object> androidInjector() {

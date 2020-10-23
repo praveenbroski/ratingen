@@ -99,7 +99,8 @@ public final class Constants {
     public static final String RESULT_CODE_PICK_FROM_MAP = "RESULT_CODE_PICK_FROM_MAP";
     public static final String CountryCode = "CountryCode";
     public static String EXTRA_REQUEST_CODE = "EXTRA_REQUEST_CODE";
-    public static boolean ENABLE_FIREBASE_OTP = false;
+    public static boolean ENABLE_FIREBASE_OTP = true;
+    public static String Country = "country";
 
     /**
      * Api 500 Errorcode message.

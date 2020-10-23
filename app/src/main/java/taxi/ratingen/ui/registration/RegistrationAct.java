@@ -96,18 +96,15 @@ public class RegistrationAct extends BaseActivity<ActivityRegistrationBinding, R
         }
 
         registrationViewModel.SetBinding();
-        et_fname.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        scroll.scrollTo(0, scroll.getBottom());
-                    }
-                }, 500);
+        et_fname.setOnTouchListener((v, event) -> {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    scroll.scrollTo(0, scroll.getBottom());
+                }
+            }, 500);
 
-                return false;
-            }
+            return false;
         });
         edt_text = activityRegistrationBinding.signupEmailorPhone;
 

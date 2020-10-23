@@ -119,7 +119,7 @@ public class CountryListDialog extends BaseDialog implements CountryListNavigato
     }
 
     @Override
-    public void clickedItem(String flag, String code, String name, String countryId) {
+    public void clickedItem(String flag, String code, String name, String countryId, String iso2) {
 //        Intent intent = new Intent(Constants.INTENT_ADD_TASK);
 //        intent.putExtra(Constants.FLAG, flag);
 //        intent.putExtra(Constants.CountryCode, code);
@@ -127,10 +127,10 @@ public class CountryListDialog extends BaseDialog implements CountryListNavigato
 //        getActivity().sendBroadcast(intent);
 
         if (mode == 0) {
-            ((SignupActivity) getActivity()).onCountrySelected(flag, code, name, countryId);
+            ((SignupActivity) getActivity()).onCountrySelected(flag, code, name, countryId, iso2);
             dismiss();
         } else if (mode == 1) {
-            ((NameMailEdit) getActivity()).onCountrySelected(flag, code, name, countryId);
+            ((NameMailEdit) getActivity()).onCountrySelected(flag, code, name, countryId, iso2);
             dismiss();
         }
 

@@ -45,6 +45,7 @@ public class OTPActivity extends BaseActivity<ActivityOtpBinding, OTPViewModel> 
     int time = 120;
 
     String phoneWithCountry = "";
+    String countryShort = "";
     boolean isLogin = false;
 
     @Override
@@ -61,10 +62,12 @@ public class OTPActivity extends BaseActivity<ActivityOtpBinding, OTPViewModel> 
 
         if (getIntent() != null) {
             phoneWithCountry = getIntent().getStringExtra(Constants.PhonewithCountry);
+            countryShort = getIntent().getStringExtra(Constants.Country);
             isLogin = getIntent().getBooleanExtra(Constants.isLogin, false);
             OTPViewModel.isLogin = isLogin;
             OTPViewModel.phoneWithCountry = phoneWithCountry;
             OTPViewModel.phoneNumber.set(phoneWithCountry);
+            OTPViewModel.countryShort = countryShort;
             if (Constants.ENABLE_FIREBASE_OTP) {
                 PhoneAuth(phoneWithCountry);
                 OTPViewModel.phoneNumber.set(phoneWithCountry);

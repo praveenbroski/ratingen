@@ -105,6 +105,7 @@
                     android:textSize="@dimen/_22sdp" />
 
                 <RelativeLayout
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -127,25 +128,25 @@
 
                 </RelativeLayout>
 
-<!--                <LinearLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginTop="@dimen/_35sdp">-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_35sdp">
 
-<!--                    <TextView-->
-<!--                        android:id="@+id/btn_verify_otp"-->
-<!--                        android:layout_width="0dp"-->
-<!--                        android:layout_height="@dimen/_30sdp"-->
-<!--                        android:layout_weight="1"-->
-<!--                        android:background="@drawable/btn_primary"-->
-<!--                        android:fontFamily="@font/sf_semibold"-->
-<!--                        android:gravity="center"-->
-<!--                        android:onClick="@{viewModel::onclickverfiy}"-->
-<!--                        android:text="@{viewModel.translationModel.text_verify_otp}"-->
-<!--                        android:textColor="@color/buttonTextColor"-->
-<!--                        android:textSize="@dimen/_14sdp" />-->
+                    <TextView
+                        android:id="@+id/btn_verify_otp"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/_30sdp"
+                        android:layout_weight="1"
+                        android:background="@drawable/btn_primary"
+                        android:fontFamily="@font/sf_semibold"
+                        android:gravity="center"
+                        android:onClick="@{viewModel::onclickverfiy}"
+                        android:text="@{viewModel.translationModel.text_verify_otp}"
+                        android:textColor="@color/buttonTextColor"
+                        android:textSize="@dimen/_14sdp" />
 
-<!--                </LinearLayout>-->
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"

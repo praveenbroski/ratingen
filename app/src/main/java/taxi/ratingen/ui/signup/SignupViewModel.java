@@ -149,9 +149,9 @@ public class SignupViewModel extends BaseNetwork<User, SignupNavigator> {
             }
         } else if (response.success) {
             if (response.exist_user)
-                getmNavigator().openOtpPage(true, Countrycode.get().trim().replace(" ", "") + CommonUtils.removeFirstZeros(EmailorPhone.get().trim().replace("-", "").replace("_", "").replace(" ", "")));
+                getmNavigator().openOtpPage(true, Countrycode.get().trim().replace(" ", "") + CommonUtils.removeFirstZeros(EmailorPhone.get().trim().replace("-", "").replace("_", "").replace(" ", "")), CountryShort.get());
             else
-                getmNavigator().openOtpPage(false, Countrycode.get().trim().replace(" ", "") + CommonUtils.removeFirstZeros(EmailorPhone.get().trim().replace("-", "").replace("_", "").replace(" ", "")));
+                getmNavigator().openOtpPage(false, Countrycode.get().trim().replace(" ", "") + CommonUtils.removeFirstZeros(EmailorPhone.get().trim().replace("-", "").replace("_", "").replace(" ", "")), CountryShort.get());
         }
 
       /*  if (response.successMessage != null && response.successMessage.equalsIgnoreCase("New_User")) {
@@ -253,6 +253,7 @@ public class SignupViewModel extends BaseNetwork<User, SignupNavigator> {
                             Map.put(Constants.NetworkParameters.country_code, CountryId.get());
                             Map.put(Constants.NetworkParameters.disp_country_code, Countrycode.get().replaceAll(" ", ""));
                             Map.put(Constants.NetworkParameters.disp_phonenumber, CommonUtils.removeFirstZeros(EmailorPhone.get().trim().replace("-", "").replace("_", "").replace(" ", "")));
+                            Map.put(Constants.NetworkParameters.country, CountryShort.get());
                             Map.put(Constants.NetworkParameters.is_signup, "1");
                             Map.put(Constants.NetworkParameters.new_flow, "true");
 

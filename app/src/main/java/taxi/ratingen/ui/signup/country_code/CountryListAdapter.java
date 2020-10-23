@@ -103,7 +103,8 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
                     String code = filteredDataList.get(getAdapterPosition()).callingCode;
                     String name = filteredDataList.get(getAdapterPosition()).name;
                     String countryId = filteredDataList.get(getAdapterPosition()).id;
-                    countryListNavigator.clickedItem(flag, code, name, countryId);
+                    String iso2 = filteredDataList.get(getAdapterPosition()).iso2;
+                    countryListNavigator.clickedItem(flag, code, name, countryId, iso2);
                 }
             });
 

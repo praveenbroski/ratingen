@@ -20,7 +20,7 @@ public interface SignupNavigator extends BaseView {
     String getCountryShortName();
     void setCountryCode(String flat);
 
-    void openOtpPage(boolean b, String s);
+    void openOtpPage(boolean b, String s, String iso2);
     BaseActivity getBaseAct();
     void openCountryDialog(ArrayList<CountryListModel> countryListModel);
 

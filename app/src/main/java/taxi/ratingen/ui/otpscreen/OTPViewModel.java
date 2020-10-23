@@ -50,6 +50,7 @@ public class OTPViewModel extends BaseNetwork<BaseResponse, OTPNavigator> {
     static int resendtimer = 120;
 
     String phoneWithCountry = "";
+    String countryShort = "";
     boolean isLogin = false;
 
 
@@ -121,18 +122,18 @@ public class OTPViewModel extends BaseNetwork<BaseResponse, OTPNavigator> {
 
     public void initializeSucessNavigation() {
         setIsLoading(false);
-        if (!isLogin)  //new User
-        {
+        Map.put(Constants.NetworkParameters.client_id, sharedPrefence.getCompanyID());
+        Map.put(Constants.NetworkParameters.client_token, sharedPrefence.getCompanyToken());
+        Map.put(Constants.NetworkParameters.login_by, Constants.NetworkParameters.android);
+        Map.put(Constants.NetworkParameters.device_token, sharedPrefence.Getvalue(SharedPrefence.FCMTOKEN));
+        Map.put(Constants.NetworkParameters.password, getmNavigator().getOpt());
+        Map.put(Constants.NetworkParameters.login_method, Constants.NetworkParameters.manual);
+        Map.put(Constants.NetworkParameters.username, phoneWithCountry);
+        Map.put(Constants.NetworkParameters.new_flow, "true");
+        Map.put(Constants.NetworkParameters.country, countryShort);
+        if (!isLogin) {
             getmNavigator().openSinupuActivity();
         } else {
-            Map.put(Constants.NetworkParameters.client_id, sharedPrefence.getCompanyID());
-            Map.put(Constants.NetworkParameters.client_token, sharedPrefence.getCompanyToken());
-            Map.put(Constants.NetworkParameters.login_by, Constants.NetworkParameters.android);
-            Map.put(Constants.NetworkParameters.device_token, sharedPrefence.Getvalue(SharedPrefence.FCMTOKEN));
-            Map.put(Constants.NetworkParameters.password, getmNavigator().getOpt());
-            Map.put(Constants.NetworkParameters.login_method, Constants.NetworkParameters.manual);
-            Map.put(Constants.NetworkParameters.username, phoneWithCountry);
-            Map.put(Constants.NetworkParameters.new_flow, "true");
             LoginNetworkcall();
         }
     }

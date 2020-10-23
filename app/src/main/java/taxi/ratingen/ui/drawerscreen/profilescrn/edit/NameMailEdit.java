@@ -113,13 +113,13 @@ public class NameMailEdit extends BaseActivity<ActivityNameMailEditBinding, Name
 
     }
 
-    public void onCountrySelected(String flag, String code, String name, String countryId) {
+    public void onCountrySelected(String flag, String code, String name, String countryId, String iso2) {
         CountryCode = code;
-        this.countryShort = name;
+        this.countryShort = iso2;
         nameMailModel.countryFlag.set(flag);
         nameMailModel.Countrycode.set(code);
         nameMailModel.CountryId.set(countryId);
-        nameMailModel.CountryShort.set(name);
+        nameMailModel.CountryShort.set(iso2);
     }
 
     @Override

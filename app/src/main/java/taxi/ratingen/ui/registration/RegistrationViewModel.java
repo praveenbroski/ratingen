@@ -91,6 +91,7 @@ public class RegistrationViewModel extends BaseNetwork<User, RegistrationNavigat
     public ObservableField<String> EmailorPhone = new ObservableField<>("");
     public ObservableField<String> phoneForDisplay = new ObservableField<>("");
     public ObservableField<String> countryForDisplay = new ObservableField<>("");
+    public ObservableField<String> countryShort = new ObservableField<>("");
     public ObservableField<File> bitmap = new ObservableField<>();
     String RealPath = null;
     File RealFile;
@@ -133,6 +134,10 @@ public class RegistrationViewModel extends BaseNetwork<User, RegistrationNavigat
         if(!CommonUtils.IsEmpty(Map.get(Constants.NetworkParameters.disp_phonenumber))&&!CommonUtils.IsEmpty(Map.get(Constants.NetworkParameters.disp_country_code))){
             countryForDisplay.set(Map.get(Constants.NetworkParameters.disp_country_code));
             phoneForDisplay.set(Map.get(Constants.NetworkParameters.disp_phonenumber));
+        }
+
+        if (!CommonUtils.IsEmpty(Map.get(Constants.NetworkParameters.country))) {
+            countryShort.set(Map.get(Constants.NetworkParameters.country));
         }
     }
 
@@ -260,8 +265,6 @@ public class RegistrationViewModel extends BaseNetwork<User, RegistrationNavigat
                 if (Map.containsKey(Constants.NetworkParameters.social_unique_id) && !CommonUtils.IsEmpty(Map.get(Constants.NetworkParameters.social_unique_id)))
                     requestbody.put(Constants.NetworkParameters.social_unique_id, RequestBody.create(MediaType.parse("text/plain"), Map.get(Constants.NetworkParameters.social_unique_id)));
 
-
-                Log.d("Signup_Map", requestbody.toString());
                 SignupNetworkcall();
             }
         } else {

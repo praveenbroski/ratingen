@@ -12,6 +12,6 @@ public interface CountryListNavigator extends BaseView {
 
     void dismissDialog();
 
-    void clickedItem(String flag, String code, String name, String ID);
+    void clickedItem(String flag, String code, String name, String ID, String iso2);
 
 }
