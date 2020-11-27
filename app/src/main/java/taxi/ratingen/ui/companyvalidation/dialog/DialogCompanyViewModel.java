@@ -103,7 +103,7 @@ public class DialogCompanyViewModel extends BaseNetwork<BaseResponse, DialogComa
                     if(listModel!=null){
 //                        countryFlag.set(listModel.flag);
 //                        CountryId.set(listModel.id);
-                        countrycode.set(listModel.callingCode);
+                        countrycode.set(listModel.dialCode);
 //                        CountryShort.set(listModel.iso2);
                     }
                 }

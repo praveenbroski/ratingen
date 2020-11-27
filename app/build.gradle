@@ -27,18 +27,18 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField 'String', 'BASE_URL', '"http://167.86.87.74/taxi/public/"'
+            buildConfigField 'String', 'BASE_URL', '"http://167.86.87.74/new-ratengine/public/"'
             buildConfigField 'String', 'SOCKET_URL', '"http://167.86.87.74:3001/home"'
             buildConfigField 'String', 'PLACEAPI_KEY', '"AIzaSyAiq8aYTQJb4v9qFWdi3TohTuuU_8IAZWE"'
-            buildConfigField 'String', 'BASE_VEHICLE_IMG_URL', '"http://167.86.87.74/taxi/public/storage/uploads/driver/types/"'
+            buildConfigField 'String', 'BASE_VEHICLE_IMG_URL', '"http://167.86.87.74/new-ratengine/public/storage/uploads/driver/types/"'
         }
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField 'String', 'BASE_URL', '"http://167.86.87.74/taxi/public/"'
+            buildConfigField 'String', 'BASE_URL', '"http://167.86.87.74/new-ratengine/public/"'
             buildConfigField 'String', 'SOCKET_URL', '"http://167.86.87.74:3001/home"'
             buildConfigField 'String', 'PLACEAPI_KEY', '"AIzaSyAiq8aYTQJb4v9qFWdi3TohTuuU_8IAZWE"'
-            buildConfigField 'String', 'BASE_VEHICLE_IMG_URL', '"http://167.86.87.74/taxi/public/storage/uploads/driver/types/"'
+            buildConfigField 'String', 'BASE_VEHICLE_IMG_URL', '"http://167.86.87.74/new-ratengine/public/storage/uploads/driver/types/"'
         }
     }
     lintOptions {

@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 public class CountryListModel implements Parcelable {
     @SerializedName("id")
     @Expose
-    public String id;
+    public int id;
     @SerializedName("full_name")
     @Expose
     public String fullName;
@@ -22,20 +22,20 @@ public class CountryListModel implements Parcelable {
     @SerializedName("iso3")
     @Expose
     public String iso3;
-    @SerializedName("calling_code")
+    @SerializedName("dial_code")
     @Expose
-    public String callingCode;
+    public String dialCode;
     @SerializedName("flag")
     @Expose
     public String flag;
 
     protected CountryListModel(Parcel in) {
-        id = in.readString();
+        id = in.readInt();
         fullName = in.readString();
         name = in.readString();
         iso2 = in.readString();
         iso3 = in.readString();
-        callingCode = in.readString();
+        dialCode = in.readString();
         flag = in.readString();
     }
 
@@ -58,12 +58,12 @@ public class CountryListModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(id);
+        parcel.writeInt(id);
         parcel.writeString(fullName);
         parcel.writeString(name);
         parcel.writeString(iso2);
         parcel.writeString(iso3);
-        parcel.writeString(callingCode);
+        parcel.writeString(dialCode);
         parcel.writeString(flag);
     }
 }

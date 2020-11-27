@@ -18,11 +18,15 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import androidx.databinding.ObservableBoolean;
+
 import taxi.ratingen.R;
 
 public class OtpView extends LinearLayout {
+
     private EditText mOtpOneField, mOtpTwoField, mOtpThreeField, mOtpFourField, mOtpFiveField, mOtpSixField,
             mCurrentlyFocusedEditText;
+    ObservableBoolean isOTPDone;
 
     public OtpView(Context context) {
         super(context);
@@ -276,4 +280,9 @@ public class OtpView extends LinearLayout {
     public void simulateDeletePress() {
         mCurrentlyFocusedEditText.setText("");
     }
+
+    public void setOTPFilledObservable(ObservableBoolean isOTPDone) {
+        this.isOTPDone = isOTPDone;
+    }
+
 }

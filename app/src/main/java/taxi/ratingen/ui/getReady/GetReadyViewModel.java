@@ -55,4 +55,5 @@ public class GetReadyViewModel extends BaseNetwork<BaseResponse, GetReadyNavigat
     public void getStarted(View v){
         getmNavigator().startMovingtoSignup();
     }
+
 }

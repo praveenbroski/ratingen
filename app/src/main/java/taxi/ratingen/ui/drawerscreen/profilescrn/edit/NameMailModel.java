@@ -89,8 +89,8 @@ public class NameMailModel extends BaseNetwork<BaseResponse, NameMailNavigator> 
                 CountryListModel listModel = CommonUtils.getDefaultCountryDetails(countryListModels, Constants.COUNTRY_CODE);
                 if (listModel != null) {
                     countryFlag.set(listModel.flag);
-                    CountryId.set(listModel.id);
-                    Countrycode.set(listModel.callingCode);
+                    CountryId.set(listModel.id + "");
+                    Countrycode.set(listModel.dialCode);
                     CountryShort.set(listModel.iso2);
                     extraData.set(extraData.get().replace(Countrycode.get(), ""));
                 }

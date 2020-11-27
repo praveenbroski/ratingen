@@ -1,18 +1,12 @@
 package taxi.ratingen.ui.otpscreen;
 
 import androidx.databinding.ObservableBoolean;
-import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.gson.Gson;
 
@@ -21,10 +15,10 @@ import java.util.HashMap;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import taxi.ratingen.R;
 import taxi.ratingen.retro.base.BaseNetwork;
 import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.GitHubService;
+import taxi.ratingen.retro.responsemodel.UUID;
 import taxi.ratingen.utilz.CommonUtils;
 import taxi.ratingen.utilz.Constants;
 import taxi.ratingen.utilz.exception.CustomException;
@@ -39,25 +33,18 @@ public class OTPViewModel extends BaseNetwork<BaseResponse, OTPNavigator> {
     @Inject
     HashMap<String, String> Map;
 
-
     SharedPrefence sharedPrefence;
     public View view;
 
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
     String mVerificationId = "";
     PhoneAuthProvider.ForceResendingToken mToken;
-    static int resendtimer = 120;
-
-    String phoneWithCountry = "";
-    String countryShort = "";
-    boolean isLogin = false;
-
-
-    public ObservableBoolean enableResend = new ObservableBoolean(true);
     public ObservableField<String> phoneNumber = new ObservableField<>("");
-    public Runnable runnable = () -> enableResend.set(true);
-
+    ObservableField<String> UUIDValue = new ObservableField<>("");
+    ObservableField<String> RegOrLogin = new ObservableField<>("");
+    ObservableField<String> CountryId = new ObservableField<>("");
+    ObservableField<String> CountryPrefix = new ObservableField<>("");
+    public ObservableBoolean resendClicked = new ObservableBoolean(false);
+    public ObservableBoolean isOTPDone = new ObservableBoolean(false);
 
     @Inject
     public OTPViewModel(@Named(Constants.ourApp) GitHubService gitHubService,
@@ -65,12 +52,8 @@ public class OTPViewModel extends BaseNetwork<BaseResponse, OTPNavigator> {
                         SharedPrefence sharedPrefence, Gson gson) {
         super(gitHubService, sharedPrefence, gson);
         this.sharedPrefence = sharedPrefence;
-
         Map = stringHashMap;
-
-        System.out.println("+++" + Map.get(Constants.NetworkParameters.phonenumber));
-        phoneNumber.set(Map.get(Constants.NetworkParameters.phonenumber));
-
+        Log.i("firefcmdevice_token", "==========" + sharedPrefence.Getvalue(SharedPrefence.FCMTOKEN));
     }
 
     @Override
@@ -78,128 +61,92 @@ public class OTPViewModel extends BaseNetwork<BaseResponse, OTPNavigator> {
         return Map;
     }
 
-    public void onclickverfiy(View view) {
-        setIsLoading(true);
-        try {
-/*            //TODO remove this block at release
-            if(BuildConfig.DEBUG)
-                initializeSucessNavigation();
-            else {*/
-            PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, getmNavigator().getOpt());
-            signInWithPhoneAuthCredential(credential);
-//            }
-        } catch (Exception e) {
-            setIsLoading(false);
-            if (!getmNavigator().getOpt().isEmpty()) {
-                getmNavigator().showMessage(translationModel.txt_otp_wrong);
-            } else {
-                getmNavigator().showMessage(translationModel.txt_enter_otp);
-            }
-        }
-    }
-
-    public void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d("signInSucess", "signInWithCredential:success");
-                            initializeSucessNavigation();
-                            //
-                        } else {
-                            // Sign in failed, display a message and update the UI
-                            setIsLoading(false);
-                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                // The verification code entered was invalid
-                                getmNavigator().showMessage(task.getException().getLocalizedMessage());
-                            }
-                        }
-                    }
-                });
-    }
-
-    public void initializeSucessNavigation() {
-        setIsLoading(false);
-        Map.put(Constants.NetworkParameters.client_id, sharedPrefence.getCompanyID());
-        Map.put(Constants.NetworkParameters.client_token, sharedPrefence.getCompanyToken());
-        Map.put(Constants.NetworkParameters.login_by, Constants.NetworkParameters.android);
-        Map.put(Constants.NetworkParameters.device_token, sharedPrefence.Getvalue(SharedPrefence.FCMTOKEN));
-        Map.put(Constants.NetworkParameters.password, getmNavigator().getOpt());
-        Map.put(Constants.NetworkParameters.login_method, Constants.NetworkParameters.manual);
-        Map.put(Constants.NetworkParameters.username, phoneWithCountry);
-        Map.put(Constants.NetworkParameters.new_flow, "true");
-        Map.put(Constants.NetworkParameters.country, countryShort);
-        if (!isLogin) {
-            getmNavigator().openSinupuActivity();
-        } else {
-            LoginNetworkcall();
-        }
-    }
-
-    public void onClickResend(View view) {
-        setIsLoading(false);
-        getmNavigator().showSnackBar(view, getmNavigator().getBaseAct().getTranslatedString(R.string.Toast_OTP_send));
-        startTimerTwoMinuts();
-        getmNavigator().resendOtp();
-        getmNavigator().startTimer(resendtimer);
-
-//        if (getmNavigator().isNetworkConnected()) {
-//            setIsLoading(true);
-//            this.view = view;
-//            if (Map.get(Constants.NetworkParameters.is_signup) != null &&
-//                    Integer.parseInt(Map.get(Constants.NetworkParameters.is_signup)) == 1 &&
-//                    !CommonUtils.IsEmpty(Map.get(Constants.NetworkParameters.is_signup))) {
-//                Map.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
-//                OptResendcall();
-//            } else {
-//                Map.put(Constants.NetworkParameters.phoneNumber, Map.get(Constants.NetworkParameters.phoneNumber));
-//                loginOtpVerification();
-//            }
-//
-//            getmNavigator().startTimer(resendtimer);
-//
-//
-//        } else {
-//            getmNavigator().showNetworkMessage();
-//        }
-    }
-
-    public void onclickEditNumber(View view) {
-        getmNavigator().FinishAct();
-    }
-
-    public void startTimerTwoMinuts() {
-        enableResend.set(false);
-        new android.os.Handler().postDelayed(runnable, resendtimer * 1000);
-    }
-
     @Override
     public void onSuccessfulApi(long taskId, BaseResponse response) {
         setIsLoading(false);
 
-        if (response.success) {
-            if (response.successMessage.equalsIgnoreCase("Resend_Otp")) {
-                getmNavigator().showSnackBar(view, getmNavigator().getBaseAct().getTranslatedString(R.string.Toast_OTP_send));
-            } else if (response.successMessage.equalsIgnoreCase("Otp_Validate")) {
-                getmNavigator().openSinupuActivity();
-            } else if (!CommonUtils.IsEmpty(response.successMessage) && response.successMessage.equalsIgnoreCase("User_Logged")) {
-                String userstring = gson.toJson(response.getUser());
-                if (response.isCorporate == 1)
-                    sharedPrefence.saveBoolean(SharedPrefence.IS_CORPORATE_USER, true);
-                sharedPrefence.savevalue(SharedPrefence.USERDETAILS, userstring);
-                sharedPrefence.savevalue(SharedPrefence.TOKEN, response.getUser().token);
-                sharedPrefence.savevalue(SharedPrefence.ID, "" + response.getUser().id);
+        if (response.accessToken != null) {
+            if (!TextUtils.isEmpty(response.accessToken)) {
+                sharedPrefence.savevalue(SharedPrefence.AccessToken, response.accessToken);
                 getmNavigator().openHomeActivity();
+            }
+        } else {
+            if (response.success) {
+                if (resendClicked.get()) {
+                    String uuid = CommonUtils.ObjectToString(response.data);
+                    UUID uuidInstance = (UUID) CommonUtils.StringToObject(uuid, UUID.class);
+                    UUIDValue.set(uuidInstance.getUuid());
+                    resendClicked.set(false);
+                } else {
+                    if (RegOrLogin.get().equalsIgnoreCase("1")) {
+                        /* Move to register */
+                        getmNavigator().openSignUpActivity();
+                    }
+                }
             }
         }
     }
-
 
     @Override
     public void onFailureApi(long taskId, CustomException e) {
         setIsLoading(false);
         getmNavigator().showMessage(e);
     }
+
+    public void onClickVerify(View v) {
+        if (getmNavigator().isNetworkConnected()) {
+            if (!getmNavigator().getOpt().isEmpty() && getmNavigator().getOpt().length() == 6) {
+                setIsLoading(true);
+                Map.clear();
+                Map.put(Constants.NetworkParameters.UUId, UUIDValue.get());
+                Map.put(Constants.NetworkParameters.OTP, getmNavigator().getOpt());
+                Map.put(Constants.NetworkParameters.device_token, sharedPrefence.Getvalue(SharedPrefence.FCMTOKEN));
+                if (RegOrLogin.get().equalsIgnoreCase("1"))
+                    registerOtpValidate(Map);
+                else {
+                    Map.clear();
+                    Map.put(Constants.NetworkParameters.mobile, phoneNumber.get());
+                    Map.put(Constants.NetworkParameters.OTP, getmNavigator().getOpt());
+                    Map.put(Constants.NetworkParameters.device_token, sharedPrefence.Getvalue(SharedPrefence.FCMTOKEN));
+                    Map.put(Constants.NetworkParameters.login_by, "android");
+                    Map.put(Constants.NetworkParameters.Role, "user");
+                    getUserLoginApi(Map);
+                }
+            }
+        } else getmNavigator().showNetworkMessage();
+    }
+
+    public void onClickResend(View v) {
+        resendClicked.set(true);
+        getmNavigator().openResendAlert();
+    }
+
+    public void onclickEditNumber(View view) {
+        getmNavigator().FinishAct();
+    }
+
+    public void ResendOtpApi() {
+        if (getmNavigator().isNetworkConnected()) {
+            setIsLoading(true);
+            Map.clear();
+            Map.put(Constants.NetworkParameters.country, CountryId.get());
+            Map.put(Constants.NetworkParameters.mobile, phoneNumber.get());
+            if (RegOrLogin.get().equalsIgnoreCase("1"))
+                sendRegisterOtp(Map);
+            else if (RegOrLogin.get().equalsIgnoreCase("2"))
+                sendLoginOtp(Map);
+        } else getmNavigator().showNetworkMessage();
+    }
+
+    static int resendtimer = 120;
+
+    public void startTimerTwoMinuts() {
+        enableResend.set(false);
+        new android.os.Handler().postDelayed(runnable, resendtimer * 1000);
+    }
+
+    public ObservableBoolean enableResend = new ObservableBoolean(true);
+
+    public Runnable runnable = () -> enableResend.set(true);
+
 }

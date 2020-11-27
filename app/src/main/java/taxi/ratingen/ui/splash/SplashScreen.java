@@ -82,7 +82,7 @@ public class SplashScreen extends BaseActivity<SplashscreenBinding, SplashViewMo
         emptyViewModel.getLanguagees();
 
         getKeyHash();
-        startRequestingPermissions();
+//        startRequestingPermissions();
     }
 
     /**
@@ -179,7 +179,7 @@ public class SplashScreen extends BaseActivity<SplashscreenBinding, SplashViewMo
                 requestPermissionsSafely(Constants.Array_permissions, Constants.REQUEST_PERMISSION);
             } else {
                 if (sharedPrefence.GetBoolean(SharedPrefence.GetStartedScrnLoaded)) {
-                    if (!CommonUtils.IsEmpty(sharedPrefence.Getvalue(SharedPrefence.USERDETAILS))) {
+                    if (!CommonUtils.IsEmpty(sharedPrefence.Getvalue(SharedPrefence.AccessToken))) {
                         startActivity(new Intent(SplashScreen.this, DrawerAct.class));
                     } else {
                         startActivity(new Intent(SplashScreen.this, TourGuide.class));
@@ -275,7 +275,7 @@ public class SplashScreen extends BaseActivity<SplashscreenBinding, SplashViewMo
      */
     private void initiateNaviagation() {
         if (sharedPrefence.GetBoolean(SharedPrefence.GetStartedScrnLoaded)) {
-            if (!CommonUtils.IsEmpty(sharedPrefence.Getvalue(SharedPrefence.USERDETAILS))) {
+            if (!CommonUtils.IsEmpty(sharedPrefence.Getvalue(SharedPrefence.AccessToken))) {
                 startActivity(new Intent(SplashScreen.this, DrawerAct.class));
             } else {
                 startActivity(new Intent(SplashScreen.this, TourGuide.class));

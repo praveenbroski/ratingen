@@ -4,19 +4,23 @@ public class CustomException extends Exception {
 
     private int code;
 
-    //   private String exception;
+    private String exception;
 
-    /**
-     * @param code      Api error code
-     * @param exception is a exception messages.
-     */
     public CustomException(int code, String exception) {
         super(exception);
         this.code = code;
-        // this.exception 0= exception;
+        this.exception = exception;
     }
 
-    //UnUsed methods
+    public CustomException(String expectedResult) {
+        this.exception = expectedResult;
+    }
+
+    @Override
+    public String getMessage() {
+        return exception;
+    }
+
     public CustomException(int code, Throwable throwable) {
         this.code = code;
         //   this.exception = throwable.getMessage();
@@ -27,20 +31,13 @@ public class CustomException extends Exception {
          this.exception = response.errorMessage();
      }
  */
-    //Its a default constructor.
     public CustomException() {
     }
 
-    /**
-     * @return the status code.
-     */
     public int getCode() {
         return code;
     }
 
-    /**
-     * @param code un used variable.
-     */
     public void setCode(int code) {
         this.code = code;
     }

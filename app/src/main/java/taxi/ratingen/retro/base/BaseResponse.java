@@ -39,6 +39,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by root on 9/27/17.
@@ -61,6 +62,22 @@ public class BaseResponse implements Serializable {
     @SerializedName("request_id")
     @Expose
     public int request_id;
+
+    @SerializedName("status_code")
+    @Expose
+    public int statusCode;
+
+    @SerializedName("token_type")
+    @Expose
+    public String tokenType;
+
+    @SerializedName("expires_in")
+    @Expose
+    public Integer expiresIn;
+
+    @SerializedName("access_token")
+    @Expose
+    public String accessToken;
 
     @SerializedName("error_message")
     @Expose
@@ -253,9 +270,13 @@ public class BaseResponse implements Serializable {
     @SerializedName("request")
     @Expose
     public Request request;
+
+//    @Expose
+//    @SerializedName("data")
+//    public DataObject data;
+
     @Expose
-    @SerializedName("data")
-    public DataObject data;
+    public Object data;
 
     @SerializedName("history")
     @Expose
@@ -295,7 +316,6 @@ public class BaseResponse implements Serializable {
     @SerializedName("trip_registered_details")
     @Expose
     private TripRegisteredDetails tripRegisteredDetails;
-
 
     public WalletHistModel getWallet() {
         return wallet;
@@ -571,6 +591,13 @@ public class BaseResponse implements Serializable {
         public String getDate() {
             return date;
         }
+    }
+
+    @SerializedName("errors")
+    Map<String, List<String>> errors;
+
+    public Map<String, List<String>> getErrors() {
+        return errors;
     }
 
     public class DataObject {

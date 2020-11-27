@@ -1,10 +1,12 @@
 package taxi.ratingen.retro;
 
+import retrofit2.http.GET;
 import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.responsemodel.Payment;
 import taxi.ratingen.retro.responsemodel.User;
 import taxi.ratingen.utilz.Constants;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
@@ -24,9 +26,8 @@ import retrofit2.http.PartMap;
 
 public interface GitHubService {
 
-    @FormUrlEncoded
-    @POST(Constants.URL.CC_URL)
-    Call<User> getCountryList(@FieldMap Map<String, String> options);
+    @GET(Constants.URL.CC_URL)
+    Call<BaseResponse> getCountryList();
 
     @FormUrlEncoded
     @POST(Constants.URL.LoginURL)
@@ -215,7 +216,7 @@ public interface GitHubService {
     Call<BaseResponse> getFaqList(@FieldMap Map<String, String> options);
 
 
-    @POST(Constants.URL.TRANSLATIONS_DOC)
+    @GET(Constants.URL.TRANSLATIONS_DOC)
     Call<BaseResponse> getTranslationsDoc();
 
     @FormUrlEncoded
@@ -294,5 +295,29 @@ public interface GitHubService {
     @FormUrlEncoded
     @POST(Constants.URL.NotificationURL)
     Call<BaseResponse> getNotificationAPi(@FieldMap Map<String, String> options);
+
+    @FormUrlEncoded
+    @POST(Constants.URL.VALIDATE_MOBILE)
+    Call<BaseResponse> getValidateMobile(@FieldMap Map<String, String> options);
+
+    @FormUrlEncoded
+    @POST(Constants.URL.SEND_OTP)
+    Call<BaseResponse> sendOTP(@FieldMap Map<String, String> options);
+
+    @FormUrlEncoded
+    @POST(Constants.URL.SEND_LOGIN_OTP)
+    Call<BaseResponse> loginOTP(@FieldMap Map<String, String> options);
+
+    @FormUrlEncoded
+    @POST(Constants.URL.REGISTER_OTP_VALIDATE)
+    Call<BaseResponse> registerOtpValidate(@FieldMap Map<String, String> options);
+
+    @FormUrlEncoded
+    @POST(Constants.URL.LOGIN)
+    Call<BaseResponse> userLogin(@FieldMap Map<String, String> options);
+
+    @Multipart
+    @POST(Constants.URL.USER_REGISTER)
+    Call<BaseResponse> userRegister(@PartMap() Map<String, RequestBody> partMap, @Part MultipartBody.Part file);
 
 }

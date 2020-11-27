@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 
+import androidx.core.graphics.BitmapCompat;
 import androidx.databinding.BindingAdapter;
 
 import android.graphics.Bitmap;
@@ -44,7 +45,9 @@ import androidx.annotation.DrawableRes;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import androidx.core.content.ContextCompat;
 
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.google.android.gms.common.util.Base64Utils;
@@ -54,7 +57,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
+import okhttp3.ResponseBody;
 import taxi.ratingen.R;
+import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.responsemodel.CountryListModel;
 import taxi.ratingen.retro.responsemodel.Route;
 import taxi.ratingen.retro.responsemodel.Step;
@@ -64,11 +70,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -471,6 +481,24 @@ public final class CommonUtils {
         return null;
     }
 
+    public static String ObjectToString(Object data) {
+        return new Gson().toJson(data);
+    }
+
+    public static Object StringToObject(String message, Class objectClassName) {
+        return new Gson().fromJson(message, objectClassName);
+    }
+
+    public static <T> String arrayToString(ArrayList<T> list) {
+        Gson g = new Gson();
+        return g.toJson(list);
+    }
+
+    public static <T> List<T> stringToArray(String s, Class<T[]> clazz) {
+        T[] arr = new Gson().fromJson(s, clazz);
+        return Arrays.asList(arr); //or return Arrays.asList(new Gson().fromJson(s, clazz)); for a one-liner
+    }
+
     /**
      * @param inputValue is a string contains CVV number of Added card.
      * @return the ReOrdered cvv number.
@@ -537,4 +565,65 @@ public final class CommonUtils {
         }
         return null;
     }
+
+    public static String getImageUri(Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage = getResizedBitmapLessThan500KB(inImage, 500);
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = null;//= MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, "Title", null);
+        try {
+            path = Environment.getExternalStorageDirectory().toString();
+            OutputStream fOut = null;
+            File file = new File(path, System.currentTimeMillis() + ".jpg");
+            fOut = new FileOutputStream(file);
+            inImage.compress(Bitmap.CompressFormat.JPEG, 85, fOut); // saving the Bitmap to a file compressed as a JPEG with 85% compression rate
+            fOut.flush(); // Not really required
+            fOut.close();
+            path = file.getAbsolutePath();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return (path);
+    }
+
+    public static Bitmap getResizedBitmapLessThan500KB(Bitmap image, int maxSize) {
+        if (BitmapCompat.getAllocationByteCount(image) > (1000 * 1024)) {
+            int width = image.getWidth();
+            int height = image.getHeight();
+            float bitmapRatio = (float) width / (float) height;
+            if (bitmapRatio > 0) {
+                width = maxSize;
+                height = (int) (width / bitmapRatio);
+            } else {
+                height = maxSize;
+                width = (int) (height * bitmapRatio);
+            }
+            return Bitmap.createScaledBitmap(image, width, height, true);
+        } else {
+            return image;
+        }
+    }
+
+    public static String converErrors(ResponseBody response) {
+        //  Converter<ResponseBody, BaseResponse> converter = .responseBodyConverter(BaseResponse.class, new Annotation[0]);
+        String value = "";
+        try {
+            BaseResponse baseResponse = (BaseResponse) CommonUtils.StringToObject(response.string(), BaseResponse.class);
+            if (baseResponse != null && baseResponse.getErrors() != null) {
+                Log.e("respo==", "" + baseResponse.getErrors());
+                for (Map.Entry<String, List<String>> error : baseResponse.getErrors().entrySet()) {
+                    value = KeySearchClass.KeySearch(error);
+                }
+            } else {
+                Log.e("ErrorMessage==", "msg" + baseResponse.message);
+                if (!TextUtils.isEmpty(baseResponse.message))
+                    value = baseResponse.message;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return value;
+    }
+
 }

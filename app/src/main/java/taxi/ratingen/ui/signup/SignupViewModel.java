@@ -1,6 +1,8 @@
 package taxi.ratingen.ui.signup;
 
 import android.text.Editable;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -16,7 +18,7 @@ import taxi.ratingen.retro.base.BaseNetwork;
 import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.responsemodel.CountryCodeModel;
 import taxi.ratingen.retro.responsemodel.CountryListModel;
-import taxi.ratingen.retro.responsemodel.User;
+import taxi.ratingen.retro.responsemodel.UUID;
 import taxi.ratingen.utilz.CommonUtils;
 import taxi.ratingen.utilz.Constants;
 import taxi.ratingen.utilz.SharedPrefence;
@@ -36,22 +38,23 @@ import retrofit2.Response;
  * Created by root on 10/7/17.
  */
 
-public class SignupViewModel extends BaseNetwork<User, SignupNavigator> {
+public class SignupViewModel extends BaseNetwork<BaseResponse, SignupNavigator> {
 
     @Inject
     HashMap<String, String> Map;
-    public ArrayList<CountryListModel> countryListModels;
-
+    public ArrayList<CountryListModel> countryListModels = new ArrayList<>();
 
     SharedPrefence sharedPrefence;
 
     /*BaseView baseView;*/
 
     public ObservableField<String> EmailorPhone = new ObservableField<>("");
-    public ObservableField<String> Countrycode = new ObservableField<>("+");
+    public ObservableField<String> countryCode = new ObservableField<>("+");
     public ObservableField<String> CountryShort = new ObservableField<>("");
-    public ObservableField<String> CountryId = new ObservableField<>();
+    public ObservableField<String> CountryId = new ObservableField<>("");
     public ObservableField<String> countryFlag = new ObservableField<>();
+    ObservableField<Integer> toRegOrLog = new ObservableField<>();
+    ObservableField<String> UUID_VALUE = new ObservableField<>("");
     GitHubService gitHubService;
     GitHubCountryCode gitHubCountryCode;
 
@@ -72,7 +75,7 @@ public class SignupViewModel extends BaseNetwork<User, SignupNavigator> {
         if (getmNavigator().isNetworkConnected()) {
             if (CommonUtils.IsEmpty(EmailorPhone.get().trim().replace("-", "").replace("_", "").replace(" ", "")))
                 getmNavigator().showSnackBar(view, getmNavigator().getBaseAct().getTranslatedString(R.string.Validate_Mob_Number));
-            else if (CommonUtils.IsEmpty(Countrycode.get().trim().replace("+", ""))) {
+            else if (CommonUtils.IsEmpty(countryCode.get().trim().replace("+", ""))) {
                 getmNavigator().showSnackBar(view, getmNavigator().getBaseAct().getTranslatedString(R.string.bt_country_code_invalid));
             } else
                 sendLoginRequest();
@@ -91,7 +94,7 @@ public class SignupViewModel extends BaseNetwork<User, SignupNavigator> {
         getmNavigator().HideKeyBoard();
         Map.put(Constants.NetworkParameters.client_id, sharedPrefence.getCompanyID());
         Map.put(Constants.NetworkParameters.client_token, sharedPrefence.getCompanyToken());
-        Map.put(Constants.NetworkParameters.phoneNumber, Countrycode.get().trim().replace(" ", "") + EmailorPhone.get().trim().replace("-", "").replace("_", "").replace(" ", ""));
+        Map.put(Constants.NetworkParameters.phoneNumber, countryCode.get().trim().replace(" ", "") + EmailorPhone.get().trim().replace("-", "").replace("_", "").replace(" ", ""));
         Map.put(Constants.NetworkParameters.is_signup, "0");
         loginOtpVerification();
     }
@@ -101,7 +104,7 @@ public class SignupViewModel extends BaseNetwork<User, SignupNavigator> {
         if (getmNavigator().isNetworkConnected()) {
             if (CommonUtils.IsEmpty(EmailorPhone.get().trim().replace("-", "").replace("_", "").replace(" ", "")))
                 getmNavigator().showSnackBar(view, getmNavigator().getBaseAct().getTranslatedString(R.string.Validate_Mob_Number));
-            else if (CommonUtils.IsEmpty(Countrycode.get().trim().replace("+", ""))) {
+            else if (CommonUtils.IsEmpty(countryCode.get().trim().replace("+", ""))) {
                 getmNavigator().showSnackBar(view, getmNavigator().getBaseAct().getTranslatedString(R.string.bt_country_code_invalid));
             } else {
                 getmNavigator().HideKeyBoard();
@@ -134,35 +137,47 @@ public class SignupViewModel extends BaseNetwork<User, SignupNavigator> {
      * @param response {@link BaseResponse} model
      **/
     @Override
-    public void onSuccessfulApi(long taskId, User response) {
+    public void onSuccessfulApi(long taskId, BaseResponse response) {
+//        setIsLoading(false);
+//        if (response.successMessage != null && response.successMessage.equalsIgnoreCase("country_list")) {
+//            countryListModels = response.getCountryList();
+//            if (countryListModels != null) {
+//                CountryListModel listModel = CommonUtils.getDefaultCountryDetails(countryListModels, Constants.COUNTRY_CODE);
+//                if (listModel != null) {
+//                    countryFlag.set(listModel.flag);
+//                    CountryId.set(listModel.id);
+//                    Countrycode.set(listModel.callingCode);
+//                    CountryShort.set(listModel.iso2);
+//                }
+//            }
+//        } else if (response.success) {
+//            if (response.exist_user)
+//                getmNavigator().openOtpPage(true, Countrycode.get().trim().replace(" ", "") + CommonUtils.removeFirstZeros(EmailorPhone.get().trim().replace("-", "").replace("_", "").replace(" ", "")), CountryShort.get());
+//            else
+//                getmNavigator().openOtpPage(false, Countrycode.get().trim().replace(" ", "") + CommonUtils.removeFirstZeros(EmailorPhone.get().trim().replace("-", "").replace("_", "").replace(" ", "")), CountryShort.get());
+//        }
+
         setIsLoading(false);
-        if (response.successMessage != null && response.successMessage.equalsIgnoreCase("country_list")) {
-            countryListModels = response.getCountryList();
-            if (countryListModels != null) {
-                CountryListModel listModel = CommonUtils.getDefaultCountryDetails(countryListModels, Constants.COUNTRY_CODE);
-                if (listModel != null) {
-                    countryFlag.set(listModel.flag);
-                    CountryId.set(listModel.id);
-                    Countrycode.set(listModel.callingCode);
-                    CountryShort.set(listModel.iso2);
+        if (response.success) {
+            if (response.successMessage != null) {
+                if (response.successMessage.equalsIgnoreCase("country_list") || response.successMessage.equalsIgnoreCase("country list")) {
+                    getmNavigator().countryResponse(response.data);
+                }
+            } else {
+                if (response.message != null) {
+                    if (response.message.equalsIgnoreCase("new user")) {
+                        callSendOtpApi(1);
+                    } else if (response.message.equalsIgnoreCase("exists user")) {
+                        callSendOtpApi(2);
+                    } else if (response.message.equalsIgnoreCase("success")) {
+                        String uuid = CommonUtils.ObjectToString(response.data);
+                        UUID uuidInstance = (UUID) CommonUtils.StringToObject(uuid, UUID.class);
+                        UUID_VALUE.set(uuidInstance.getUuid());
+                        getmNavigator().openOtpPage(UUID_VALUE.get(), toRegOrLog.get(), EmailorPhone.get(), CountryId.get(), countryCode.get());
+                    }
                 }
             }
-        } else if (response.success) {
-            if (response.exist_user)
-                getmNavigator().openOtpPage(true, Countrycode.get().trim().replace(" ", "") + CommonUtils.removeFirstZeros(EmailorPhone.get().trim().replace("-", "").replace("_", "").replace(" ", "")), CountryShort.get());
-            else
-                getmNavigator().openOtpPage(false, Countrycode.get().trim().replace(" ", "") + CommonUtils.removeFirstZeros(EmailorPhone.get().trim().replace("-", "").replace("_", "").replace(" ", "")), CountryShort.get());
         }
-
-      /*  if (response.successMessage != null && response.successMessage.equalsIgnoreCase("New_User")) {
-            getmNavigator().openOtpActivity(true);
-        } else if (response.successMessage != null && response.successMessage.equalsIgnoreCase("Existing_User")) {
-            if (response.getUser().Ispresented) {
-                sendLoginRequest();
-            }
-        } else if (response.successMessage != null && response.successMessage.equalsIgnoreCase("Login Otp send")) {
-            getmNavigator().openOtpActivity(false);
-        }*/
     }
 
     /**
@@ -196,6 +211,20 @@ public class SignupViewModel extends BaseNetwork<User, SignupNavigator> {
         return Map;
     }
 
+    private void callSendOtpApi(int type) {
+        if (getmNavigator().isNetworkConnected()) {
+            setIsLoading(true);
+            Map.clear();
+            Map.put(Constants.NetworkParameters.country, CountryId.get());
+            Map.put(Constants.NetworkParameters.mobile, EmailorPhone.get());
+            toRegOrLog.set(type);
+            if (type == 1)
+                sendRegisterOtp(Map);
+            else if (type == 2)
+                sendLoginOtp(Map);
+        } else getmNavigator().showNetworkMessage();
+    }
+
     /**
      * Calls API to generate token
      **/
@@ -214,7 +243,7 @@ public class SignupViewModel extends BaseNetwork<User, SignupNavigator> {
      * @param e {@link Editable}
      **/
     public void onCCodeChanged(Editable e) {
-        Countrycode.set(e.toString());
+        countryCode.set(e.toString());
 
     }
 
@@ -247,11 +276,11 @@ public class SignupViewModel extends BaseNetwork<User, SignupNavigator> {
                             Map.clear();
                             Map.put(Constants.NetworkParameters.client_id, sharedPrefence.getCompanyID());
                             Map.put(Constants.NetworkParameters.client_token, sharedPrefence.getCompanyToken());
-                            Map.put(Constants.NetworkParameters.phonenumber, Countrycode.get().replaceAll(" ", "") + CommonUtils.removeFirstZeros(EmailorPhone.get().trim().replace("-", "").replace("_", "").replace(" ", "")));
+                            Map.put(Constants.NetworkParameters.phonenumber, countryCode.get().replaceAll(" ", "") + CommonUtils.removeFirstZeros(EmailorPhone.get().trim().replace("-", "").replace("_", "").replace(" ", "")));
                             Map.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
 //                            Map.put(Constants.NetworkParameters.country_code, getmNavigator().getCountryCode());
                             Map.put(Constants.NetworkParameters.country_code, CountryId.get());
-                            Map.put(Constants.NetworkParameters.disp_country_code, Countrycode.get().replaceAll(" ", ""));
+                            Map.put(Constants.NetworkParameters.disp_country_code, countryCode.get().replaceAll(" ", ""));
                             Map.put(Constants.NetworkParameters.disp_phonenumber, CommonUtils.removeFirstZeros(EmailorPhone.get().trim().replace("-", "").replace("_", "").replace(" ", "")));
                             Map.put(Constants.NetworkParameters.country, CountryShort.get());
                             Map.put(Constants.NetworkParameters.is_signup, "1");
@@ -325,18 +354,32 @@ public class SignupViewModel extends BaseNetwork<User, SignupNavigator> {
      * Click listener for confirm button
      **/
     public void onClickConfirm(View view) {
+//        if (getmNavigator().isNetworkConnected()) {
+//            if (CommonUtils.IsEmpty(EmailorPhone.get().trim().replace("-", "").replace("_", "").replace(" ", "")))
+//                getmNavigator().showSnackBar(view, getmNavigator().getBaseAct().getTranslatedString(R.string.Validate_Mob_Number));
+//            else if (CommonUtils.IsEmpty(countryCode.get().replaceAll(" ", "").replace("+", ""))) {
+//                getmNavigator().showSnackBar(view, getmNavigator().getBaseAct().getTranslatedString(R.string.bt_country_code_invalid));
+//            } else {
+//                getmNavigator().HideKeyBoard();
+//                TokenGeneratorcall();
+//            }
+//        } else {
+//            getmNavigator().showNetworkMessage();
+//        }
+
         if (getmNavigator().isNetworkConnected()) {
-            if (CommonUtils.IsEmpty(EmailorPhone.get().trim().replace("-", "").replace("_", "").replace(" ", "")))
-                getmNavigator().showSnackBar(view, getmNavigator().getBaseAct().getTranslatedString(R.string.Validate_Mob_Number));
-            else if (CommonUtils.IsEmpty(Countrycode.get().replaceAll(" ", "").replace("+", ""))) {
-                getmNavigator().showSnackBar(view, getmNavigator().getBaseAct().getTranslatedString(R.string.bt_country_code_invalid));
+            setIsLoading(true);
+            if (!TextUtils.isEmpty(EmailorPhone.get())) {
+                Map.clear();
+                Map.put(Constants.NetworkParameters.country, CountryId.get());
+                Map.put(Constants.NetworkParameters.mobile, EmailorPhone.get());
+                Map.put(Constants.NetworkParameters.android, "1");
+                validateMobile(Map);
             } else {
-                getmNavigator().HideKeyBoard();
-                TokenGeneratorcall();
+                getmNavigator().showSnackBar(view, getmNavigator().getBaseAct().getTranslatedString(R.string.Validate_Mob_Number));
+                setIsLoading(false);
             }
-        } else {
-            getmNavigator().showNetworkMessage();
-        }
+        } else getmNavigator().showNetworkMessage();
     }
 
     public void getCountryListApi() {

@@ -6,8 +6,6 @@ import android.content.IntentSender;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AlertDialog;
@@ -17,15 +15,19 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
 import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.InstallStatus;
 import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.gson.Gson;
+
 import taxi.ratingen.BR;
 import taxi.ratingen.R;
 import taxi.ratingen.databinding.ActivitySignupBinding;
+import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.responsemodel.CountryListModel;
 import taxi.ratingen.ui.base.BaseActivity;
 import taxi.ratingen.ui.login.LoginActivity;
 import taxi.ratingen.ui.otpscreen.OTPActivity;
 import taxi.ratingen.ui.signup.country_code.CountryListDialog;
 import taxi.ratingen.ui.sociallogin.SigninSocialActivity;
+import taxi.ratingen.utilz.CommonUtils;
 import taxi.ratingen.utilz.Constants;
 import taxi.ratingen.utilz.SharedPrefence;
 
@@ -43,6 +45,7 @@ import dagger.android.HasAndroidInjector;
 
 public class
 SignupActivity extends BaseActivity<ActivitySignupBinding, SignupViewModel> implements SignupNavigator, HasAndroidInjector {
+
     @Inject
     SharedPrefence sharedPrefence;
     @Inject
@@ -55,24 +58,18 @@ SignupActivity extends BaseActivity<ActivitySignupBinding, SignupViewModel> impl
     DispatchingAndroidInjector<Object> fragmentDispatchingAndroidInjector;
     private AppUpdateManager mAppUpdateManager;
 
+    ArrayList<CountryListModel> countryListModels = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activitySignupBinding = getViewDataBinding();
         loginViewModel.setNavigator(this);
         Setup();
-        activitySignupBinding.signupEmailorPhone.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        activitySignupBinding.scrollRegistration.scrollTo(0, activitySignupBinding.scrollRegistration.getBottom());
-                    }
-                }, 500);
+        activitySignupBinding.signupEmailorPhone.setOnTouchListener((v, event) -> {
+            new Handler().postDelayed(() -> activitySignupBinding.scrollRegistration.scrollTo(0, activitySignupBinding.scrollRegistration.getBottom()), 500);
 
-                return false;
-            }
+            return false;
         });
         mAppUpdateManager = AppUpdateManagerFactory.create(this);
         mAppUpdateManager.getAppUpdateInfo().addOnSuccessListener(appUpdateInfo -> {
@@ -119,6 +116,8 @@ SignupActivity extends BaseActivity<ActivitySignupBinding, SignupViewModel> impl
 //        mCountryUtil.initUI(activitySignupBinding.editCountryCodeSignup, this, activitySignupBinding.signupFlag);
 //        mCountryUtil.initCodes(SignupActivity.this);
         edt_text = activitySignupBinding.signupEmailorPhone;
+
+        edt_text.setText("9715361062");
     }
 
 
@@ -132,17 +131,32 @@ SignupActivity extends BaseActivity<ActivitySignupBinding, SignupViewModel> impl
         newInstance.show(getSupportFragmentManager());
     }
 
-    /** Opens {@link OTPActivity} when called
-     * @param b boolean parameter
-     * @param s String parameter **/
     @Override
-    public void openOtpPage(boolean b, String s, String iso2) {
+    public void countryResponse(Object data) {
+        String strCountryBase = CommonUtils.ObjectToString(data);
+        BaseResponse countryBase = new Gson().fromJson(strCountryBase, BaseResponse.class);
+        String countryArray = CommonUtils.arrayToString((ArrayList<Object>) countryBase.data);
+        countryListModels.addAll(CommonUtils.stringToArray(countryArray, CountryListModel[].class));
+        for (int i = 0; i < countryListModels.size(); i++) {
+            if (countryListModels.get(i).name.equalsIgnoreCase(Constants.DefaultcountryName)) {
+                Constants.CountryID = countryListModels.get(i).id + "";
+                Constants.CLICKEDCOUNTRYCODE = countryListModels.get(i).dialCode;
+                loginViewModel.countryCode.set(Constants.CLICKEDCOUNTRYCODE);
+                loginViewModel.CountryId.set(countryListModels.get(i).id + "");
+                break;
+            }
+        }
+    }
 
-//        startActivity(new Intent(this, GetReadyAct.class));
-        startActivity(new Intent(this, OTPActivity.class)
-                .putExtra(Constants.isLogin, b)
-                .putExtra(Constants.PhonewithCountry, s).putExtra(Constants.Country,  iso2));
-
+    @Override
+    public void openOtpPage(String uuid_value, Integer toRegOrLog, String phoneNum, String countryId, String countryPrefix) {
+        Intent intent = new Intent(this, OTPActivity.class);
+        intent.putExtra(Constants.uuidValue, uuid_value);
+        intent.putExtra(Constants.regOrLogin, "" + toRegOrLog);
+        intent.putExtra(Constants.phoneNum, phoneNum);
+        intent.putExtra(Constants.countryId, countryId);
+        intent.putExtra(Constants.phonePrefix, countryPrefix);
+        startActivity(intent);
     }
 
     @Override
@@ -225,12 +239,7 @@ SignupActivity extends BaseActivity<ActivitySignupBinding, SignupViewModel> impl
                 dialog.dismiss();
                 openSignInPwdActivity();
             }
-        }).setNegativeButton(R.string.text_cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
-            }
-        });
+        }).setNegativeButton(R.string.text_cancel, (dialog, id) -> dialog.dismiss());
         builder.create().show();
     }
 
@@ -238,7 +247,7 @@ SignupActivity extends BaseActivity<ActivitySignupBinding, SignupViewModel> impl
         CountryCode = code;
         this.countryShort = iso2;
         loginViewModel.countryFlag.set(flag);
-        loginViewModel.Countrycode.set(code);
+        loginViewModel.countryCode.set(code);
         loginViewModel.CountryId.set(countryId);
         loginViewModel.CountryShort.set(iso2);
     }

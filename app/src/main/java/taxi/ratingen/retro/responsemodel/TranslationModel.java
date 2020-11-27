@@ -1110,4 +1110,43 @@ public class TranslationModel {
     @SerializedName("txt_Defdult_method_dummy")
     public String txt_Defdult_method_dummy = "txt_Defdult_method_dummy";
 
+    @SerializedName("txt_resend_to")
+    public String txt_resend_to = "txt_resend_to";
+
+    @SerializedName("txt_cancel")
+    public String txt_cancel = "txt_cancel";
+
+    @SerializedName("text_first_name_empty")
+    public String text_first_name_empty = "text_first_name_empty";
+
+    @SerializedName("text_error_lastname")
+    public String text_error_lastname = "text_error_lastname";
+
+    @SerializedName("txt_enter_email")
+    public String txt_enter_email = "txt_enter_email";
+
+    @SerializedName("txt_email_invalid")
+    public String txt_email_invalid = "txt_email_invalid";
+
+    @SerializedName("txt_enter_phone")
+    public String txt_enter_phone = "txt_enter_phone";
+
+    @SerializedName("txt_accept_terms")
+    public String txt_accept_terms = "txt_accept_terms";
+
+    @SerializedName("txt_email")
+    public String txt_email = "txt_email";
+
+    @SerializedName("txt_sign_up")
+    public String txt_sign_up = "txt_sign_up";
+
+    @SerializedName("text_tos_underline")
+    public String text_tos_underline = "text_tos_underline";
+
+    @SerializedName("txt_as_wel")
+    public String txt_as_wel = "txt_as_wel";
+
+    @SerializedName("text_error_email")
+    public String text_error_email = "text_error_email";
+
 }

@@ -18,10 +18,10 @@ public final class Constants {
     public static final int RIDE_PROMO_RESULT = 99;
     public static final int CC_SELECTED_CODE = 9795;
     public static boolean ACTIVITY_OPENEND_ALRDY = false;
-    public static String[] Array_permissions = new String[]{
+    public static String[] Array_permissions = new String[] {
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
             android.Manifest.permission.ACCESS_FINE_LOCATION};
-    public static String[] storagePermission = new String[]{
+    public static String[] storagePermission = new String[] {
             android.Manifest.permission.CAMERA,
             android.Manifest.permission.READ_EXTERNAL_STORAGE,
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -101,6 +101,14 @@ public final class Constants {
     public static String EXTRA_REQUEST_CODE = "EXTRA_REQUEST_CODE";
     public static boolean ENABLE_FIREBASE_OTP = true;
     public static String Country = "country";
+    public static String CLICKEDCOUNTRYCODE = "+49";
+    public static String DefaultcountryName = "Germany";
+    public static String CountryID = "";
+    public static String uuidValue = "UUIDval";
+    public static String regOrLogin = "RegOrLogin";
+    public static String phoneNum = "phoneNum";
+    public static final String countryId = "COUNTRYID";
+    public static String phonePrefix = "phonePrefix";
 
     /**
      * Api 500 Errorcode message.
@@ -165,7 +173,7 @@ public final class Constants {
         String TokenGeneratorURL = "v1/user/temptoken";
         String BaseURL = BuildConfig.BASE_URL;
         String SOCKET_URL = BuildConfig.SOCKET_URL;
-        String CC_URL = "v1/country/list";
+        String CC_URL = "api/v1/common/countries";
         String GooglBaseURL = "https://maps.googleapis.com/";
         String COUNTRY_CODE_URL = "http://ip-api.com/";//"/json";
         String ISRegistered = "v1/user/social_unique_id_check";
@@ -210,7 +218,7 @@ public final class Constants {
         String TYPE_AUTOCOMPLETE = "/autocomplete";
         String TYPE_NEAR_BY = "/nearbysearch";
         String OUT_JSON = "/json";
-        String TRANSLATIONS_DOC = "v1/lang/get";
+        String TRANSLATIONS_DOC = "api/v1/common/translation/get";
         String PREFFERED_PAYMENT = "v1/user/preferred/payment";
         String FAQ_LIST = "v1/user/get/faqlist";
         String SUPPORT = "v1/Users/support/email";
@@ -234,6 +242,12 @@ public final class Constants {
         String NotificationURL ="v1/user/get/notification";
         String getTypes = "v1/android/user/get/types";
         String DRIVER_PROFILE_PIC = "storage/uploads/driver/profile/";
+        String VALIDATE_MOBILE = "api/v1/user/validate-mobile";
+        String SEND_OTP = "api/v1/user/register/send-otp";
+        String SEND_LOGIN_OTP = "api/v1/user/login/send-otp";
+        String REGISTER_OTP_VALIDATE = "api/v1/user/register/validate-otp";
+        String LOGIN = "api/v1/user/login";
+        String USER_REGISTER = "api/v1/user/register";
     }
     /**
      * Api paramater names
@@ -281,6 +295,7 @@ public final class Constants {
         String firstname = "firstname";
         String lastname = "lastname";
         String phonenumber = "phone_number";
+        String mobile = "mobile";
         String CountryDummy = "CountryDummy";
         String profile_pic = "profile_pic";
         String username = "username";
@@ -335,6 +350,15 @@ public final class Constants {
         String driver_notes = "driver_notes";
         String disp_country_code = "disp_country_code";
         String disp_phonenumber = "disp_phonenumber";
+        String UUId = "uuid";
+        String OTP = "otp";
+        String Role = "role";
+        String Email = "email";
+        String TermsCondition = "terms_condition";
+    }
+
+    public interface TaskId {
+        int login = 100;
     }
 
 }

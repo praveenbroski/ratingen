@@ -42,9 +42,9 @@ public class CompanyValidationViewModel extends BaseNetwork<BaseResponse, Compan
         setIsLoading(false);
         if (response.success)
             if (response.successMessage.equalsIgnoreCase("Language Selected")) {
-                if (response.data != null) {
-                    response.saveLanguageTranslations(sharedPrefence, gson, response.data);
-                }
+                String getTranslations = CommonUtils.ObjectToString(response.data);
+                BaseResponse.DataObject uuidInstance = (BaseResponse.DataObject) CommonUtils.StringToObject(getTranslations, BaseResponse.DataObject.class);
+                response.saveLanguageTranslations(sharedPrefence, gson, uuidInstance);
                 checkCompanyKey();
 
             } else if (response.successMessage.equalsIgnoreCase("token_verified"))

@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import taxi.ratingen.retro.base.BaseNetwork;
 import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.GitHubService;
+import taxi.ratingen.utilz.CommonUtils;
 import taxi.ratingen.utilz.Constants;
 import taxi.ratingen.utilz.exception.CustomException;
 import taxi.ratingen.utilz.SharedPrefence;
@@ -44,9 +45,9 @@ public class SplashViewModel extends BaseNetwork<BaseResponse, SplashNavigator> 
         // setIsLoading(false);
         isLoaad.set(false);
         if (response.success) {
-            if (response.data != null) {
-                response.saveLanguageTranslations(sharedPrefence, gson, response.data);
-            }
+            String getTranslations = CommonUtils.ObjectToString(response.data);
+            BaseResponse.DataObject uuidInstance = (BaseResponse.DataObject) CommonUtils.StringToObject(getTranslations, BaseResponse.DataObject.class);
+            response.saveLanguageTranslations(sharedPrefence, gson, uuidInstance);
             getmNavigator().startRequestingPermissions();
         }
 

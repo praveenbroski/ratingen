@@ -4,28 +4,12 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ScrollView;
+import android.view.WindowManager;
 
-import androidx.annotation.NonNull;
 import androidx.databinding.library.baseAdapters.BR;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-
-import java.util.HashMap;
+import java.io.File;
 
 import javax.inject.Inject;
 
@@ -35,104 +19,40 @@ import taxi.ratingen.ui.applyrefferal.ApplayRefferal;
 import taxi.ratingen.ui.base.BaseActivity;
 import taxi.ratingen.ui.drawerscreen.DrawerAct;
 import taxi.ratingen.utilz.Constants;
+import taxi.ratingen.utilz.RealPathUtil;
 import taxi.ratingen.utilz.SharedPrefence;
 
-//import com.nplus.countrylist.CountryCodeChangeListener;
-//import com.nplus.countrylist.CountryUtil;
+public class RegistrationAct extends BaseActivity<ActivityRegistrationBinding, RegistrationViewModel> implements RegistrationNavigator {
 
-public class RegistrationAct extends BaseActivity<ActivityRegistrationBinding, RegistrationViewModel>
-        implements RegistrationNavigator, GoogleApiClient.OnConnectionFailedListener {
     @Inject
     SharedPrefence sharedPrefence;
     @Inject
     RegistrationViewModel registrationViewModel;
-    //    private CountryUtil mCountryUtil;
     ActivityRegistrationBinding activityRegistrationBinding;
-    HashMap<String, String> hashMap;
-    ScrollView scroll;
-    EditText et_fname, edt_text;
-    String country_Code_str, countryShort;
-    //GoogleApiClient mGoogleApiClient;
-
-    private FirebaseAuth mAuth;
-    GoogleSignInClient mGoogleSignInClient;
-    private int RC_SIGN_IN = 1;
-
-// ...
-// Initialize Firebase Auth
-
-    /**
-     * Initializes {@link FirebaseAuth},
-     * Retrieves FCM device token,
-     * Initializes {@link GoogleSignInOptions},
-     * Initializes {@link GoogleApiClient},/*
-     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        registrationViewModel.setNavigator(this);
         activityRegistrationBinding = getViewDataBinding();
-        getGCMDeviceToken();
+        activityRegistrationBinding.setViewModel(registrationViewModel);
+        registrationViewModel.setNavigator(this);
 
-        mAuth = FirebaseAuth.getInstance();
-
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-
-        scroll = this.findViewById(R.id.reg_scroll);
-        et_fname = this.findViewById(R.id.et_fname);
-        hashMap = (HashMap<String, String>) getIntent().getSerializableExtra("Data_Social");
-        if (hashMap != null) {
-            registrationViewModel.setSocialRegData(hashMap);
-//            mCountryUtil = new CountryUtil(RegistrationAct.this, Constants.COUNTRY_CODE);
-//            mCountryUtil.initUI(activityRegistrationBinding.editCountryCodeSignup, this, activityRegistrationBinding.signupFlag);
-//            mCountryUtil.initCodes(RegistrationAct.this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().setStatusBarColor(getResources().getColor(R.color.clr_FB4A46));
         }
-
-        registrationViewModel.SetBinding();
-        et_fname.setOnTouchListener((v, event) -> {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    scroll.scrollTo(0, scroll.getBottom());
-                }
-            }, 500);
-
-            return false;
-        });
-        edt_text = activityRegistrationBinding.signupEmailorPhone;
-
-
-        edt_text.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                if (edt_text.getText().length() == 1 && edt_text.getText().toString().startsWith("0"))
-                    edt_text.setText("");
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable arg0) {
-
-            }
-        });
 
         activityRegistrationBinding.termsCondt.setPaintFlags(activityRegistrationBinding.termsCondt.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         activityRegistrationBinding.privacyPolicy.setPaintFlags(activityRegistrationBinding.privacyPolicy.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
+        if (getIntent() != null) {
+            registrationViewModel.uuid.set(getIntent().getStringExtra(Constants.uuidValue));
+            registrationViewModel.userPhone.set(getIntent().getStringExtra(Constants.phoneNum));
+            registrationViewModel.countryID.set(getIntent().getStringExtra(Constants.countryId));
+            registrationViewModel.userCountryCode.set(getIntent().getStringExtra(Constants.phonePrefix));
+        }
+
+        activityRegistrationBinding.backImg.setOnClickListener(view -> finish());
     }
 
     @Override
@@ -251,40 +171,10 @@ public class RegistrationAct extends BaseActivity<ActivityRegistrationBinding, R
             registrationViewModel.onSelectFromGalleryResult(data);
         else if (requestCode == Constants.REQUEST_CAMERA)
             registrationViewModel.onCaptureImageResult(data);
-
-        else if (requestCode == RC_SIGN_IN) {
-
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            registrationViewModel.handleSignInResult(task);
-        } else {
+        else {
             if (registrationViewModel != null)
                 registrationViewModel.setIsLoading(false);
         }
-    }
-    // }
-
-
-    /**
-     * Return selected country code
-     **/
-    @Override
-    public String getCountryCode() {
-        return country_Code_str;
-    }
-
-    /**
-     * Return selected country's short code
-     **/
-    @Override
-    public String getCountryNameShort() {
-        return countryShort;
-    }
-
-    @Override
-    public void setCountryCode(String flag) {
-//        mCountryUtil = new CountryUtil(RegistrationAct.this, flag);
-//        mCountryUtil.initUI(activityRegistrationBinding.editCountryCodeSignup, this, activityRegistrationBinding.signupFlag);
-//        mCountryUtil.initCodes(RegistrationAct.this);
     }
 
     @Override
@@ -292,37 +182,11 @@ public class RegistrationAct extends BaseActivity<ActivityRegistrationBinding, R
         super.onResume();
     }
 
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
-
-    /**
-     * Called when facebook login is clicked
-     **/
-    @Override
-    public void Facebookclicked() {
-        if (registrationViewModel != null)
-            registrationViewModel.setIsLoading(true);
-    }
-
-    /**
-     * Called when Google login is clicked
-     **/
-    @Override
-    public void gplusclicked() {
-        if (registrationViewModel != null)
-            registrationViewModel.setIsLoading(true);
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-
     /**
      * Opens {@link DrawerAct}
      **/
     @Override
     public void OpenDrawerAct() {
-        mGoogleSignInClient.signOut();
         startActivity(new Intent(this, DrawerAct.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
         finish();
     }
@@ -341,6 +205,13 @@ public class RegistrationAct extends BaseActivity<ActivityRegistrationBinding, R
     @Override
     public void goBack() {
         finish();
+    }
+
+    @Override
+    public void getPath(Intent data) {
+        registrationViewModel.RealPath = RealPathUtil.getRealPath(this, data.getData());
+        registrationViewModel.RealFile = new File(registrationViewModel.RealPath == null ? "" : registrationViewModel.RealPath);
+        registrationViewModel.bitmap_profilePicture.set(registrationViewModel.RealPath);
     }
 
 }

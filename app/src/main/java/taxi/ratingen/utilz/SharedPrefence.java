@@ -38,6 +38,9 @@ public class SharedPrefence {
     public static final String COMPANY_ID = "company_id";
     public static final String GetStartedScrnLoaded = "GetStartedScrnLoaded";
     public static final String DEFAULT_COUNTRY = "DEFAULT_COUNTRY";
+    public static final String AccessToken = "accesstoken";
+    public static String UserName = "UserName";
+    public static String UserEmail = "UserEmail";
 
     SharedPreferences.Editor editor;
     SharedPreferences prefs;
@@ -103,4 +106,5 @@ public class SharedPrefence {
     public String getCompanyID() {
         return prefs.getString(COMPANY_ID, "");
     }
+
 }

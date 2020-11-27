@@ -9,6 +9,8 @@ import android.graphics.Typeface;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -47,7 +49,7 @@ public abstract class BaseNetwork<T extends BaseResponse, N> implements Basecall
     public HashMap<String, RequestBody> requestbody = new HashMap<>();
     public MultipartBody.Part body = null;
     /*public  ObservableInt mCurrentTaskId = new ObservableInt(-1);*/
-    public final Integer mCurrentTaskId = -1;
+    public Integer mCurrentTaskId = -1;
     public ObservableBoolean mIsLoading = new ObservableBoolean(false);
     public TranslationModel translationModel;
     public SharedPrefence sharedPrefence;
@@ -87,7 +89,7 @@ public abstract class BaseNetwork<T extends BaseResponse, N> implements Basecall
 
     public void getCountryList() {
         setIsLoading(true);
-        gitHubService.getCountryList(getMap()).enqueue((Callback<User>) baseModelCallBackListener);
+        gitHubService.getCountryList().enqueue((Callback<BaseResponse>) baseModelCallBackListener);
     }
 
     /**
@@ -459,6 +461,36 @@ public abstract class BaseNetwork<T extends BaseResponse, N> implements Basecall
         gitHubService.getNotificationAPi(map).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
     }
 
+    public void validateMobile(HashMap<String, String> map) {
+        setIsLoading(true);
+        gitHubService.getValidateMobile(map).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+    }
+
+    public void sendRegisterOtp(HashMap<String, String> map) {
+        setIsLoading(true);
+        gitHubService.sendOTP(map).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+    }
+
+    public void sendLoginOtp(HashMap<String, String> map) {
+        setIsLoading(true);
+        gitHubService.loginOTP(map).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+    }
+
+    public void registerOtpValidate(HashMap<String, String> map) {
+        setIsLoading(true);
+        gitHubService.registerOtpValidate(map).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+    }
+
+    public void getUserLoginApi(HashMap<String, String> map) {
+        mCurrentTaskId = Constants.TaskId.login;
+        setIsLoading(true);
+        gitHubService.userLogin(map).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+    }
+
+    public void userRegister() {
+        setIsLoading(true);
+        gitHubService.userRegister(requestbody, body).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+    }
 
     /**
      * Api callback to detect the Api response whether success or failure.
@@ -467,17 +499,27 @@ public abstract class BaseNetwork<T extends BaseResponse, N> implements Basecall
         @Override
         public void onResponse(Call<T> call, Response<T> response) {
             if (response.isSuccessful() && response.body() != null) {
-
-                if (response.body().success) {
-
+                if (response.body().success || response.body().tokenType != null) {
                     onSuccessfulApi(mCurrentTaskId, response.body());
                 } else {
-                    onFailureApi(mCurrentTaskId, new CustomException(response.body().errorCode, response.body().errorMessage));
+                    if (response.message() != null) {
+                        onFailureApi(mCurrentTaskId, new CustomException(response.message()));
+                    } else {
+                        String errorMsg = CommonUtils.converErrors(response.errorBody());
+                        Log.e("Response==", "respp===" + errorMsg);
+                        if (TextUtils.isEmpty(errorMsg))
+                            errorMsg = response.message();
+                        onFailureApi(mCurrentTaskId, new CustomException(errorMsg));
+                    }
+
                 }
             } else {
-                onFailureApi(mCurrentTaskId, new CustomException(500, Constants.HttpErrorMessage.INTERNAL_SERVER_ERROR));
+                String errorMsg = CommonUtils.converErrors(response.errorBody());
+                Log.e("Response==", "respp111===" + errorMsg);
+                if (TextUtils.isEmpty(errorMsg))
+                    errorMsg = response.message();
+                onFailureApi(mCurrentTaskId, new CustomException(errorMsg));
             }
-
         }
 
         @Override

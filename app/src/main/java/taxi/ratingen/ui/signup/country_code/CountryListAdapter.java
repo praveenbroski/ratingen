@@ -49,7 +49,7 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         viewHolder.countryName.setText(filteredDataList.get(i).name);
-        viewHolder.countryCode.setText("(" + filteredDataList.get(i).callingCode + ")");
+        viewHolder.countryCode.setText("(" + filteredDataList.get(i).dialCode + ")");
     }
 
     @Override
@@ -74,7 +74,7 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
             List<CountryListModel> newFilteredList = new ArrayList<>();
             if (!TextUtils.isEmpty(editable.toString())) {
                 for (CountryListModel row : primaryDataList) {
-                    if (row.name.toLowerCase().startsWith(strFilterable) || row.callingCode.contains(strFilterable)) {
+                    if (row.name.toLowerCase().startsWith(strFilterable) || row.dialCode.contains(strFilterable)) {
                         newFilteredList.add(row);
                     }
                 }
@@ -100,9 +100,9 @@ public class CountryListAdapter extends RecyclerView.Adapter<CountryListAdapter.
                 @Override
                 public void onClick(View v) {
                     String flag = "";
-                    String code = filteredDataList.get(getAdapterPosition()).callingCode;
+                    String code = filteredDataList.get(getAdapterPosition()).dialCode;
                     String name = filteredDataList.get(getAdapterPosition()).name;
-                    String countryId = filteredDataList.get(getAdapterPosition()).id;
+                    String countryId = filteredDataList.get(getAdapterPosition()).id + "";
                     String iso2 = filteredDataList.get(getAdapterPosition()).iso2;
                     countryListNavigator.clickedItem(flag, code, name, countryId, iso2);
                 }

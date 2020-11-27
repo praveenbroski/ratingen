@@ -28,7 +28,6 @@
                 android:layout_height="@dimen/_18sdp"
                 android:layout_marginStart="@dimen/_15sdp"
                 android:layout_marginTop="@dimen/_35sdp"
-                android:onClick="@{viewModel::onclickEditNumber}"
                 app:srcCompat="@drawable/back_nav" />
 
             <TextView
@@ -79,6 +78,7 @@
                         android:text="@{viewModel.translationModel.txt_pin_sent}"
                         android:textColor="@color/clr_222B45"
                         android:textSize="@dimen/_12sdp" />
+
                     <TextView
                         style="@style/TextViewTheme"
                         android:layout_width="wrap_content"
@@ -87,7 +87,7 @@
                         android:text="@{viewModel.phoneNumber}"
                         android:onClick="@{viewModel::onclickEditNumber}"
                         android:textColor="@color/clr_ACB1C0"
-                        android:layout_marginLeft="@dimen/_2sdp"
+                        android:layout_marginStart="@dimen/_2sdp"
                         android:inputType="number"
                         android:textSize="@dimen/_12sdp" />
 
@@ -141,7 +141,7 @@
                         android:background="@drawable/btn_primary"
                         android:fontFamily="@font/sf_semibold"
                         android:gravity="center"
-                        android:onClick="@{viewModel::onclickverfiy}"
+                        android:onClick="@{viewModel::onClickVerify}"
                         android:text="@{viewModel.translationModel.text_verify_otp}"
                         android:textColor="@color/buttonTextColor"
                         android:textSize="@dimen/_14sdp" />
@@ -179,9 +179,7 @@
 
                 </LinearLayout>
 
-
             </LinearLayout>
-
 
             <include
                 android:id="@+id/progressBar"

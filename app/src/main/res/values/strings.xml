@@ -212,6 +212,8 @@
     <string name="txt_schedule_ride_desc">txt_schedule_ride_desc</string>
     <string name="txt_ConfirmBooking">txt_ConfirmBooking</string>
     <string name="txt_open_link">Open link</string>
+    <string name="txt_resend_to">Resend to</string>
+    <string name="txt_cancel">Cancel</string>
 
 
 </resources>

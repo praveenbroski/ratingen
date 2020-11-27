@@ -9,17 +9,17 @@ import taxi.ratingen.ui.base.BaseView;
 
 public interface OTPNavigator extends BaseView {
 
-    public String getOpt();
+    String getOpt();
 
-    public void openSinupuActivity();
+    void openSignUpActivity();
 
-    public void FinishAct();
+    void FinishAct();
 
-    public void openHomeActivity();
+    void openHomeActivity();
 
     void startTimer(int resendTimer);
 
-    void resendOtp();
-
     BaseActivity getBaseAct();
+
+    void openResendAlert();
 }

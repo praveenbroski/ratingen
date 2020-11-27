@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -16,10 +15,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/clr_white"
-        android:fitsSystemWindows="true"
-        android:onClick="@{viewModel::onClickOutSide}"
-        tools:ignore="TooDeepLayout, ContentDescription, UselessParent, HardcodedText, Autofill">
+        android:background="@color/clr_white">
 
         <ScrollView
             android:id="@+id/reg_scroll"
@@ -35,131 +31,47 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:onClick="@{viewModel::onClickOutSide}">
+                    android:layout_height="match_parent">
 
                     <RelativeLayout
                         android:id="@+id/header"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <RelativeLayout
-                            android:id="@+id/rl_tb"
-                            android:layout_width="match_parent"
-                            android:layout_height="?attr/actionBarSize">
-
-                            <ImageButton
-                                android:background="?attr/selectableItemBackgroundBorderless"
-                                android:id="@+id/back_img"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_15sdp"
-                                android:layout_centerVertical="true"
-                                android:onClick="@{viewModel::goBack}"
-                                app:srcCompat="@drawable/back_nav" />
-
-                        </RelativeLayout>
+                        <ImageView
+                            android:id="@+id/back_img"
+                            android:layout_width="@dimen/_18sdp"
+                            android:layout_height="@dimen/_18sdp"
+                            android:layout_marginStart="@dimen/_15sdp"
+                            android:layout_marginTop="@dimen/_35sdp"
+                            app:srcCompat="@drawable/back_nav" />
 
                         <TextView
                             android:id="@+id/signup"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/rl_tb"
+                            android:layout_below="@+id/back_img"
                             android:layout_marginStart="@dimen/_20sdp"
-                            android:layout_marginTop="@dimen/_4sdp"
+                            android:layout_marginTop="@dimen/_30sdp"
                             android:fontFamily="@font/sf_semibold"
-                            android:text="@{viewModel.translationModel.text_sign_up}"
+                            android:text="@{viewModel.translationModel.txt_sign_up}"
                             android:textColor="@color/clr_222B45"
-                            android:textSize="@dimen/_25sdp" />
-
+                            android:textSize="@dimen/_30sdp" />
 
                     </RelativeLayout>
-
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/header"
                         android:layout_marginLeft="@dimen/_12sdp"
-                        android:layout_marginTop="@dimen/_5sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
                         android:layout_marginRight="@dimen/_12sdp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
-
-
-                            <LinearLayout
-                                android:id="@+id/layout_social_signup"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/_8sdp"
-                                android:orientation="vertical"
-                                android:visibility="gone">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content">
-
-                                    <androidx.legacy.widget.Space
-                                        android:layout_width="0dp"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="1" />
-
-                                    <Button
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="@dimen/_30sdp"
-                                        android:background="@drawable/curved_border_fb_bg"
-                                        android:onClick="@{viewModel::onClickFacebook}"
-                                        android:paddingLeft="@dimen/_40sdp"
-                                        android:paddingRight="@dimen/_40sdp"
-                                        android:text="facebook"
-                                        android:textAllCaps="false"
-                                        android:textColor="@color/clr_white"
-                                        app:Buttonfont="@{`Padauk.ttf`}" />
-
-                                    <!-- android:text="@{viewModel.translationModel.text_log_in}"-->
-
-                                    <androidx.legacy.widget.Space
-                                        android:layout_width="0dp"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="1" />
-
-                                    <Button
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="@dimen/_30sdp"
-                                        android:background="@drawable/curved_border_gplus_bg"
-                                        android:onClick="@{viewModel::onClickGoogle}"
-                                        android:paddingLeft="@dimen/_40sdp"
-                                        android:paddingRight="@dimen/_40sdp"
-                                        android:text="Google"
-                                        android:textAllCaps="false"
-                                        android:textColor="@color/clr_white"
-                                        app:Buttonfont="@{`Padauk.ttf`}" />
-
-                                    <!-- android:text="@string/text_sign_up"-->
-
-                                    <androidx.legacy.widget.Space
-                                        android:layout_width="0dp"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="1" />
-
-                                </LinearLayout>
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_margin="@dimen/_8sdp"
-                                    android:gravity="center"
-                                    android:text="or"
-                                    android:textColor="@android:color/black"
-                                    android:textSize="@dimen/_12sdp"
-                                    app:textfont="@{`Laksaman.ttf`}" />
-
-                            </LinearLayout>
-
-                            <!-- android:layout_marginTop="@dimen/_10sdp"-->
 
                             <LinearLayout
                                 android:id="@+id/layout_fname_lanme_signup"
@@ -177,19 +89,18 @@
                                     android:digits="abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                                     android:fontFamily="@font/sf_regular"
                                     android:gravity="center_vertical"
-                                    android:hint="@{viewModel.translationModel.hint_first_name}"
+                                    android:hint="@{viewModel.translationModel.text_firstname}"
+                                    android:text="@={viewModel.userFName}"
                                     android:inputType="text"
                                     android:maxLength="@integer/limit_first_name"
                                     android:paddingStart="@dimen/_10sdp"
                                     android:paddingEnd="@dimen/_5sdp"
-                                    android:text="@={viewModel.FirstName}"
-                                    android:textColorHint="@color/clr_8F9BB3"
                                     android:textColor="@color/clr_222B45"
                                     android:textSize="@dimen/_12sdp" />
 
                                 <!-- android:hint="@string/hint_first_name"-->
 
-                                <androidx.legacy.widget.Space
+                                <Space
                                     android:layout_width="@dimen/_5sdp"
                                     android:layout_height="match_parent" />
 
@@ -203,13 +114,12 @@
                                     android:digits="abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                                     android:fontFamily="@font/sf_regular"
                                     android:gravity="center_vertical"
-                                    android:hint="@{viewModel.translationModel.hint_last_name}"
+                                    android:hint="@{viewModel.translationModel.text_lastname}"
+                                    android:text="@={viewModel.userLName}"
                                     android:inputType="text"
                                     android:maxLength="@integer/limit_last_name"
                                     android:paddingStart="@dimen/_10sdp"
                                     android:paddingEnd="@dimen/_5sdp"
-                                    android:text="@={viewModel.LastName}"
-                                    android:textColorHint="@color/clr_8F9BB3"
                                     android:textColor="@color/clr_222B45"
                                     android:textSize="@dimen/_12sdp" />
 
@@ -227,13 +137,13 @@
                                 android:fontFamily="@font/sf_regular"
                                 android:gravity="center_vertical"
                                 android:hint="@{viewModel.translationModel.hint_email_id}"
+                                android:text="@={viewModel.userEmail}"
                                 android:inputType="textEmailAddress"
                                 android:layoutDirection="ltr"
                                 android:paddingStart="@dimen/_10sdp"
                                 android:paddingEnd="@dimen/_10sdp"
-                                android:text="@={viewModel.Email}"
-                                android:textColorHint="@color/clr_8F9BB3"
                                 android:textColor="@color/clr_222B45"
+                                android:imeOptions="actionDone"
                                 android:textDirection="ltr"
                                 android:textSize="@dimen/_12sdp" />
 
@@ -246,7 +156,6 @@
                                 android:textAllCaps="true"
                                 android:textColor="@color/clr_8992A3"
                                 android:textSize="@dimen/_11sdp" />
-
 
                             <LinearLayout
                                 android:id="@+id/LinearForgot"
@@ -271,18 +180,15 @@
                                         android:layout_marginStart="@dimen/_10sdp"
                                         android:enabled="false"
                                         android:fontFamily="@font/sf_regular"
-                                        android:hint="+91"
+                                        android:hint=""
+                                        android:text="@{viewModel.userCountryCode}"
                                         android:layoutDirection="ltr"
-                                        android:maxLength="5"
+                                        android:gravity="center"
                                         android:paddingEnd="@dimen/_15sdp"
-                                        android:text="@={viewModel.countryForDisplay}"
-                                        android:textColorHint="@color/clr_8F9BB3"
                                         android:textColor="@color/clr_222B45"
                                         android:textSize="@dimen/_12sdp" />
 
-
                                 </LinearLayout>
-
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
@@ -301,11 +207,10 @@
                                         android:cursorVisible="false"
                                         android:enabled="false"
                                         android:fontFamily="@font/sf_regular"
-                                        android:hint="@{viewModel.translationModel.hint_phone_number}"
                                         android:inputType="phone"
                                         android:layoutDirection="ltr"
-                                        android:text="@={viewModel.phoneForDisplay}"
-                                        android:textColorHint="@color/clr_8F9BB3"
+                                        android:text="@{viewModel.userPhone}"
+                                        android:maxLength="@integer/limit_phone_number"
                                         android:textColor="@color/clr_222B45"
                                         android:textSize="@dimen/_12sdp" />
 
@@ -325,8 +230,9 @@
                                 <ImageView
                                     android:id="@+id/signupFlag"
                                     android:layout_width="@dimen/_26sdp"
-                                    android:layout_height="match_parent"
-                                    android:visibility="@{viewModel.isSocialLogin ? View.VISIBLE : View.GONE}" />
+                                    android:layout_height="match_parent" />
+
+                                <!--                                android:visibility="@{viewModel.isSocialLogin ? View.VISIBLE : View.GONE}"-->
 
                                 <EditText
                                     android:id="@+id/edit_country_code_signup"
@@ -340,10 +246,7 @@
                                     android:inputType="phone"
                                     android:layoutDirection="ltr"
                                     android:maxLength="5"
-                                    android:text="@={viewModel.Countrycode}"
-                                    android:textColor="@android:color/darker_gray"
-                                    android:visibility="@{viewModel.isSocialLogin ? View.VISIBLE : View.GONE}"
-                                    app:Editfont="@{`Padauk.ttf`}" />
+                                    android:textColor="@android:color/darker_gray" />
 
                                 <!-- android:afterTextChanged="@{viewModel.onUsernameChanged}" -->
 
@@ -354,12 +257,9 @@
                                     android:layout_marginLeft="0dp"
                                     android:layout_marginRight="0dp"
                                     android:layout_weight="1"
-                                    android:hint="@{viewModel.translationModel.hint_phone_number}"
                                     android:inputType="phone"
                                     android:layoutDirection="ltr"
-                                    android:maxLength="30"
-                                    android:text="@={viewModel.EmailorPhone}"
-                                    app:Editfont="@{`Padauk.ttf`}" />
+                                    android:maxLength="30" />
 
                             </LinearLayout>
 
@@ -371,16 +271,23 @@
                                 <LinearLayout
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:orientation="horizontal">
+                                    android:orientation="horizontal"
+                                    android:gravity="center_vertical"
+                                    android:layout_marginTop="@dimen/_8sdp">
 
+                                    <androidx.appcompat.widget.AppCompatCheckBox
+                                        android:layout_width="25dp"
+                                        android:layout_height="20dp"
+                                        android:checked="@={viewModel.isTermsAccepted}"
+                                        app:buttonTint="@color/colorPrimary"/>
 
                                     <TextView
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginTop="@dimen/_10sdp"
                                         android:fontFamily="@font/sf_regular"
                                         android:gravity="center"
-                                        android:text="By clicking Signup you agree to our"
+                                        android:layout_marginStart="@dimen/_8sdp"
+                                        android:text="@{viewModel.translationModel.txt_click_signup}"
                                         android:textColor="@color/clr_222B45"
                                         android:textSize="@dimen/_10sdp" />
 
@@ -389,9 +296,8 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginStart="@dimen/_2sdp"
-                                        android:layout_marginTop="@dimen/_10sdp"
                                         android:fontFamily="@font/sf_regular"
-                                        android:text="terms and condition"
+                                        android:text="@{viewModel.translationModel.text_tos_underline}"
                                         android:textColor="@color/clr_222B45"
                                         android:textSize="@dimen/_10sdp" />
 
@@ -401,13 +307,14 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="@dimen/_3sdp"
+                                    android:layout_marginStart="35dp"
                                     android:orientation="horizontal">
 
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:fontFamily="@font/sf_regular"
-                                        android:text="as well as our"
+                                        android:text="@{viewModel.translationModel.txt_as_wel}"
                                         android:textColor="@color/clr_222B45"
                                         android:textSize="@dimen/_10sdp" />
 
@@ -417,12 +324,11 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginStart="@dimen/_3sdp"
                                         android:fontFamily="@font/sf_regular"
-                                        android:text="privacy policy"
+                                        android:text="@{viewModel.translationModel.txt_privacy_policy}"
                                         android:textColor="@color/clr_222B45"
                                         android:textSize="@dimen/_10sdp" />
 
                                 </LinearLayout>
-
 
                             </LinearLayout>
 
@@ -435,9 +341,10 @@
                                 android:layout_marginTop="@dimen/_30sdp"
                                 android:layout_marginRight="@dimen/_20sdp"
                                 android:clickable="true"
+                                android:focusable="true"
                                 android:gravity="end"
-                                android:onClick="@{viewModel::onclicksignup}"
                                 android:orientation="horizontal"
+                                android:onClick="@{viewModel::onClickSignUp}"
                                 app:cardBackgroundColor="@color/clr_FB4A46"
                                 app:cardCornerRadius="@dimen/_3sdp">
 
@@ -445,39 +352,15 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
-                                    android:fontFamily="@font/sf_medium"
+                                    android:fontFamily="@font/sf_regular"
                                     android:gravity="center_horizontal"
                                     android:padding="@dimen/_8sdp"
                                     android:text="@{viewModel.translationModel.text_sign_up}"
                                     android:textAllCaps="true"
-                                    android:textColor="@color/buttonTextColor"
+                                    android:textColor="@color/clr_white"
                                     android:textSize="@dimen/_12sdp" />
+
                             </androidx.cardview.widget.CardView>
-
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginTop="@dimen/_50sdp"
-                                android:layout_marginBottom="@dimen/_14sdp"
-                                android:gravity="bottom|center_horizontal"
-                                android:visibility="gone">
-
-                                <Button
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="@dimen/_30sdp"
-                                    android:background="@drawable/curved_border_background"
-                                    android:onClick="@{viewModel::onclicksignup}"
-                                    android:paddingLeft="@dimen/_30sdp"
-                                    android:paddingRight="@dimen/_30sdp"
-                                    android:text="@{viewModel.translationModel.text_sign_up}"
-                                    android:textAllCaps="false"
-                                    android:textColor="@color/buttonTextColor"
-                                    app:Buttonfont="@{`Padauk.ttf`}" />
-
-                                <!-- android:text="@string/text_sign_up"-->
-
-                            </LinearLayout>
 
                         </LinearLayout>
 
@@ -489,10 +372,10 @@
 
         </ScrollView>
 
-                <include
-                    android:id="@+id/progressBar"
-                    layout="@layout/progress_dialog"
-                    android:visibility="@{viewModel.mIsLoading ? View.VISIBLE : View.GONE}" />
+        <include
+            android:id="@+id/progressBar"
+            layout="@layout/progress_dialog"
+            android:visibility="@{viewModel.mIsLoading ? View.VISIBLE : View.GONE}" />
 
     </RelativeLayout>
 
