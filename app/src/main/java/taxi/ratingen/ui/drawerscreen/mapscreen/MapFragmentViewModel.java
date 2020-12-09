@@ -978,8 +978,7 @@ public class MapFragmentViewModel extends BaseNetwork<User, MapNavigator> implem
     @BindingAdapter("setProfileImage")
     public static void setProfileImage(ImageView imageView, String url) {
         Context context = imageView.getContext();
-        String imageUrl = Constants.URL.profileBaseURL + url;
-        Glide.with(context).load(imageUrl)
+        Glide.with(context).load(url)
                 .apply(RequestOptions.circleCropTransform()
                         .override(57, 57)
                         .error(R.drawable.ic_menu_ham)
