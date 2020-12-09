@@ -22,4 +22,7 @@ public interface OTPNavigator extends BaseView {
     BaseActivity getBaseAct();
 
     void openResendAlert();
+
+    void finishActWithResult();
+
 }

@@ -59,7 +59,7 @@
                     android:layout_above="@+id/view_name_line"
                     android:layout_marginBottom="@dimen/_3sdp"
                     android:hint="@string/text_firstname"
-                    android:text='@{String.format("%s %s", viewModel.firstName, viewModel.lastName)}'
+                    android:text='@{viewModel.fullName}'
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textColor="@color/clr_white"
                     android:textSize="@dimen/_15sdp"

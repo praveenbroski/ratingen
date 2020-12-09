@@ -28,6 +28,9 @@ public class CountryListModel implements Parcelable {
     @SerializedName("flag")
     @Expose
     public String flag;
+    @SerializedName("code")
+    @Expose
+    public String code;
 
     protected CountryListModel(Parcel in) {
         id = in.readInt();
@@ -37,6 +40,7 @@ public class CountryListModel implements Parcelable {
         iso3 = in.readString();
         dialCode = in.readString();
         flag = in.readString();
+        code = in.readString();
     }
 
     public static final Creator<CountryListModel> CREATOR = new Creator<CountryListModel>() {
@@ -65,5 +69,6 @@ public class CountryListModel implements Parcelable {
         parcel.writeString(iso3);
         parcel.writeString(dialCode);
         parcel.writeString(flag);
+        parcel.writeString(code);
     }
 }

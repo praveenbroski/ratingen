@@ -81,6 +81,9 @@ public class OTPViewModel extends BaseNetwork<BaseResponse, OTPNavigator> {
                     if (RegOrLogin.get().equalsIgnoreCase("1")) {
                         /* Move to register */
                         getmNavigator().openSignUpActivity();
+                    } else if (RegOrLogin.get().equalsIgnoreCase("3")) {
+                        /* Move to change mobile number */
+                        getmNavigator().finishActWithResult();
                     }
                 }
             }
@@ -101,7 +104,7 @@ public class OTPViewModel extends BaseNetwork<BaseResponse, OTPNavigator> {
                 Map.put(Constants.NetworkParameters.UUId, UUIDValue.get());
                 Map.put(Constants.NetworkParameters.OTP, getmNavigator().getOpt());
                 Map.put(Constants.NetworkParameters.device_token, sharedPrefence.Getvalue(SharedPrefence.FCMTOKEN));
-                if (RegOrLogin.get().equalsIgnoreCase("1"))
+                if (RegOrLogin.get().equalsIgnoreCase("1") || RegOrLogin.get().equalsIgnoreCase("3"))
                     registerOtpValidate(Map);
                 else {
                     Map.clear();
@@ -131,7 +134,7 @@ public class OTPViewModel extends BaseNetwork<BaseResponse, OTPNavigator> {
             Map.clear();
             Map.put(Constants.NetworkParameters.country, CountryId.get());
             Map.put(Constants.NetworkParameters.mobile, phoneNumber.get());
-            if (RegOrLogin.get().equalsIgnoreCase("1"))
+            if (RegOrLogin.get().equalsIgnoreCase("1") || RegOrLogin.get().equalsIgnoreCase("3"))
                 sendRegisterOtp(Map);
             else if (RegOrLogin.get().equalsIgnoreCase("2"))
                 sendLoginOtp(Map);

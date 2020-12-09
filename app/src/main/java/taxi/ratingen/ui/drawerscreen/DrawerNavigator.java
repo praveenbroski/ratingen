@@ -29,4 +29,7 @@ public interface DrawerNavigator extends BaseView{
     void openCloseDrawer();
 
     void onClickNotification();
+
+    void setImageURL(String url);
+
 }

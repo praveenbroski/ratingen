@@ -21,8 +21,9 @@ import taxi.ratingen.R;
 import taxi.ratingen.retro.base.BaseNetwork;
 import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.GitHubService;
-import taxi.ratingen.retro.responsemodel.So;
-import taxi.ratingen.retro.responsemodel.User;
+import taxi.ratingen.retro.responsemodel.ProfileModel;
+import taxi.ratingen.retro.responsemodel.ReqInProgress;
+import taxi.ratingen.retro.responsemodel.TaxiRequestModel;
 import taxi.ratingen.utilz.CommonUtils;
 import taxi.ratingen.utilz.Constants;
 import taxi.ratingen.utilz.exception.CustomException;
@@ -42,7 +43,6 @@ public class DrawerViewModel extends BaseNetwork<BaseResponse, DrawerNavigator> 
 
     Gson gson;
 
-
     SharedPrefence sharedPrefence;
 
     @Inject
@@ -52,8 +52,7 @@ public class DrawerViewModel extends BaseNetwork<BaseResponse, DrawerNavigator> 
     public ObservableField<String> Imageurl = new ObservableField<>("");
     public ObservableField<String> Email = new ObservableField<>("");
     public ObservableField<String> Phone = new ObservableField<>("");
-    public ObservableField<String> firstName = new ObservableField<>("");
-    public ObservableField<String> lastName = new ObservableField<>("");
+    public ObservableField<String> fullName = new ObservableField<>("");
     public ObservableField<String> rating = new ObservableField<>("");
     public ObservableBoolean isRatingCalled = new ObservableBoolean();
     public ObservableBoolean ratingUnread = new ObservableBoolean(false);
@@ -71,35 +70,17 @@ public class DrawerViewModel extends BaseNetwork<BaseResponse, DrawerNavigator> 
      * Set profile data's from API to variables
      **/
     void setupProfile() {
-        String userstr = sharedPrefence.Getvalue(SharedPrefence.USERDETAILS);
+        String userStr = sharedPrefence.Getvalue(SharedPrefence.USERDETAILS);
 
-        User user = CommonUtils.IsEmpty(userstr) ? null : gson.fromJson(userstr, User.class);
+        ProfileModel user = CommonUtils.IsEmpty(userStr) ? null : gson.fromJson(userStr, ProfileModel.class);
 
         if (user != null) {
-
-            if (!CommonUtils.IsEmpty(user.firstname)) {
-                firstName.set(user.firstname);
-            }
-            if (!CommonUtils.IsEmpty(user.lastname)) {
-                lastName.set(user.lastname);
-            }
-            if (!CommonUtils.IsEmpty(user.email.trim()))
-                Email.set(user.email);
-            else
-                Email.set("");
-
-            if (!CommonUtils.IsEmpty(user.phone.trim()))
-                Phone.set(user.phone);
-            else
-                Phone.set("");
-
-            if (!CommonUtils.IsEmpty(user.profilepic))
-                Imageurl.set(user.profilepic);
-
-            if (!CommonUtils.IsEmpty("" + user.ratings))
-                rating.set(String.valueOf(user.ratings));
+            fullName.set(CommonUtils.IsEmpty(user.getName()) ? "" : user.getName());
+            Email.set(CommonUtils.IsEmpty(user.getEmail()) ? "" : user.getEmail());
+            Phone.set(CommonUtils.IsEmpty(user.getMobile()) ? "" : user.getMobile());
+            Imageurl.set(CommonUtils.IsEmpty(user.getProfilePicture()) ? "" : user.getProfilePicture());
+            rating.set(user.getRating() + "");
         }
-
     }
 
     /**
@@ -108,11 +89,7 @@ public class DrawerViewModel extends BaseNetwork<BaseResponse, DrawerNavigator> 
     public void GetProfileRatings() {
         isRatingCalled.set(true);
         hashMap.clear();
-        hashMap.put(Constants.NetworkParameters.client_id, sharedPrefence.getCompanyID());
-        hashMap.put(Constants.NetworkParameters.client_token, sharedPrefence.getCompanyToken());
-        hashMap.put(Constants.NetworkParameters.id, sharedPrefence.Getvalue(SharedPrefence.ID));
-        hashMap.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
-        getUserProfile(hashMap);
+        getUserProfile();
 
     }
 
@@ -121,11 +98,6 @@ public class DrawerViewModel extends BaseNetwork<BaseResponse, DrawerNavigator> 
      **/
     public void RequestInProNetwork() {
         if (getmNavigator().isNetworkConnected()) {
-            hashMap.clear();
-            hashMap.put(Constants.NetworkParameters.client_id, sharedPrefence.getCompanyID());
-            hashMap.put(Constants.NetworkParameters.client_token, sharedPrefence.getCompanyToken());
-            hashMap.put(Constants.NetworkParameters.id, sharedPrefence.Getvalue(SharedPrefence.ID));
-            hashMap.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
             getRequestInProgressNetwork();
         }
     }
@@ -140,7 +112,7 @@ public class DrawerViewModel extends BaseNetwork<BaseResponse, DrawerNavigator> 
             hashMap.put(Constants.NetworkParameters.client_token, sharedPrefence.getCompanyToken());
             hashMap.put(Constants.NetworkParameters.id, sharedPrefence.Getvalue(SharedPrefence.ID));
             hashMap.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
-            GetFavListNetworkcall();
+//            GetFavListNetworkcall();
         } else {
             getmNavigator().showNetworkMessage();
         }
@@ -171,60 +143,81 @@ public class DrawerViewModel extends BaseNetwork<BaseResponse, DrawerNavigator> 
      **/
     @Override
     public void onSuccessfulApi(long taskId, BaseResponse response) {
-        // System.out.println("+BaseResponse+"+response.successMessage+"sossize"+response.getSos()!=null?response.getSos().size():"dd"+"favsize"+response.getFavplace()!=null?response.getFavplace().size():"null");
         System.out.println("++" + response.toString());
         setIsLoading(false);
-        if (response.successMessage.equalsIgnoreCase("user request inprogress")) {
+        if (response.message.equalsIgnoreCase("request_in_progress")) {
             getmNavigator().enableCorporateUser(sharedPrefence.GetBoolean(SharedPrefence.IS_CORPORATE_USER));
-            if (response.request != null) {
-                if (response.request != null && response.request.driver != null) {
+            ReqInProgress model = CommonUtils.getSingleObject(new Gson().toJson(response.data), ReqInProgress.class);
 
-                    if (response.request.isCompleted == 1) {
-                        getmNavigator().ShowFeedbackFragment(response.request, response.isCorporate == 1);
-                    } else {
-                        if (response.request.later != null && response.request.later == 1) {
-                            getmNavigator().openRideLaterAlert(response.request, response.request.driver);
+            if (model != null) {
+                if (model.getOnTripRequest() != null) {
+                    String requestString = gson.toJson(model.getOnTripRequest());
+                    TaxiRequestModel.Result metaRequest = CommonUtils.getSingleObject(requestString, TaxiRequestModel.Result.class);
+                    if (metaRequest != null) {
+                        if (metaRequest.resultData != null) {
+                            if (metaRequest.resultData.isCompleted == 1) {
+//                            getmNavigator().ShowFeedbackFragment(metaRequest.resultData, false);
+                            } else {
+                                if (metaRequest.resultData.isLater != null && metaRequest.resultData.isLater == 1) {
+//                                    getmNavigator().openRideLaterAlert(metaRequest.requestData, metaRequest.requestData.driverDetail.driverData);
+                                } else {
+//                                getmNavigator().showTripFragment(metaRequest.resultData, metaRequest.resultData.driverDetail.driverData);
+                                }
+                            }
                         } else
-                            getmNavigator().ShowTripFragment(response.request, response.request.driver);
-                    }
+                            showMapScreen(model);
+                    } else
+                        showMapScreen(model);
                 } else
-                    getmNavigator().ShowMapFragment();
-            } else {
-                getmNavigator().ShowMapFragment();
+                    showMapScreen(model);
             }
 
-
-            if (response.getSos() != null && response.getSos().size() != 0) {
-
-                if (response.getUserSos() != null && response.getUserSos().size() != 0) {
-                    So so = new So();
-                    so.number = response.getUserSos().get(0).number;
-                    so.name = response.getUserSos().get(0).name;
-                    response.getSos().add(so);
-                    sharedPrefence.savevalue(SharedPrefence.SOSLIST, gson.toJson(response));
-
-                } else {
-                    sharedPrefence.savevalue(SharedPrefence.SOSLIST, gson.toJson(response));
-                }
-
-            }
-
-
-        } else if (response.successMessage.equalsIgnoreCase("Favorite_Added_Successfully")) {
+//            getmNavigator().enableCorporateUser(sharedPrefence.GetBoolean(SharedPrefence.IS_CORPORATE_USER));
+//            if (response.request != null) {
+//                if (response.request != null && response.request.driver != null) {
+//
+//                    if (response.request.isCompleted == 1) {
+//                        getmNavigator().ShowFeedbackFragment(response.request, response.isCorporate == 1);
+//                    } else {
+//                        if (response.request.later != null && response.request.later == 1) {
+//                            getmNavigator().openRideLaterAlert(response.request, response.request.driver);
+//                        } else
+//                            getmNavigator().ShowTripFragment(response.request, response.request.driver);
+//                    }
+//                } else
+//                    getmNavigator().ShowMapFragment();
+//            } else {
+//                getmNavigator().ShowMapFragment();
+//            }
+//
+//            if (response.getSos() != null && response.getSos().size() != 0) {
+//                if (response.getUserSos() != null && response.getUserSos().size() != 0) {
+//                    So so = new So();
+//                    so.number = response.getUserSos().get(0).number;
+//                    so.name = response.getUserSos().get(0).name;
+//                    response.getSos().add(so);
+//                    sharedPrefence.savevalue(SharedPrefence.SOSLIST, gson.toJson(response));
+//                } else {
+//                    sharedPrefence.savevalue(SharedPrefence.SOSLIST, gson.toJson(response));
+//                }
+//            }
+        } else if (response.message.equalsIgnoreCase("Favorite_Added_Successfully")) {
             if (response.getFavplace().size() > 0) {
                 String Favlist = gson.toJson(response);
                 sharedPrefence.savevalue(SharedPrefence.FAVLIST, Favlist);
             }
-
-        } else if (response.successMessage.equalsIgnoreCase("Profile Listed succesfully")) {
+        } else if (response.message.equalsIgnoreCase("user_profile")) {
             setIsLoading(false);
             isRatingCalled.set(false);
-            String userstring = gson.toJson(response.getUser());
-            sharedPrefence.savevalue(SharedPrefence.USERDETAILS, userstring);
+            String userString = gson.toJson(response.data);
+            sharedPrefence.savevalue(SharedPrefence.USERDETAILS, userString);
             //  getmNavigator().refreshDrawerActivity();
             setupProfile();
+        } else if (response.message.equalsIgnoreCase("success")) {
+            if (taskId == Constants.TaskId.LOGOUT) {
+                getmNavigator().logout();
+            }
         }
-
     }
 
     /**
@@ -257,6 +250,13 @@ public class DrawerViewModel extends BaseNetwork<BaseResponse, DrawerNavigator> 
         return hashMap;
     }
 
+    private void showMapScreen(ReqInProgress model) {
+        if (model.getProfilePicture() != null) {
+            Imageurl.set(model.getProfilePicture());
+        }
+        getmNavigator().ShowMapFragment();
+    }
+
     Dialog logoutDialog;
 
     /**
@@ -282,7 +282,7 @@ public class DrawerViewModel extends BaseNetwork<BaseResponse, DrawerNavigator> 
         okyTxt.setText(getmNavigator().getBaseAct().getTranslatedString(R.string.text_ok));
         cancel_txt.setText(getmNavigator().getBaseAct().getTranslatedString(R.string.text_cancel));
 
-        okay.setOnClickListener(v -> getmNavigator().logout());
+        okay.setOnClickListener(v -> Logout());
 
         cancel.setOnClickListener(v -> logoutDialog.dismiss());
 

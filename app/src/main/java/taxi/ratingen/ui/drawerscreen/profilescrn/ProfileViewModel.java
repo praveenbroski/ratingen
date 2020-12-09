@@ -25,7 +25,7 @@ import taxi.ratingen.R;
 import taxi.ratingen.retro.base.BaseNetwork;
 import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.GitHubService;
-import taxi.ratingen.retro.responsemodel.User;
+import taxi.ratingen.retro.responsemodel.ProfileModel;
 import taxi.ratingen.utilz.CommonUtils;
 import taxi.ratingen.utilz.Constants;
 import taxi.ratingen.utilz.exception.CustomException;
@@ -59,8 +59,7 @@ public class ProfileViewModel extends BaseNetwork<BaseResponse, ProfileNavigator
     Gson gson;
     SharedPrefence sharedPrefence;
     public ObservableField<String> Email = new ObservableField<>("");
-    public ObservableField<String> LastName = new ObservableField<>("");
-    public ObservableField<String> FirstName = new ObservableField<>("");
+    public ObservableField<String> fullName = new ObservableField<>("");
     public ObservableField<String> cnf_Password = new ObservableField<>("");
     public ObservableField<String> Password = new ObservableField<>("");
     public ObservableField<String> new_Password = new ObservableField<>("");
@@ -100,21 +99,19 @@ public class ProfileViewModel extends BaseNetwork<BaseResponse, ProfileNavigator
     @Override
     public void onSuccessfulApi(long taskId, BaseResponse response) {
         setIsLoading(false);
-        if (response.successMessage.equalsIgnoreCase("Profile Updated Successfully")) {
-            setIsLoading(false);
-            if (response.success) {
-                //  getmNavigator().showMessage(getmNavigator().getAttachedContext().getString(R.string.Txt_updateSuccess));
-                String userstring = gson.toJson(response.getUser());
-                sharedPrefence.savevalue(SharedPrefence.USERDETAILS, userstring);
+        if (response.message.equalsIgnoreCase("success")) {
+            if (mCurrentTaskId == Constants.TaskId.PROFILE_UPDATE) {
+                getmNavigator().showMessage(getmNavigator().getBaseAct().getTranslatedString(R.string.Txt_updateSuccess));
+                String userString = gson.toJson(response.data);
+                sharedPrefence.savevalue(SharedPrefence.USERDETAILS, userString);
                 getmNavigator().SendBroadcast();
-                Toast.makeText(context, response.successMessage, Toast.LENGTH_SHORT).show();
-//                getmNavigator().finishAct();
                 Intent intent = new Intent(Constants.ProfileUpdate);
                 LocalBroadcastManager.getInstance(getmNavigator().getBaseAct()).sendBroadcast(intent);
+                setUserDetails();
             }
-        } else if (response.successMessage.equalsIgnoreCase("Profile Listed succesfully")) {
-            String userstring = gson.toJson(response.getUser());
-            sharedPrefence.savevalue(SharedPrefence.USERDETAILS, userstring);
+        } else if (response.message.equalsIgnoreCase("user_profile")) {
+            String userString = gson.toJson(response.data);
+            sharedPrefence.savevalue(SharedPrefence.USERDETAILS, userString);
             //  getmNavigator().refreshDrawerActivity();
             setUserDetails();
         }
@@ -164,37 +161,26 @@ public class ProfileViewModel extends BaseNetwork<BaseResponse, ProfileNavigator
 
     /** Set user details data to variable from API **/
     public void setUserDetails() {
-        String userstr = sharedPrefence.Getvalue(SharedPrefence.USERDETAILS);
+        String userStr = sharedPrefence.Getvalue(SharedPrefence.USERDETAILS);
 
-        User user = CommonUtils.IsEmpty(userstr) ? null : gson.fromJson(userstr, User.class);
+        ProfileModel user = CommonUtils.IsEmpty(userStr) ? null : gson.fromJson(userStr, ProfileModel.class);
         if (user != null) {
-            if (!CommonUtils.IsEmpty(user.firstname.trim())) {
-                FirstName.set(user.firstname);
-            }
-            if (!CommonUtils.IsEmpty(user.lastname.trim())) {
-                LastName.set(user.lastname);
-            }
-            if (!CommonUtils.IsEmpty(user.email.trim()))
-                Email.set(user.email);
-
-            if (!CommonUtils.IsEmpty(user.profilepic)) {
-                genericsType.set(user.profilepic);
+            fullName.set(CommonUtils.IsEmpty(user.getName()) ? "" : user.getName());
+            Email.set(CommonUtils.IsEmpty(user.getEmail()) ? "" : user.getEmail());
+            if (!CommonUtils.IsEmpty(user.getProfilePicture())) {
+                genericsType.set(user.getProfilePicture());
                 bitmap_profilePicture.set(genericsType);
             }
-            if (!CommonUtils.IsEmpty(user.phone.trim()))
-                Phone_Number.set(user.phone);
-            if (!CommonUtils.IsEmpty("" + user.ratings))
-                userReview.set(user.ratings);
+            Phone_Number.set(CommonUtils.IsEmpty(user.getMobile()) ? "" : user.getMobile());
+            userReview.set(user.getRating());
         }
     }
 
     /** Validate profile form data to check if values are not empty and in required format **/
     private boolean validateNetworkParametrsToAPI(View view) {
         String msg = null;
-        if (CommonUtils.IsEmpty(FirstName.get().trim()))
+        if (CommonUtils.IsEmpty(fullName.get().trim()))
             msg = getmNavigator().getBaseAct().getTranslatedString(R.string.Validate_FirstName);
-        else if (CommonUtils.IsEmpty(LastName.get().trim()))
-            msg = getmNavigator().getBaseAct().getTranslatedString(R.string.Validate_LastName);
         else if (!CommonUtils.IsEmpty(Email.get().trim())) {
             if (!CommonUtils.isEmailValid(Email.get().trim()))
                 msg = getmNavigator().getBaseAct().getTranslatedString(R.string.Validate_Email);
@@ -208,12 +194,7 @@ public class ProfileViewModel extends BaseNetwork<BaseResponse, ProfileNavigator
             if (getmNavigator().isNetworkConnected()) {
                 setIsLoading(true);
                 requestbody.clear();
-                requestbody.put(Constants.NetworkParameters.client_id, RequestBody.create(MediaType.parse("text/plain"), sharedPrefence.getCompanyID()));
-                requestbody.put(Constants.NetworkParameters.client_token, RequestBody.create(MediaType.parse("text/plain"), sharedPrefence.getCompanyToken()));
-                requestbody.put(Constants.NetworkParameters.id, RequestBody.create(MediaType.parse("text/plain"), sharedPrefence.Getvalue(SharedPrefence.ID)));
-                requestbody.put(Constants.NetworkParameters.token, RequestBody.create(MediaType.parse("text/plain"), sharedPrefence.Getvalue(SharedPrefence.TOKEN)));
-                requestbody.put(Constants.NetworkParameters.firstname, RequestBody.create(MediaType.parse("text/plain"), FirstName.get()));
-                requestbody.put(Constants.NetworkParameters.lastname, RequestBody.create(MediaType.parse("text/plain"), LastName.get()));
+                requestbody.put(Constants.NetworkParameters.name, RequestBody.create(MediaType.parse("text/plain"), fullName.get()));
 
                 if (!CommonUtils.IsEmpty(Password.get())) {
                     requestbody.put(Constants.NetworkParameters.new_password, RequestBody.create(MediaType.parse("text/plain"), new_Password.get()));
@@ -227,7 +208,7 @@ public class ProfileViewModel extends BaseNetwork<BaseResponse, ProfileNavigator
                     RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), RealFile);
                     body = MultipartBody.Part.createFormData("profile_pic", RealFile.getName(), reqFile);
                 }
-                ProfileNetworkcall();
+                ProfileNetworkCall();
             }
         }
         return false;
@@ -257,16 +238,14 @@ public class ProfileViewModel extends BaseNetwork<BaseResponse, ProfileNavigator
     private void uploadProfilePicture() {
         if (getmNavigator().isNetworkConnected()) {
             requestbody.clear();
-            requestbody.put(Constants.NetworkParameters.client_id, RequestBody.create(MediaType.parse("text/plain"), sharedPrefence.getCompanyID()));
-            requestbody.put(Constants.NetworkParameters.client_token, RequestBody.create(MediaType.parse("text/plain"), sharedPrefence.getCompanyToken()));
-            requestbody.put(Constants.NetworkParameters.id, RequestBody.create(MediaType.parse("text/plain"), sharedPrefence.Getvalue(SharedPrefence.ID)));
-            requestbody.put(Constants.NetworkParameters.token, RequestBody.create(MediaType.parse("text/plain"), sharedPrefence.Getvalue(SharedPrefence.TOKEN)));
+            requestbody.put(Constants.NetworkParameters.name, RequestBody.create(MediaType.parse("text/plain"), fullName.get()));
+            requestbody.put(Constants.NetworkParameters.Email, RequestBody.create(MediaType.parse("text/plain"), Email.get()));
             if (RealPath != null) {
                 RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), RealFile);
-                body = MultipartBody.Part.createFormData("profile_pic", RealFile.getName(), reqFile);
+                body = MultipartBody.Part.createFormData("profile_picture", RealFile.getName(), reqFile);
 
                 setIsLoading(true);
-                ProfileNetworkcall();
+                ProfileNetworkCall();
             }
         } else
             getmNavigator().showNetworkMessage();
@@ -324,12 +303,7 @@ public class ProfileViewModel extends BaseNetwork<BaseResponse, ProfileNavigator
     /** API to get profile details **/
     public void callProfileRetriveApi() {
         setIsLoading(true);
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put(Constants.NetworkParameters.client_id, sharedPrefence.getCompanyID());
-        hashMap.put(Constants.NetworkParameters.client_token, sharedPrefence.getCompanyToken());
-        hashMap.put(Constants.NetworkParameters.id, sharedPrefence.Getvalue(SharedPrefence.ID));
-        hashMap.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
-        getUserProfile(hashMap);
+        getUserProfile();
     }
 
     /** Open first name update **/

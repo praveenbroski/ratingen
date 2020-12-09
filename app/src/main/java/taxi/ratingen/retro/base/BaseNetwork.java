@@ -119,7 +119,7 @@ public abstract class BaseNetwork<T extends BaseResponse, N> implements Basecall
      */
     public void getRequestInProgressNetwork() {
         setIsLoading(true);
-        gitHubService.getRequestInpro(getMap()).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+        gitHubService.getRequestInpro("Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken)).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
     }
 
     /**
@@ -348,8 +348,10 @@ public abstract class BaseNetwork<T extends BaseResponse, N> implements Basecall
     /**
      * Api call for getting the profile informations.
      */
-    public void ProfileNetworkcall() {
-        gitHubService.ProfileCall(requestbody, body).enqueue((Callback<User>) baseModelCallBackListener);
+    public void ProfileNetworkCall() {
+        setIsLoading(true);
+        mCurrentTaskId = Constants.TaskId.PROFILE_UPDATE;
+        gitHubService.ProfileCall(requestbody, body, "Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken)).enqueue((Callback<User>) baseModelCallBackListener);
     }
 
     /**
@@ -384,8 +386,8 @@ public abstract class BaseNetwork<T extends BaseResponse, N> implements Basecall
     /**
      * @param hashMap is a network parameter to get the userprofile informations.
      */
-    public void getUserProfile(HashMap<String, String> hashMap) {
-        gitHubService.GetUserProfile(hashMap).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+    public void getUserProfile() {
+        gitHubService.GetUserProfile("Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken)).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
     }
 
     /**
@@ -468,6 +470,7 @@ public abstract class BaseNetwork<T extends BaseResponse, N> implements Basecall
 
     public void sendRegisterOtp(HashMap<String, String> map) {
         setIsLoading(true);
+        mCurrentTaskId = Constants.TaskId.SEND_OTP;
         gitHubService.sendOTP(map).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
     }
 
@@ -490,6 +493,12 @@ public abstract class BaseNetwork<T extends BaseResponse, N> implements Basecall
     public void userRegister() {
         setIsLoading(true);
         gitHubService.userRegister(requestbody, body).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+    }
+
+    public void Logout() {
+        setIsLoading(true);
+        mCurrentTaskId = Constants.TaskId.LOGOUT;
+        gitHubService.logoutCall("Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken)).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
     }
 
     /**

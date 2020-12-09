@@ -57,7 +57,7 @@
                                 android:textSize="@dimen/_25sdp"
                                 android:textColor="@color/clr_222B45"
                                 app:textfont="@{`sf_semibold.otf`}"
-                                android:text="@{viewModel.translationModel.txt_profile_text + ` ` + viewModel.FirstName + `!`}" />
+                                android:text="@{viewModel.translationModel.txt_profile_text + ` ` + viewModel.fullName + `!`}" />
 
                             <RelativeLayout
                                 android:id="@+id/rl_avatar"
@@ -107,7 +107,7 @@
                             app:textfont="@{`sf_semibold.otf`}"
                             android:textSize="@dimen/_10sdp"
                             android:textColor="@color/clr_8992A3"
-                            android:text="@{viewModel.translationModel.text_firstname}" />
+                            android:text="@{viewModel.translationModel.text_name}" />
 
                         <RelativeLayout
                             android:background="@drawable/bg_info"
@@ -130,44 +130,7 @@
                                 app:textfont="@{`sf_semibold.otf`}"
                                 android:textSize="@dimen/_12sdp"
                                 android:textColor="@color/clr_222B45"
-                                android:text="@={viewModel.FirstName}" />
-
-                        </RelativeLayout>
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/_12sdp"
-                            android:layout_marginStart="@dimen/_16sdp"
-                            android:layout_marginEnd="@dimen/_16sdp"
-                            android:textAllCaps="true"
-                            app:textfont="@{`sf_semibold.otf`}"
-                            android:textSize="@dimen/_10sdp"
-                            android:textColor="@color/clr_8992A3"
-                            android:text="@{viewModel.translationModel.text_lastname}" />
-
-                        <RelativeLayout
-                            android:background="@drawable/bg_info"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/_35sdp"
-                            android:layout_marginTop="@dimen/_8sdp"
-                            android:layout_marginStart="@dimen/_16sdp"
-                            android:layout_marginEnd="@dimen/_16sdp"
-                            android:onClick="@{viewModel::openLastNameUpdate}">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerVertical="true"
-                                android:layout_marginStart="@dimen/_16sdp"
-                                android:layout_marginEnd="@dimen/_12sdp"
-                                android:textDirection="locale"
-                                android:drawableEnd="@drawable/ic_profile_arrow_mirrored"
-                                android:singleLine="true"
-                                app:textfont="@{`sf_semibold.otf`}"
-                                android:textSize="@dimen/_12sdp"
-                                android:textColor="@color/clr_222B45"
-                                android:text="@={viewModel.LastName}" />
+                                android:text="@={viewModel.fullName}" />
 
                         </RelativeLayout>
 
@@ -226,7 +189,8 @@
                             android:layout_height="@dimen/_35sdp"
                             android:layout_marginTop="@dimen/_8sdp"
                             android:layout_marginStart="@dimen/_16sdp"
-                            android:layout_marginEnd="@dimen/_16sdp">
+                            android:layout_marginEnd="@dimen/_16sdp"
+                            android:onClick="@{viewModel::openPhoneNumberUpdate}">
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -235,6 +199,7 @@
                                 android:layout_marginStart="@dimen/_16sdp"
                                 android:layout_marginEnd="@dimen/_12sdp"
                                 android:textDirection="locale"
+                                android:drawableEnd="@drawable/ic_profile_arrow_mirrored"
                                 android:singleLine="true"
                                 app:textfont="@{`sf_semibold.otf`}"
                                 android:textSize="@dimen/_12sdp"
@@ -373,10 +338,10 @@
 
         </LinearLayout>
 
-<!--        <include-->
-<!--            android:id="@+id/progressBar"-->
-<!--            layout="@layout/progress_dialog"-->
-<!--            android:visibility="@{viewModel.mIsLoading ? View.VISIBLE : View.GONE}" />-->
+        <include
+            android:id="@+id/progressBar"
+            layout="@layout/progress_dialog"
+            android:visibility="@{viewModel.mIsLoading ? View.VISIBLE : View.GONE}" />
 
     </RelativeLayout>
 

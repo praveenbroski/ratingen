@@ -1,12 +1,12 @@
 package taxi.ratingen.retro;
 
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.responsemodel.Payment;
 import taxi.ratingen.retro.responsemodel.User;
 import taxi.ratingen.utilz.Constants;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
@@ -134,9 +134,8 @@ public interface GitHubService {
     @POST(Constants.URL.referralcheckUrl)
     Call<BaseResponse> ApplyRefferal(@FieldMap Map<String, String> options);
 
-    @FormUrlEncoded
-    @POST(Constants.URL.requestInprogressURL)
-    Call<BaseResponse> getRequestInpro(@FieldMap Map<String, String> options);
+    @GET(Constants.URL.requestInProgressURL)
+    Call<BaseResponse> getRequestInpro(@Header("Authorization") String bearer);
 
     @FormUrlEncoded
     @POST(Constants.URL.historyListURL)
@@ -204,7 +203,8 @@ public interface GitHubService {
     @POST(Constants.URL.ProfileURL)
     Call<User> ProfileCall(
             @PartMap() Map<String, RequestBody> partMap,
-            @Part MultipartBody.Part file);
+            @Part MultipartBody.Part file,
+            @Header("Authorization") String bearer);
 
   /*  @FormUrlEncoded
     @POST(Constants.URL.userProfileretrive)
@@ -235,9 +235,8 @@ public interface GitHubService {
     @POST(Constants.URL.ZoneSOSUrl)
     Call<BaseResponse> getZoneSos(@FieldMap Map<String, String> options);
 
-    @FormUrlEncoded
-    @POST(Constants.URL.userProfileretrive)
-    Call<BaseResponse> GetUserProfile(@FieldMap Map<String, String> options);
+    @GET(Constants.URL.userProfileRetrieve)
+    Call<BaseResponse> GetUserProfile(@Header("Authorization") String bearer);
 
     @FormUrlEncoded
     @POST(Constants.URL.changeLocationInRide)
@@ -319,5 +318,8 @@ public interface GitHubService {
     @Multipart
     @POST(Constants.URL.USER_REGISTER)
     Call<BaseResponse> userRegister(@PartMap() Map<String, RequestBody> partMap, @Part MultipartBody.Part file);
+
+    @POST(Constants.URL.LOGOUT)
+    Call<BaseResponse> logoutCall(@Header("Authorization") String bearer);
 
 }

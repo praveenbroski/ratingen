@@ -34,7 +34,7 @@ import taxi.ratingen.utilz.exception.CustomException;
  * Created by root on 10/9/17.
  */
 
-public class RegistrationViewModel extends BaseNetwork<User, RegistrationNavigator> {
+public class RegistrationViewModel extends BaseNetwork<BaseResponse, RegistrationNavigator> {
 
     @Inject
     HashMap<String, String> Map;
@@ -71,7 +71,7 @@ public class RegistrationViewModel extends BaseNetwork<User, RegistrationNavigat
      * @param taskId ID of the API task
      * @param response {@link BaseResponse} model **/
     @Override
-    public void onSuccessfulApi(long taskId, User response) {
+    public void onSuccessfulApi(long taskId, BaseResponse response) {
         setIsLoading(false);
         if (!TextUtils.isEmpty(response.accessToken)) {
             sharedPrefence.savevalue(SharedPrefence.AccessToken, response.accessToken);
@@ -109,7 +109,7 @@ public class RegistrationViewModel extends BaseNetwork<User, RegistrationNavigat
                 setIsLoading(true);
                 requestbody.clear();
                 requestbody.put(Constants.NetworkParameters.device_token, RequestBody.create(MediaType.parse("text/plain"), sharedPrefence.Getvalue(SharedPrefence.FCMTOKEN)));
-                requestbody.put(Constants.NetworkParameters.login_by, RequestBody.create(MediaType.parse("text/plain"), "android"));
+                requestbody.put(Constants.NetworkParameters.login_by, RequestBody.create(MediaType.parse("text/plain"), "1"));
                 requestbody.put(Constants.NetworkParameters.country, RequestBody.create(MediaType.parse("text/plain"), countryID.get()));
                 if (!CommonUtils.IsEmpty(userFName.get())&&!CommonUtils.IsEmpty(userLName.get()))
                     requestbody.put(Constants.NetworkParameters.name, RequestBody.create(MediaType.parse("text/plain"), userFName.get() + " " + userLName.get()));

@@ -116,8 +116,6 @@ SignupActivity extends BaseActivity<ActivitySignupBinding, SignupViewModel> impl
 //        mCountryUtil.initUI(activitySignupBinding.editCountryCodeSignup, this, activitySignupBinding.signupFlag);
 //        mCountryUtil.initCodes(SignupActivity.this);
         edt_text = activitySignupBinding.signupEmailorPhone;
-
-        edt_text.setText("9715361062");
     }
 
 

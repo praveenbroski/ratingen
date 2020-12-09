@@ -208,19 +208,19 @@ public class ProfileAct extends BaseActivity<ActivityProfileBinding, ProfileView
         Intent intent = new Intent(this, NameMailEdit.class);
         Bundle bundle = new Bundle();
         bundle.putInt(Constants.EXTRA_MODE, 0);
-        bundle.putString(Constants.EXTRA_VALUE, profileViewModel.FirstName.get());
+        bundle.putString(Constants.EXTRA_VALUE, profileViewModel.fullName.get());
         intent.putExtras(bundle);
         startActivityForResult(intent, Constants.REQUEST_PROFILE_UPDATE);
     }
 
     @Override
     public void openLastNameUpdate() {
-        Intent intent = new Intent(this, NameMailEdit.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt(Constants.EXTRA_MODE, 1);
-        bundle.putString(Constants.EXTRA_VALUE, profileViewModel.LastName.get());
-        intent.putExtras(bundle);
-        startActivityForResult(intent, Constants.REQUEST_PROFILE_UPDATE);
+//        Intent intent = new Intent(this, NameMailEdit.class);
+//        Bundle bundle = new Bundle();
+//        bundle.putInt(Constants.EXTRA_MODE, 1);
+//        bundle.putString(Constants.EXTRA_VALUE, profileViewModel.LastName.get());
+//        intent.putExtras(bundle);
+//        startActivityForResult(intent, Constants.REQUEST_PROFILE_UPDATE);
     }
 
     @Override

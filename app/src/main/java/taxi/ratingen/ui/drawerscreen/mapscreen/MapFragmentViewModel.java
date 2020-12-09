@@ -18,8 +18,11 @@ import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -41,6 +44,7 @@ import taxi.ratingen.retro.GitHubMapService;
 import taxi.ratingen.retro.GitHubService;
 import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.responsemodel.Car;
+import taxi.ratingen.retro.responsemodel.ProfileModel;
 import taxi.ratingen.retro.responsemodel.User;
 import taxi.ratingen.retro.dynamicInterceptor;
 import taxi.ratingen.utilz.CommonUtils;
@@ -934,10 +938,10 @@ public class MapFragmentViewModel extends BaseNetwork<User, MapNavigator> implem
 
     public void setupProfile() {
         String userStr = sharedPrefence.Getvalue(SharedPrefence.USERDETAILS);
-        User user = CommonUtils.IsEmpty(userStr) ? null : gson.fromJson(userStr, User.class);
+        ProfileModel user = CommonUtils.IsEmpty(userStr) ? null : gson.fromJson(userStr, ProfileModel.class);
         if (user != null) {
-            if (!CommonUtils.IsEmpty(user.profilepic))
-                ImageUrl.set(user.profilepic);
+            if (!CommonUtils.IsEmpty(user.getProfilePicture()))
+                ImageUrl.set(user.getProfilePicture());
         }
     }
 
@@ -970,5 +974,17 @@ public class MapFragmentViewModel extends BaseNetwork<User, MapNavigator> implem
             }
         }
     };*/
+
+    @BindingAdapter("setProfileImage")
+    public static void setProfileImage(ImageView imageView, String url) {
+        Context context = imageView.getContext();
+        String imageUrl = Constants.URL.profileBaseURL + url;
+        Glide.with(context).load(imageUrl)
+                .apply(RequestOptions.circleCropTransform()
+                        .override(57, 57)
+                        .error(R.drawable.ic_menu_ham)
+                        .placeholder(R.drawable.ic_menu_ham))
+                .into(imageView);
+    }
 
 }

@@ -8,11 +8,14 @@ import androidx.databinding.ObservableField;
 
 import com.google.gson.Gson;
 
+import taxi.ratingen.R;
 import taxi.ratingen.retro.GitHubCountryCode;
 import taxi.ratingen.retro.GitHubService;
 import taxi.ratingen.retro.base.BaseNetwork;
 import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.responsemodel.CountryListModel;
+import taxi.ratingen.retro.responsemodel.ProfileModel;
+import taxi.ratingen.retro.responsemodel.UUID;
 import taxi.ratingen.utilz.CommonUtils;
 import taxi.ratingen.utilz.Constants;
 import taxi.ratingen.utilz.GenericsType;
@@ -41,15 +44,19 @@ public class NameMailModel extends BaseNetwork<BaseResponse, NameMailNavigator> 
     GitHubService gitHubService;
     GitHubCountryCode gitHubCountryCode;
     GenericsType genericsType;
-    public ArrayList<CountryListModel> countryListModels;
+    ArrayList<CountryListModel> countryListModels = new ArrayList<>();
 
+    public ObservableField<String> txtTitle = new ObservableField<>("");
+    public ObservableField<String> txtDescription = new ObservableField<>("");
     public ObservableField<Integer> mode = new ObservableField<>(-1);
     public ObservableField<String> extraData = new ObservableField<>("");
+    public ObservableField<String> extraMobile = new ObservableField<>("");
     public ObservableField<Boolean> isSubmitEnable = new ObservableField<>(false);
-    public ObservableField<String> Countrycode = new ObservableField<>("+");
-    public ObservableField<String> CountryShort = new ObservableField<>("");
-    public ObservableField<String> CountryId = new ObservableField<>();
-    public ObservableField<String> countryFlag = new ObservableField<>();
+    public ObservableField<String> countryCode = new ObservableField<>("+");
+    public ObservableField<String> CountryId = new ObservableField<>("");
+    public ObservableField<String> countryShort = new ObservableField<>("");
+    public ObservableField<String> countryFlag = new ObservableField<>("");
+    ObservableField<String> UUID_VALUE = new ObservableField<>("");
 
     @Inject
     public NameMailModel(@Named(Constants.ourApp) GitHubService gitHubService,
@@ -67,35 +74,45 @@ public class NameMailModel extends BaseNetwork<BaseResponse, NameMailNavigator> 
     @Override
     public HashMap<String, String> getMap() {
         hashMap.clear();
-        hashMap.put(Constants.NetworkParameters.client_id, sharedPrefence.getCompanyID());
-        hashMap.put(Constants.NetworkParameters.client_token, sharedPrefence.getCompanyToken());
         return hashMap;
     }
 
     @Override
     public void onSuccessfulApi(long taskId, BaseResponse response) {
         setIsLoading(false);
-        if (response.successMessage.equalsIgnoreCase("Profile Updated Successfully")) {
-            if (response.success) {
-                String userString = gson.toJson(response.getUser());
-                sharedPrefence.savevalue(SharedPrefence.USERDETAILS, userString);
-                getmNavigator().SendBroadcast();
-                Toast.makeText(context, response.successMessage, Toast.LENGTH_SHORT).show();
-                getmNavigator().finishAct();
-            }
-        } else if (response.successMessage.equalsIgnoreCase("country_list")) {
-            countryListModels = response.getCountryList();
-            if (countryListModels != null) {
-                CountryListModel listModel = CommonUtils.getDefaultCountryDetails(countryListModels, Constants.COUNTRY_CODE);
-                if (listModel != null) {
-                    countryFlag.set(listModel.flag);
-                    CountryId.set(listModel.id + "");
-                    Countrycode.set(listModel.dialCode);
-                    CountryShort.set(listModel.iso2);
-                    extraData.set(extraData.get().replace(Countrycode.get(), ""));
+        if (response.message != null) {
+            if (response.message.equalsIgnoreCase("success")) {
+                if (mCurrentTaskId == Constants.TaskId.PROFILE_UPDATE) {
+                    String userString = gson.toJson(response.data);
+                    sharedPrefence.savevalue(SharedPrefence.USERDETAILS, userString);
+                    getmNavigator().SendBroadcast();
+                    getmNavigator().showMessage(getmNavigator().getBaseAct().getTranslatedString(R.string.Txt_updateSuccess));
+                    getmNavigator().finishAct();
+                } else if (mCurrentTaskId == Constants.TaskId.SEND_OTP) {
+                    String uuid = CommonUtils.ObjectToString(response.data);
+                    UUID uuidInstance = (UUID) CommonUtils.StringToObject(uuid, UUID.class);
+                    UUID_VALUE.set(uuidInstance.getUuid());
+                    getmNavigator().openOtpPage(UUID_VALUE.get(), 3, extraData.get(), CountryId.get(), countryCode.get());
                 }
+            } else if (response.message.equalsIgnoreCase("new user")) {
+                callSendOtpApi();
+            } else if (response.message.equalsIgnoreCase("exists user")) {
+                getmNavigator().showSnackBar(getmNavigator().getBaseView(), getmNavigator().getBaseAct().getTranslatedString(R.string.txt_already_registered));
+            }
+        } else if (response.successMessage != null) {
+            if (response.successMessage.equalsIgnoreCase("country_list")) {
+                getmNavigator().countryResponse(response.data);
             }
         }
+    }
+
+    private void callSendOtpApi() {
+        if (getmNavigator().isNetworkConnected()) {
+            hashMap.clear();
+            hashMap.put(Constants.NetworkParameters.country, CountryId.get());
+            hashMap.put(Constants.NetworkParameters.mobile, extraData.get());
+            sendRegisterOtp(hashMap);
+        } else getmNavigator().showNetworkMessage();
     }
 
     @Override
@@ -129,22 +146,51 @@ public class NameMailModel extends BaseNetwork<BaseResponse, NameMailNavigator> 
             if (getmNavigator().isNetworkConnected()) {
                 setIsLoading(true);
                 requestbody.clear();
-                requestbody.put(Constants.NetworkParameters.client_id, RequestBody.create(MediaType.parse("text/plain"), sharedPrefence.getCompanyID()));
-                requestbody.put(Constants.NetworkParameters.client_token, RequestBody.create(MediaType.parse("text/plain"), sharedPrefence.getCompanyToken()));
-                requestbody.put(Constants.NetworkParameters.id, RequestBody.create(MediaType.parse("text/plain"), sharedPrefence.Getvalue(SharedPrefence.ID)));
-                requestbody.put(Constants.NetworkParameters.token, RequestBody.create(MediaType.parse("text/plain"), sharedPrefence.Getvalue(SharedPrefence.TOKEN)));
-                if (mode.get() == 0) {
-                    requestbody.put(Constants.NetworkParameters.firstname, RequestBody.create(MediaType.parse("text/plain"), extraData.get()));
-                } else if (mode.get() == 1) {
-                    requestbody.put(Constants.NetworkParameters.lastname, RequestBody.create(MediaType.parse("text/plain"), extraData.get()));
-                } else if (mode.get() == 2) {
-                    requestbody.put(Constants.NetworkParameters.email, RequestBody.create(MediaType.parse("text/plain"), extraData.get()));
+
+                String userStr = sharedPrefence.Getvalue(SharedPrefence.USERDETAILS);
+
+                ProfileModel user = CommonUtils.IsEmpty(userStr) ? null : gson.fromJson(userStr, ProfileModel.class);
+                if (user != null) {
+                    if (mode.get() == 0) {
+                        requestbody.put(Constants.NetworkParameters.name, RequestBody.create(MediaType.parse("text/plain"), extraData.get()));
+                        requestbody.put(Constants.NetworkParameters.email, RequestBody.create(MediaType.parse("text/plain"), user.getEmail()));
+                    } else if (mode.get() == 1) {
+                        requestbody.put(Constants.NetworkParameters.lastname, RequestBody.create(MediaType.parse("text/plain"), extraData.get()));
+                        requestbody.put(Constants.NetworkParameters.email, RequestBody.create(MediaType.parse("text/plain"), user.getEmail()));
+                    } else if (mode.get() == 2) {
+                        requestbody.put(Constants.NetworkParameters.email, RequestBody.create(MediaType.parse("text/plain"), extraData.get()));
+                        requestbody.put(Constants.NetworkParameters.name, RequestBody.create(MediaType.parse("text/plain"), user.getName()));
+                    }
+                    ProfileNetworkCall();
                 }
-                ProfileNetworkcall();
             }
         } else if (mode.get() == 3) {
-            getmNavigator().openOtpPage(Countrycode.get().trim().replace(" ", "") + CommonUtils.removeFirstZeros(extraData.get().trim().replace("-", "").replace("_", "").replace(" ", "")));
+            if (!extraMobile.get().equals(extraData.get())) {
+                if (getmNavigator().isNetworkConnected()) {
+                    hashMap.clear();
+                    hashMap.put(Constants.NetworkParameters.country, CountryId.get());
+                    hashMap.put(Constants.NetworkParameters.mobile, extraData.get());
+                    hashMap.put(Constants.NetworkParameters.android, "android");
+                    validateMobile(hashMap);
+                } else
+                    getmNavigator().showNetworkMessage();
+            }
         }
+    }
+
+    public void callMobileUpdate() {
+        if (getmNavigator().isNetworkConnected()) {
+            setIsLoading(true);
+            requestbody.clear();
+            requestbody.put(Constants.NetworkParameters.mobile, RequestBody.create(MediaType.parse("text/plain"), extraData.get()));
+            String userStr = sharedPrefence.Getvalue(SharedPrefence.USERDETAILS);
+            ProfileModel user = CommonUtils.IsEmpty(userStr) ? null : gson.fromJson(userStr, ProfileModel.class);
+            if (user != null) {
+                requestbody.put(Constants.NetworkParameters.name, RequestBody.create(MediaType.parse("text/plain"), user.getName()));
+                requestbody.put(Constants.NetworkParameters.email, RequestBody.create(MediaType.parse("text/plain"), user.getEmail()));
+            }
+            ProfileNetworkCall();
+        } else getmNavigator().showNetworkMessage();
     }
 
     public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -153,7 +199,10 @@ public class NameMailModel extends BaseNetwork<BaseResponse, NameMailNavigator> 
             isSubmitEnable.set(false);
         } else {
             if (mode.get() == 0 || mode.get() == 1 || mode.get() == 3) {
-                isSubmitEnable.set(!CommonUtils.IsEmpty(extraData.get().trim()));
+                if (mode.get() == 3) {
+                    isSubmitEnable.set(!CommonUtils.IsEmpty(extraData.get().trim()) && (!extraData.get().equals(extraMobile.get())));
+                } else
+                    isSubmitEnable.set(!CommonUtils.IsEmpty(extraData.get().trim()));
             } else if (mode.get() == 2) {
                 isSubmitEnable.set(CommonUtils.isEmailValid(extraData.get().trim()));
             }

@@ -1149,4 +1149,22 @@ public class TranslationModel {
     @SerializedName("text_error_email")
     public String text_error_email = "text_error_email";
 
+    @SerializedName("Txt_updateSuccess")
+    public String Txt_updateSuccess = "Txt_updateSuccess";
+
+    @SerializedName("txt_update_name")
+    public String txt_update_name = "txt_update_name";
+
+    @SerializedName("txt_update_user_name_desc")
+    public String txt_update_user_name_desc = "txt_update_user_name_desc";
+
+    @SerializedName("txt_update_user_first_name_desc")
+    public String txt_update_user_first_name_desc = "txt_update_user_first_name_desc";
+
+    @SerializedName("txt_update_user_last_name_desc")
+    public String txt_update_user_last_name_desc = "txt_update_user_last_name_desc";
+
+    @SerializedName("txt_already_registered")
+    public String txt_already_registered = "txt_already_registered";
+
 }

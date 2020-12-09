@@ -150,7 +150,7 @@ public class SplashScreen extends BaseActivity<SplashscreenBinding, SplashViewMo
 
         if ((requestCode == Constants.REQUEST_PERMISSION) && checkGranted(grantResults)) {
             if (sharedPrefence.GetBoolean(SharedPrefence.GetStartedScrnLoaded)) {
-                if (!CommonUtils.IsEmpty(sharedPrefence.Getvalue(SharedPrefence.USERDETAILS))) {
+                if (!CommonUtils.IsEmpty(sharedPrefence.Getvalue(SharedPrefence.AccessToken))) {
                     startActivity(new Intent(SplashScreen.this, DrawerAct.class));
                 } else {
                     startActivity(new Intent(SplashScreen.this, TourGuide.class));

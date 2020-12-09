@@ -151,7 +151,7 @@
                     android:padding="@dimen/_3sdp"
                     android:background="@drawable/ic_menu_ham"
                     app:srcCompat="@drawable/invoice_profile"
-                    app:imageUrl="@{viewModel.ImageUrl}" />
+                    app:setProfileImage="@{viewModel.ImageUrl}" />
 
             </RelativeLayout>
 

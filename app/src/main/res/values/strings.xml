@@ -214,6 +214,16 @@
     <string name="txt_open_link">Open link</string>
     <string name="txt_resend_to">Resend to</string>
     <string name="txt_cancel">Cancel</string>
+    <string name="Txt_updateSuccess">Txt_updateSuccess</string>
+    <string name="txt_update_name">txt_update_name</string>
+    <string name="txt_update_last_name">txt_update_last_name</string>
+    <string name="txt_update_phone">txt_update_phone</string>
+    <string name="txt_update_email">txt_update_email</string>
+    <string name="txt_update_user_name_desc">txt_update_user_name_desc</string>
+    <string name="txt_update_user_last_name_desc">txt_update_user_last_name_desc</string>
+    <string name="txt_update_email_desc">txt_update_email_desc</string>
+    <string name="txt_update_phone_desc">txt_update_phone_desc</string>
+    <string name="txt_already_registered">txt_already_registered</string>
 
 
 </resources>

@@ -219,7 +219,7 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
 //            ETANetWorkcall(scanContent, rideType, "");
         }
 
-        getTypesAPI();
+//        getTypesAPI();
 
         if (dropAddr == null || dropAddr.isEmpty()) {
             isDropEmpty.set(false);

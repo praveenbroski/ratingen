@@ -17,6 +17,7 @@ public final class Constants {
     public static final int CANCELTRIPCALLBACK = 23134;
     public static final int RIDE_PROMO_RESULT = 99;
     public static final int CC_SELECTED_CODE = 9795;
+    public static final int REQUEST_MOBILE_VALIDATE = 8749;
     public static boolean ACTIVITY_OPENEND_ALRDY = false;
     public static String[] Array_permissions = new String[] {
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -173,13 +174,14 @@ public final class Constants {
         String TokenGeneratorURL = "v1/user/temptoken";
         String BaseURL = BuildConfig.BASE_URL;
         String SOCKET_URL = BuildConfig.SOCKET_URL;
+        String profileBaseURL = BuildConfig.BASE_URL + "storage/uploads/user/profile-picture/";
         String CC_URL = "api/v1/common/countries";
         String GooglBaseURL = "https://maps.googleapis.com/";
         String COUNTRY_CODE_URL = "http://ip-api.com/";//"/json";
         String ISRegistered = "v1/user/social_unique_id_check";
         String SignUpURL = "v1/user/signup";
         String LoginByOTPURL = "v1/user/login/otp";
-        String ProfileURL = "v1/user/profile";
+        String ProfileURL = "api/v1/user/profile";
         String otpvalidate = "v1/user/otpvalidate";
         String carddefaultURL = "v1/user/carddefault";
         String deletecardURL = "v1/user/deletecard";
@@ -205,7 +207,7 @@ public final class Constants {
         String otpResend = "v1/user/resendotp";
         String Forgoturl = "v1/user/forgotpassword";
         String referralcheckUrl = "v1/user/referralcheck";
-        String requestInprogressURL = "v1/user/requestInprogress";
+        String requestInProgressURL = "api/v1/user/requestInprogress";
         String historyListURL = "v1/user/historyList";
         String AddFavurl = "v1/user/addfav";
         String Reviewurl = "v1/user/review";
@@ -226,7 +228,7 @@ public final class Constants {
         String singleDriver = "v1/user/custom/driver/select";
         String walletHistory = "v1/user/wallet/history";
         String changeLocationInRide = "v1/user/pickup/change";
-        String userProfileretrive = "v1/user/profile/retrive";
+        String userProfileRetrieve = "api/v1/user";
         String changeLocationInRideDrop = "v1/user/drop/change";
         String topratedConfirm = "v1/driver/top/confirm";
         String CANCELLATION_LIST = "v1/user/cancellation/list";
@@ -248,6 +250,7 @@ public final class Constants {
         String REGISTER_OTP_VALIDATE = "api/v1/user/register/validate-otp";
         String LOGIN = "api/v1/user/login";
         String USER_REGISTER = "api/v1/user/register";
+        String LOGOUT = "api/v1/logout";
     }
     /**
      * Api paramater names
@@ -359,6 +362,9 @@ public final class Constants {
 
     public interface TaskId {
         int login = 100;
+        int PROFILE_UPDATE = 101;
+        int SEND_OTP = 102;
+        Integer LOGOUT = 103;
     }
 
 }

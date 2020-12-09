@@ -14,7 +14,6 @@
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/clr_F6F7FD"
@@ -87,7 +86,8 @@
                             android:layout_marginStart="@dimen/_5sdp"
                             android:layout_marginEnd="@dimen/_5sdp"
                             android:onClick="@{viewModel.onClickFav}"
-                            app:srcCompat="@drawable/ic_heart_fav" />
+                            app:srcCompat="@drawable/ic_heart_fav"
+                            android:visibility="gone" />
 
                     </RelativeLayout>
 

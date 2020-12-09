@@ -25,6 +25,8 @@ class KeySearchClass {
                 searchValue = search.getValue().get(0);
             else if(search.getKey().equalsIgnoreCase("order_id"))
                 searchValue = search.getValue().get(0);
+            else if(search.getKey().equalsIgnoreCase(Constants.NetworkParameters.name))
+                searchValue = search.getValue().get(0);
 
         return searchValue;
     }

@@ -500,7 +500,7 @@ public class DrawerAct extends BaseActivity<ActivityDrawerBinding, DrawerViewMod
         getSupportFragmentManager()
                 .beginTransaction()
                 .disallowAddToBackStack()
-                .replace(R.id.Container, MapFragment.newInstance("", ""), MapFragment.TAG)
+                .replace(R.id.Container, MapFragment.newInstance("", "", ""), MapFragment.TAG)
                 .commitAllowingStateLoss();
     }
 
@@ -529,6 +529,16 @@ public class DrawerAct extends BaseActivity<ActivityDrawerBinding, DrawerViewMod
         activityDrawerBinding.navView.getMenu().findItem(R.id.nav_faq).setTitle(getTranslatedString(R.string.text_faq));
         activityDrawerBinding.navView.getMenu().findItem(R.id.nav_about).setTitle(getTranslatedString(R.string.txt_about_us));
         activityDrawerBinding.navView.getMenu().findItem(R.id.nav_logout).setTitle(getTranslatedString(R.string.txt_logout));
+
+        /* hiding unwanted menus */
+        activityDrawerBinding.navView.getMenu().findItem(R.id.nav_History).setVisible(false);
+        activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Favs).setVisible(false);
+        activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Wallet).setVisible(false);
+        activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Notifications).setVisible(false);
+        activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Complaints).setVisible(false);
+        activityDrawerBinding.navView.getMenu().findItem(R.id.nav_about).setVisible(false);
+        activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Sos).setVisible(false);
+        activityDrawerBinding.navView.getMenu().findItem(R.id.nav_faq).setVisible(false);
     }
 
     /**
@@ -542,7 +552,7 @@ public class DrawerAct extends BaseActivity<ActivityDrawerBinding, DrawerViewMod
                         .beginTransaction()
                         .disallowAddToBackStack()
                         .setCustomAnimations(R.anim.slide_left, R.anim.slide_right)
-                        .replace(R.id.Container, MapFragment.newInstance("",""), MapFragment.TAG)
+                        .replace(R.id.Container, MapFragment.newInstance("", "", drawerViewModel.Imageurl.get()), MapFragment.TAG)
                         .commitAllowingStateLoss();
             }
         }, 100);
@@ -635,6 +645,7 @@ public class DrawerAct extends BaseActivity<ActivityDrawerBinding, DrawerViewMod
         sharedPrefence.savevalue(SharedPrefence.SOSLIST, null);
         sharedPrefence.savevalue(SharedPrefence.LATITUDE, null);
         sharedPrefence.savevalue(SharedPrefence.LONGITUDE, null);
+        sharedPrefence.savevalue(SharedPrefence.AccessToken, null);
         openOptionalActivity();
     }
 
@@ -913,7 +924,7 @@ public class DrawerAct extends BaseActivity<ActivityDrawerBinding, DrawerViewMod
                 .beginTransaction()
                 .disallowAddToBackStack()
                 .setCustomAnimations(R.anim.slide_left, R.anim.slide_right)
-                .replace(R.id.Container, MapFragment.newInstance("", ""), MapFragment.TAG)
+                .replace(R.id.Container, MapFragment.newInstance("", "", ""), MapFragment.TAG)
                 .commitAllowingStateLoss();
 //                .commit();
     }
@@ -960,11 +971,11 @@ public class DrawerAct extends BaseActivity<ActivityDrawerBinding, DrawerViewMod
                     activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Wallet) != null &&
                     activityDrawerBinding.navView.getMenu().findItem(R.id.nav_faq) != null &&
                     activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Payment) != null) {
-                activityDrawerBinding.navView.getMenu().findItem(R.id.nav_History).setVisible(!isCorporate);
+//                activityDrawerBinding.navView.getMenu().findItem(R.id.nav_History).setVisible(!isCorporate);
                 activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Referralcode);
-                activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Wallet).setVisible(!isCorporate);
+//                activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Wallet).setVisible(!isCorporate);
                 //  activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Payment).setVisible(!isCorporate);
-                activityDrawerBinding.navView.getMenu().findItem(R.id.nav_faq).setVisible(!isCorporate);
+//                activityDrawerBinding.navView.getMenu().findItem(R.id.nav_faq).setVisible(!isCorporate);
             }
     }
 
@@ -1068,4 +1079,12 @@ public class DrawerAct extends BaseActivity<ActivityDrawerBinding, DrawerViewMod
                 .add(R.id.Container, NotificationlistFrag.newInstance(), NotificationlistFrag.TAG)
                 .commit();
     }
+
+    @Override
+    public void setImageURL(String url) {
+        MapFragment fragment = (MapFragment) getSupportFragmentManager().findFragmentByTag(MapFragment.TAG);
+        if (fragment != null)
+            fragment.setProfileImage(url);
+    }
+
 }

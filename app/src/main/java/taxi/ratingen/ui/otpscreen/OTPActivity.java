@@ -107,6 +107,12 @@ public class OTPActivity extends BaseActivity<ActivityOtpBinding, OTPViewModel> 
     }
 
     @Override
+    public void finishActWithResult() {
+        setResult(RESULT_OK);
+        finish();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
     }
