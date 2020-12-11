@@ -125,9 +125,9 @@
         </ScrollView>
 
         <include
-        android:id="@+id/progressBar"
-        layout="@layout/progress_dialog"
-        android:visibility="@{viewModel.mIsLoading ? View.VISIBLE : View.GONE}" />
+            android:id="@+id/progressBar"
+            layout="@layout/progress_dialog"
+            android:visibility="@{viewModel.mIsLoading ? View.VISIBLE : View.GONE}" />
 
     </RelativeLayout>
 

@@ -1,16 +1,22 @@
 package taxi.ratingen.ui.drawerscreen.sos;
 
+import androidx.databinding.ObservableBoolean;
+
 import com.google.gson.Gson;
 import taxi.ratingen.R;
 import taxi.ratingen.retro.base.BaseNetwork;
 import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.GitHubService;
 import taxi.ratingen.retro.responsemodel.So;
+import taxi.ratingen.utilz.CommonUtils;
 import taxi.ratingen.utilz.Constants;
 import taxi.ratingen.utilz.exception.CustomException;
 import taxi.ratingen.utilz.SharedPrefence;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -19,10 +25,12 @@ import javax.inject.Inject;
  */
 
 public class SosFragViewModel extends BaseNetwork<BaseResponse, SosFragmentNavigator> {
+
     GitHubService gitHubService;
     SharedPrefence sharedPrefence;
     HashMap<String, String> hashMap;
     Gson gson;
+    public ObservableBoolean noItemFound = new ObservableBoolean(false);
 
     @Inject
     public SosFragViewModel(GitHubService gitHubService, SharedPrefence sharedPrefence,
@@ -40,25 +48,46 @@ public class SosFragViewModel extends BaseNetwork<BaseResponse, SosFragmentNavig
     @Override
     public void onSuccessfulApi(long taskId, BaseResponse response) {
         setIsLoading(false);
-        if (response == null) {
-
-            return;
-        }
-        if (response.successMessage.equalsIgnoreCase("user sos details"))
-            if (response.getSos() != null && response.getSos().size() != 0) {
-                if (response.getUserSos() != null && response.getUserSos().size() != 0) {
-                    So so = new So();
-                    so.number = response.getUserSos().get(0).number;
-                    so.name = response.getUserSos().get(0).name;
-                    response.getSos().add(so);
-                }
-                if (response.getSos().size() > 0)
-                    sharedPrefence.savevalue(SharedPrefence.SOSLIST, gson.toJson(response));
-                getmNavigator().setSosList(response.getSos());
-            } else {
-                sharedPrefence.savevalue(SharedPrefence.SOSLIST, gson.toJson(response));
+        if (response.message.equalsIgnoreCase("success")) {
+            if (mCurrentTaskId == Constants.TaskId.SOS_LIST) {
+                if (response.data != null) {
+                    String sosBase = gson.toJson(response.data);
+                    BaseResponse baseSos = gson.fromJson(sosBase, BaseResponse.class);
+                    String sosJson = gson.toJson(baseSos.data);
+                    So[] sosModels = CommonUtils.IsEmpty(sosJson) ? null : CommonUtils.getSingleObject(sosJson, So[].class);
+                    if (sosModels != null) {
+                        if (sosModels.length > 0) {
+                            noItemFound.set(false);
+                            List<So> sosList = Arrays.asList(sosModels);
+                            sosList = new ArrayList(sosList);
+                            if (sosList != null)
+                                getmNavigator().setSosList(sosList);
+                        } else
+                            noItemFound.set(true);
+                    } else
+                        noItemFound.set(true);
+                } else
+                    noItemFound.set(true);
             }
+        }
 
+//        if (response == null) {
+//            return;
+//        }
+//        if (response.successMessage.equalsIgnoreCase("user sos details"))
+//            if (response.getSos() != null && response.getSos().size() != 0) {
+//                if (response.getUserSos() != null && response.getUserSos().size() != 0) {
+//                    So so = new So();
+//                    so.number = response.getUserSos().get(0).number;
+//                    so.name = response.getUserSos().get(0).name;
+//                    response.getSos().add(so);
+//                }
+//                if (response.getSos().size() > 0)
+//                    sharedPrefence.savevalue(SharedPrefence.SOSLIST, gson.toJson(response));
+//                getmNavigator().setSosList(response.getSos());
+//            } else {
+//                sharedPrefence.savevalue(SharedPrefence.SOSLIST, gson.toJson(response));
+//            }
     }
 
     /** Callback for failed API calls
@@ -67,21 +96,10 @@ public class SosFragViewModel extends BaseNetwork<BaseResponse, SosFragmentNavig
     @Override
     public void onFailureApi(long taskId, CustomException e) {
         setIsLoading(false);
-        if (e.getCode() == Constants.ErrorCode.TOKEN_EXPIRED || e.getCode() == Constants.ErrorCode.TOKEN_MISMATCHED
-                || e.getCode() == Constants.ErrorCode.INVALID_LOGIN) {
-            if (getmNavigator().getAttachedContext() != null) {
-                getmNavigator().getAttachedContext().logout();
-                getmNavigator().showMessage(getmNavigator().getAttachedContext().getTranslatedString(R.string.text_already_login));
-            }
-        }  else if (e.getCode() == Constants.ErrorCode.COMPANY_CREDENTIALS_NOT_VALID ||
-                e.getCode() == Constants.ErrorCode.COMPANY_KEY_DATE_EXPIRED ||
-                e.getCode() == Constants.ErrorCode.COMPANY_KEY_NOT_ACTIVE ||
-                e.getCode() == Constants.ErrorCode.COMPANY_KEY_NOT_VALID) {
-            getmNavigator().showMessage(e);
-            if (getmNavigator() != null)
-                getmNavigator().refreshCompanyKey();
-        }else
-            getmNavigator().showMessage(e);
+        getmNavigator().showMessage(e);
+        if (mCurrentTaskId == Constants.TaskId.SOS_LIST) {
+            noItemFound.set(true);
+        }
     }
 
     /** Returns {@link HashMap} with query parameters used in API calls **/

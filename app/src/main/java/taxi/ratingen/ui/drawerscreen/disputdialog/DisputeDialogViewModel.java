@@ -61,7 +61,7 @@ public class DisputeDialogViewModel extends BaseNetwork<BaseResponse, DisputeDia
                 hashMap.put(Constants.NetworkParameters.longitude, sharedPrefence.Getvalue(SharedPrefence.LONGITUDE));
             }
             hashMap.put(Constants.NetworkParameters.type, "1");
-            getComplaintsNetwork();
+            getComplaintsNetwork(sharedPrefence.Getvalue(SharedPrefence.LATITUDE), sharedPrefence.Getvalue(SharedPrefence.LONGITUDE));
         } else {
             getmNavigator().showNetworkMessage();
         }

@@ -217,8 +217,10 @@ public abstract class BaseNetwork<T extends BaseResponse, N> implements Basecall
     /**
      * Api call to get the complaints.
      */
-    public void getComplaintsNetwork() {
-        gitHubService.GetCompliantList(getMap()).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+    public void getComplaintsNetwork(String lat, String lng) {
+        setIsLoading(true);
+        mCurrentTaskId = Constants.TaskId.COMPLAINTS_LIST;
+        gitHubService.GetCompliantList("Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken), lat, lng).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
     }
 
     /**
@@ -342,7 +344,9 @@ public abstract class BaseNetwork<T extends BaseResponse, N> implements Basecall
      * Api call get the Emergency contact list.
      */
     public void getSosList() {
-        gitHubService.getZoneSos(getMap()).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+        setIsLoading(true);
+        mCurrentTaskId = Constants.TaskId.SOS_LIST;
+        gitHubService.getZoneSos("Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken)).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
     }
 
     /**

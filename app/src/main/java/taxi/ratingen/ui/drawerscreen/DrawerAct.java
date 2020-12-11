@@ -535,9 +535,9 @@ public class DrawerAct extends BaseActivity<ActivityDrawerBinding, DrawerViewMod
         activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Favs).setVisible(false);
         activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Wallet).setVisible(false);
         activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Notifications).setVisible(false);
-        activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Complaints).setVisible(false);
+//        activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Complaints).setVisible(false);
         activityDrawerBinding.navView.getMenu().findItem(R.id.nav_about).setVisible(false);
-        activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Sos).setVisible(false);
+//        activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Sos).setVisible(false);
         activityDrawerBinding.navView.getMenu().findItem(R.id.nav_faq).setVisible(false);
     }
 

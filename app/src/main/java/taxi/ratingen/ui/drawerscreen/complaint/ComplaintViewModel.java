@@ -14,12 +14,14 @@ import taxi.ratingen.retro.base.BaseNetwork;
 import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.GitHubService;
 import taxi.ratingen.retro.responsemodel.ComplaintList;
+import taxi.ratingen.retro.responsemodel.So;
 import taxi.ratingen.utilz.CommonUtils;
 import taxi.ratingen.utilz.Constants;
 import taxi.ratingen.utilz.exception.CustomException;
 import taxi.ratingen.utilz.SharedPrefence;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -34,7 +36,7 @@ public class ComplaintViewModel extends BaseNetwork<BaseResponse, ComplaintNavig
     GitHubService gitHubService;
     HashMap<String, String> hashMap;
     Context context;
-    List<ComplaintList> complaintList;
+    List<ComplaintList> complaintList = new ArrayList<>();
     public String SelectedId = null;
     public SharedPrefence sharedPrefence;
 
@@ -53,18 +55,20 @@ public class ComplaintViewModel extends BaseNetwork<BaseResponse, ComplaintNavig
     /** get {@link ComplaintList} from API **/
     public void getComplaintList() {
         if (getmNavigator().isNetworkConnected()) {
-            mIsLoading.set(true);
-            hashMap = new HashMap<>();
-            hashMap.put(Constants.NetworkParameters.client_id, sharedPrefence.getCompanyID());
-            hashMap.put(Constants.NetworkParameters.client_token, sharedPrefence.getCompanyToken());
-            hashMap.put(Constants.NetworkParameters.id, sharedPrefence.Getvalue(SharedPrefence.ID));
-            hashMap.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
+//            mIsLoading.set(true);
+//            hashMap = new HashMap<>();
+//            hashMap.put(Constants.NetworkParameters.id, sharedPrefence.Getvalue(SharedPrefence.ID));
+//            hashMap.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
+//            if (sharedPrefence.Getvalue(SharedPrefence.LATITUDE) != null && sharedPrefence.Getvalue(SharedPrefence.LONGITUDE) != null) {
+//                hashMap.put(Constants.NetworkParameters.latitude, sharedPrefence.Getvalue(SharedPrefence.LATITUDE));
+//                hashMap.put(Constants.NetworkParameters.longitude, sharedPrefence.Getvalue(SharedPrefence.LONGITUDE));
+//            }
+//            hashMap.put(Constants.NetworkParameters.type, "1");
+
             if (sharedPrefence.Getvalue(SharedPrefence.LATITUDE) != null && sharedPrefence.Getvalue(SharedPrefence.LONGITUDE) != null) {
-                hashMap.put(Constants.NetworkParameters.latitude, sharedPrefence.Getvalue(SharedPrefence.LATITUDE));
-                hashMap.put(Constants.NetworkParameters.longitude, sharedPrefence.Getvalue(SharedPrefence.LONGITUDE));
+                mIsLoading.set(true);
+                getComplaintsNetwork(sharedPrefence.Getvalue(SharedPrefence.LATITUDE), sharedPrefence.Getvalue(SharedPrefence.LONGITUDE));
             }
-            hashMap.put(Constants.NetworkParameters.type, "1");
-            getComplaintsNetwork();
         } else {
             getmNavigator().showNetworkMessage();
         }
@@ -83,25 +87,57 @@ public class ComplaintViewModel extends BaseNetwork<BaseResponse, ComplaintNavig
     @Override
     public void onSuccessfulApi(long taskId, BaseResponse response) {
         setIsLoading(false);
-        if (response.successMessage.equalsIgnoreCase("complaint_list")) {
-            if (response.getComplaintList() != null && response.getComplaintList().size() > 0) {
-                getmNavigator().DisableSpinner(true);
-                complaintList = response.getComplaintList();
-                zoneRefID = CommonUtils.IsEmpty(response.admin_key) ? "" : response.admin_key;
-                getmNavigator().addList(complaintList);
-            } else if (response.complaintList.size() == 0) {
-                ComplaintList complaintList = new ComplaintList();
-                complaintList.id = 0;
-                if (getmNavigator().GetContext() != null)
-                    complaintList.title = getmNavigator().GetContext().getTranslatedString(R.string.Txt_NoServiceAvailable);
-                ArrayList<ComplaintList> list = new ArrayList<>();
-                list.add(complaintList);
-                getmNavigator().addList(list);
+
+//        if (response.successMessage.equalsIgnoreCase("complaint_list")) {
+//            if (response.getComplaintList() != null && response.getComplaintList().size() > 0) {
+//                getmNavigator().DisableSpinner(true);
+//                complaintList = response.getComplaintList();
+//                zoneRefID = CommonUtils.IsEmpty(response.admin_key) ? "" : response.admin_key;
+//                getmNavigator().addList(complaintList);
+//            } else if (response.complaintList.size() == 0) {
+//                ComplaintList complaintList = new ComplaintList();
+//                complaintList.id = 0;
+//                if (getmNavigator().GetContext() != null)
+//                    complaintList.title = getmNavigator().GetContext().getTranslatedString(R.string.Txt_NoServiceAvailable);
+//                ArrayList<ComplaintList> list = new ArrayList<>();
+//                list.add(complaintList);
+//                getmNavigator().addList(list);
+//            }
+//        } else if (response.successMessage.equalsIgnoreCase("compliant registered successfully")) {
+//            getmNavigator().showMessage(response.successMessage);
+//            text_cmts.set("");
+//        }
+
+        if (response.message != null) {
+            if (response.message.equalsIgnoreCase("success")) {
+                if (mCurrentTaskId == Constants.TaskId.COMPLAINTS_LIST) {
+                    if (response.data != null) {
+                        String complaintsJson = gson.toJson(response.data);
+                        ComplaintList[] complaintsList = gson.fromJson(complaintsJson, ComplaintList[].class);
+                        if (complaintsList != null) {
+                            if (complaintsList.length > 0) {
+                                getmNavigator().DisableSpinner(true);
+                                complaintList = Arrays.asList(complaintsList);
+                                getmNavigator().addList(complaintList);
+                            } else
+                                addNoServiceList();
+                        } else
+                            addNoServiceList();
+                    } else
+                        addNoServiceList();
+                }
             }
-        } else if (response.successMessage.equalsIgnoreCase("compliant registered successfully")) {
-            getmNavigator().showMessage(response.successMessage);
-            text_cmts.set("");
         }
+    }
+
+    private void addNoServiceList() {
+        ComplaintList complaintList = new ComplaintList();
+        complaintList.id = 0;
+        if (getmNavigator().GetContext() != null)
+            complaintList.title = getmNavigator().GetContext().getTranslatedString(R.string.Txt_NoServiceAvailable);
+        ArrayList<ComplaintList> list = new ArrayList<>();
+        list.add(complaintList);
+        getmNavigator().addList(list);
     }
 
     /** called when any of the complaint is selected from the spinner **/

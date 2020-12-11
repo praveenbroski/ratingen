@@ -1167,4 +1167,7 @@ public class TranslationModel {
     @SerializedName("txt_already_registered")
     public String txt_already_registered = "txt_already_registered";
 
+    @SerializedName("txt_no_sos")
+    public String txt_no_sos = "txt_no_sos";
+
 }

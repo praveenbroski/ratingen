@@ -2,6 +2,7 @@ package taxi.ratingen.retro;
 
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Path;
 import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.responsemodel.Payment;
 import taxi.ratingen.retro.responsemodel.User;
@@ -53,21 +54,17 @@ public interface GitHubService {
     @POST(Constants.URL.PREFFERED_PAYMENT)
     Call<Payment> GetPaymentModeSelected(@FieldMap Map<String, String> options);
 
-
     @FormUrlEncoded
     @POST(Constants.URL.addcardURL)
     Call<Payment> addCard(@FieldMap Map<String, String> options);
-
 
     @FormUrlEncoded
     @POST(Constants.URL.cardlistURL)
     Call<Payment> GetCardList(@FieldMap Map<String, String> options);
 
-
     @FormUrlEncoded
     @POST(Constants.URL.getwalletURL)
     Call<Payment> Getwallet(@FieldMap Map<String, String> options);
-
 
     @FormUrlEncoded
     @POST(Constants.URL.carddefaultURL)
@@ -76,7 +73,6 @@ public interface GitHubService {
     @FormUrlEncoded
     @POST(Constants.URL.deletecardURL)
     Call<Payment> DeleteCard(@FieldMap Map<String, String> options);
-
 
     @FormUrlEncoded
     @POST(Constants.URL.ETAURL)
@@ -95,26 +91,21 @@ public interface GitHubService {
 //    @POST(Constants.URL.createRequestNewURL)
     Call<BaseResponse> CreateRequest(@FieldMap Map<String, String> options);
 
-
     @FormUrlEncoded
     @POST(Constants.URL.createrequestLaterURl)
     Call<BaseResponse> CreateRequestLater(@FieldMap Map<String, String> options);
-
 
     @FormUrlEncoded
     @POST(Constants.URL.otpvalidate)
     Call<User> OtpVerfiycall(@FieldMap Map<String, String> options);
 
-
     @FormUrlEncoded
     @POST(Constants.URL.LoginByOTPURL)
     Call<User> loginOtpVerfiycall(@FieldMap Map<String, String> options);
 
-
     @FormUrlEncoded
     @POST(Constants.URL.ISRegistered)
     Call<User> IsRegisteredSocial(@Field(Constants.NetworkParameters.social_unique_id) String socialid);
-
 
     @Multipart
     @POST(Constants.URL.SignUpURL)
@@ -141,7 +132,6 @@ public interface GitHubService {
     @POST(Constants.URL.historyListURL)
     Call<BaseResponse> GetHistorycall(@FieldMap Map<String, String> options);
 
-
     @FormUrlEncoded
     @POST(Constants.URL.AddFavurl)
     Call<User> AddFav(@FieldMap Map<String, String> options);
@@ -157,7 +147,6 @@ public interface GitHubService {
     @FormUrlEncoded
     @POST(Constants.URL.Requestcancelurl)
     Call<BaseResponse> RequestCancel(@FieldMap Map<String, String> options);
-
 
     @FormUrlEncoded
     @POST(Constants.URL.ListFavurl)
@@ -179,16 +168,14 @@ public interface GitHubService {
     @POST(Constants.URL.DeletefavURL)
     Call<BaseResponse> DeleteFav(@FieldMap Map<String, String> options);
 
-
-    @FormUrlEncoded
-    @POST(Constants.URL.CompliantsURL)
-    Call<BaseResponse> GetCompliantList(@FieldMap Map<String, String> options);
-
+    @GET(Constants.URL.CompliantsURL + "/{" + Constants.NetworkParameters.lat + "}/{" + Constants.NetworkParameters.lng + "}")
+    Call<BaseResponse> GetCompliantList(@Header("Authorization") String bearer,
+                                        @Path(Constants.NetworkParameters.lat) String lat,
+                                        @Path(Constants.NetworkParameters.lng) String lng);
 
     @FormUrlEncoded
     @POST(Constants.URL.PromoURL)
     Call<BaseResponse> ApplyPromo(@FieldMap Map<String, String> options);
-
 
     @FormUrlEncoded
     @POST(Constants.URL.ridelatercancelURL)
@@ -231,9 +218,8 @@ public interface GitHubService {
     @POST(Constants.URL.walletHistory)
     Call<BaseResponse> GetWalletHistory(@FieldMap Map<String, String> options);
 
-    @FormUrlEncoded
-    @POST(Constants.URL.ZoneSOSUrl)
-    Call<BaseResponse> getZoneSos(@FieldMap Map<String, String> options);
+    @GET(Constants.URL.ZoneSOSUrl)
+    Call<BaseResponse> getZoneSos(@Header("Authorization") String bearer);
 
     @GET(Constants.URL.userProfileRetrieve)
     Call<BaseResponse> GetUserProfile(@Header("Authorization") String bearer);

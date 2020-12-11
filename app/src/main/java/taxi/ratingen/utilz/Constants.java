@@ -193,7 +193,7 @@ public final class Constants {
         String createRequestNewURL = "v1/user/new/createrequest";
         String GetreferralURL = "v1/user/getreferral";
         String DeletefavURL = "v1/user/deletefav";
-        String CompliantsURL = "v1/compliants/list";
+        String CompliantsURL = "api/v1/complaint-titles/list";
         String PromoURL = "v1/user/promocode/check";
         String ridelatercancelURL = "v1/user/ridelatercancel";
         String CANCEL_REASON_LIST_URL = "v1/cancellation/list";
@@ -215,7 +215,8 @@ public final class Constants {
         String DirectionURL = "maps/api/directions/json?";
         String Requestcancelurl = "v1/user/request/cancel";
         String ListFavurl = "v1/user/listfav";
-        String ZoneSOSUrl = "v1/user/zonesos";
+        String ZoneSOSUrl = "api/v1/user/sos";
+//        String ZoneSOSUrl = "v1/user/zonesos";
         String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
         String TYPE_AUTOCOMPLETE = "/autocomplete";
         String TYPE_NEAR_BY = "/nearbysearch";
@@ -358,13 +359,17 @@ public final class Constants {
         String Role = "role";
         String Email = "email";
         String TermsCondition = "terms_condition";
+        String lat = "lat";
+        String lng = "lng";
     }
 
     public interface TaskId {
         int login = 100;
         int PROFILE_UPDATE = 101;
         int SEND_OTP = 102;
-        Integer LOGOUT = 103;
+        int LOGOUT = 103;
+        int SOS_LIST = 104;
+        int COMPLAINTS_LIST = 105;
     }
 
 }
