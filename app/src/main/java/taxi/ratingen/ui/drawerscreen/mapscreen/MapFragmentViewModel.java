@@ -45,6 +45,7 @@ import taxi.ratingen.retro.GitHubService;
 import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.responsemodel.Car;
 import taxi.ratingen.retro.responsemodel.ProfileModel;
+import taxi.ratingen.retro.responsemodel.Type;
 import taxi.ratingen.retro.responsemodel.User;
 import taxi.ratingen.retro.dynamicInterceptor;
 import taxi.ratingen.utilz.CommonUtils;
@@ -71,7 +72,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Named;
 
@@ -226,7 +230,7 @@ public class MapFragmentViewModel extends BaseNetwork<User, MapNavigator> implem
             IsIdle.set(true);
             if (!mMapIsTouched && !isFromAutoComplete.get()) {
                 PickupLatLng = new LatLng(googleMap.getCameraPosition().target.latitude, googleMap.getCameraPosition().target.longitude);
-                FirebaseHelper.queryDrivers(PickupLatLng);
+//                FirebaseHelper.queryDrivers(PickupLatLng);
                 socketMessageModel.id = sharedPrefence.Getvalue(SharedPrefence.ID);
                 socketMessageModel.lat = googleMap.getCameraPosition().target.latitude;
                 socketMessageModel.lng = googleMap.getCameraPosition().target.longitude;
@@ -303,7 +307,7 @@ public class MapFragmentViewModel extends BaseNetwork<User, MapNavigator> implem
 //                            socketMessageModel.pickup_address = mPickupAddress.get();
                         System.out.println(TAG + "+++IAmEmmiting++" + gson.toJson(socketMessageModel));
                         SocketHelper.sendTypes(gson.toJson(socketMessageModel));
-                        FirebaseHelper.queryDrivers(latLng);
+//                        FirebaseHelper.queryDrivers(latLng);
                     }
                 } else {
                     Log.d(TAG, "GetAddressFromLatlng" + response.toString());
@@ -331,7 +335,7 @@ public class MapFragmentViewModel extends BaseNetwork<User, MapNavigator> implem
                 PickupLatLng = new LatLng(list.get(0).getLatitude(), list.get(0)
                         .getLongitude());
                 mMapLatLng.set(PickupLatLng);
-                FirebaseHelper.queryDrivers(PickupLatLng);
+//                FirebaseHelper.queryDrivers(PickupLatLng);
                 socketMessageModel.id = sharedPrefence.Getvalue(SharedPrefence.ID);
                 socketMessageModel.lat = PickupLatLng.latitude;
                 socketMessageModel.lng = PickupLatLng.longitude;
@@ -351,7 +355,7 @@ public class MapFragmentViewModel extends BaseNetwork<User, MapNavigator> implem
                             double lng = response.body().getAsJsonArray("results").get(0).getAsJsonObject().get("geometry").getAsJsonObject().get("location").getAsJsonObject().get("lng").getAsDouble();
                             PickupLatLng = new LatLng(lat, lng);
                             mMapLatLng.set(PickupLatLng);
-                            FirebaseHelper.queryDrivers(PickupLatLng);
+//                            FirebaseHelper.queryDrivers(PickupLatLng);
                             socketMessageModel.id = sharedPrefence.Getvalue(SharedPrefence.ID);
                             socketMessageModel.lat = PickupLatLng.latitude;
                             socketMessageModel.lng = PickupLatLng.longitude;
@@ -430,7 +434,7 @@ public class MapFragmentViewModel extends BaseNetwork<User, MapNavigator> implem
      **/
     public void SetSocketListener() {
         SocketHelper.init(sharedPrefence, this, TAG, false);
-        FirebaseHelper.init(sharedPrefence, this, false);
+//        FirebaseHelper.init(sharedPrefence, this, false);
         Types(SocketHelper.getLastLoadedTypes());
     }
 
@@ -563,6 +567,7 @@ public class MapFragmentViewModel extends BaseNetwork<User, MapNavigator> implem
     }
 
     public void chooseDestination(View v) {
+        stopTypesTimer();
         getmNavigator().openDestinationFragment("", driverPins, driverDatas);
     }
 
@@ -574,7 +579,6 @@ public class MapFragmentViewModel extends BaseNetwork<User, MapNavigator> implem
      **/
     @Override
     public void Types(final String typesString) {
-        Log.i(TAG, "types" + typesString);
         if (typesString != null) {
             BaseResponse baseResponse = gson.fromJson(typesString, BaseResponse.class);
 
@@ -586,46 +590,37 @@ public class MapFragmentViewModel extends BaseNetwork<User, MapNavigator> implem
                 isProgressShown.set(false);
             }
         }
-        /*
-        if (getmNavigator().getAttachedContext() != null)
-            getmNavigator().getAttachedContext().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    //JSONObject data = (JSONObject) typesString;
-                    System.out.println("++" + typesString);
-                    if (typesString != null) {
-                        BaseResponse baseResponse = gson.fromJson(typesString, BaseResponse.class);
 
-                        if (baseResponse != null && baseResponse.success) {
-                            Istypedata.set(true);
+        if (getmNavigator().getAttachedContext() != null)
+            getmNavigator().getAttachedContext().runOnUiThread(() -> {
+                System.out.println("++" + typesString);
+                if (typesString != null) {
+                    BaseResponse baseResponse = gson.fromJson(typesString, BaseResponse.class);
+
+                    if (baseResponse != null && baseResponse.success) {
+                        Istypedata.set(true);
 //                        isProgressShown.set(false);
-                            getmNavigator().addcarList(baseResponse.getTypes());
-                            if (baseResponse.getTypes() != null)
-                                if (baseResponse.getTypes().size() > 0) {
-                                    final List<Car> driverlist = new ArrayList<>();
-                                    Log.d(TAG, "Obj=" + (getmNavigator().GetSelectedCarObj() != null));
-                                    for (Type type : baseResponse.getTypes()) {
-                                        if (type != null)
-                                            if (type.drivers != null)
-                                                driverlist.addAll(type.drivers);
-                                    }
-                                    if (getmNavigator() != null && getmNavigator().getAttachedContext() != null)
-                                        getmNavigator().getAttachedContext().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                setDriverMarkers(driverlist);
-                                            }
-                                        });
-                                    if (baseResponse.getTypes().get(0) != null && baseResponse.getTypes().get(0).preferred_payment != null)
-                                        sharedPrefence.saveInt(SharedPrefence.PREFFERED_PAYMENT, baseResponse.getTypes().get(0).preferred_payment);
+                        getmNavigator().addcarList(baseResponse.getTypes());
+                        if (baseResponse.getTypes() != null)
+                            if (baseResponse.getTypes().size() > 0) {
+                                final List<Car> driverList = new ArrayList<>();
+                                Log.d(TAG, "Obj = " + (getmNavigator().GetSelectedCarObj() != null));
+                                for (Type type : baseResponse.getTypes()) {
+                                    if (type != null)
+                                        if (type.drivers != null)
+                                            driverList.addAll(type.drivers);
                                 }
-                        } else {
-                            Istypedata.set(false);
+                                if (getmNavigator() != null && getmNavigator().getAttachedContext() != null)
+                                    getmNavigator().getAttachedContext().runOnUiThread(() -> setDriverMarkers(driverList));
+                                if (baseResponse.getTypes().get(0) != null && baseResponse.getTypes().get(0).preferred_payment != null)
+                                    sharedPrefence.saveInt(SharedPrefence.PREFFERED_PAYMENT, baseResponse.getTypes().get(0).preferred_payment);
+                            }
+                    } else {
+                        Istypedata.set(false);
 //                        isProgressShown.set(false);
-                        }
                     }
                 }
-            });*/
+            });
     }
 
     /**
@@ -949,7 +944,7 @@ public class MapFragmentViewModel extends BaseNetwork<User, MapNavigator> implem
         getmNavigator().openSideMenu();
     }
 
-    /*public void startTypesTimer() {
+    public void startTypesTimer() {
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         scheduledFuture =
                 service.scheduleAtFixedRate(typesRunnable, 5, 10, TimeUnit.SECONDS);
@@ -973,7 +968,7 @@ public class MapFragmentViewModel extends BaseNetwork<User, MapNavigator> implem
                 SocketHelper.sendTypes(gson.toJson(socketMessageModel));
             }
         }
-    };*/
+    };
 
     @BindingAdapter("setProfileImage")
     public static void setProfileImage(ImageView imageView, String url) {

@@ -19,7 +19,8 @@ public class SocketHelper {
     static String pendingTypeData, typesDriversData = "";
 
     static Long lastSocketConnected, isDriversLastListed;
-    static boolean isInsideTrip = false;
+    static boolean isInsideTrip = false, isDisconnectCalled = true;
+    static boolean isListenersAdded = false;
 
     public static void init(SharedPrefence prefence, SocketListener socketDataReceivers, String tag, boolean isInTrip) {
         sharedPrefence = prefence;
@@ -38,18 +39,19 @@ public class SocketHelper {
         try {
             if (mSocket == null)
                 mSocket = IO.socket(Constants.URL.SOCKET_URL, opts);
-            if (!(mSocket.connected())) {
+            if (!(mSocket.connected()) && !isListenersAdded) {
                 Log.v(TAG, "xxxxxxxxxxxxxxxxxxxxx " + (mSocket != null ? ("Is connected: " + mSocket.connected()) : "mSocket is Null"));
                 mSocket.on(Socket.EVENT_CONNECT, onConnect);
                 mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
                 mSocket.on(Socket.EVENT_CONNECT_ERROR, onConnectError);
                 mSocket.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
-                mSocket.on("types", types);
+                mSocket.on("user_vehicle_types", types);
                 mSocket.on("trip_status", trip_status);
                 mSocket.on("cancelled_request", cancelled_request);
                 mSocket.on("ride_later_cancelled_because_of_no_driver_found", rideLaterNoCaptainAlert);
                 mSocket.on(Constants.NetworkParameters.TIME_TAKES, duration_handler);
                 mSocket.connect();
+                isListenersAdded = true;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,11 +77,12 @@ public class SocketHelper {
         mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
         mSocket.off(Socket.EVENT_CONNECT_ERROR, onConnectError);
         mSocket.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError);
-        mSocket.off("types", types);
+        mSocket.off("user_vehicle_types", types);
         mSocket.off("trip_status", trip_status);
         mSocket.off("cancelled_request", cancelled_request);
         mSocket.off("ride_later_cancelled_because_of_no_driver_found", rideLaterNoCaptainAlert);
         mSocket.off(Constants.NetworkParameters.TIME_TAKES, duration_handler);
+        isListenersAdded = false;
     }
 
     private static Emitter.Listener onConnect = new Emitter.Listener() {
@@ -92,9 +95,9 @@ public class SocketHelper {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            if (socketDataReceiver != null && socketDataReceiver.isNetworkConnected()) {
-                socketDataReceiver.OnConnect();
+            if (socketDataReceiver != null && socketDataReceiver.isNetworkConnected() && isDisconnectCalled) {
                 mSocket.emit(Constants.NetworkParameters.start_connect, object.toString());
+                isDisconnectCalled = false;
                 Log.v(TAG, "start_connect = " + object.toString() + " Connected = " + mSocket.connected());
             }
             /* if ((System.currentTimeMillis() - lastSocketConnected) > 2000 && socketDataReceiver != null
@@ -110,6 +113,7 @@ public class SocketHelper {
         @Override
         public void call(Object... args) {
             Log.v(TAG, "onDisconnect");
+            isDisconnectCalled = true;
             if (socketDataReceiver != null)
                 socketDataReceiver.OnDisconnect();
         }
@@ -119,6 +123,7 @@ public class SocketHelper {
         @Override
         public void call(Object... args) {
             Log.v(TAG, "onConnectError");
+            isDisconnectCalled = true;
             if (socketDataReceiver != null)
                 socketDataReceiver.OnConnectError();
         }
@@ -179,7 +184,7 @@ public class SocketHelper {
                 pendingTypeData = types;
             } else if (mSocket.connected()) {
                 Log.v(TAG, "types Data----Sent----Socket=" + mSocket.connected());
-                mSocket.emit("types", types);
+                mSocket.emit("user_vehicle_types", types);
                 pendingTypeData = null;
             }
         }

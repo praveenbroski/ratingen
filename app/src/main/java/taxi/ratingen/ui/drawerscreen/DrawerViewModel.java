@@ -148,8 +148,8 @@ public class DrawerViewModel extends BaseNetwork<BaseResponse, DrawerNavigator> 
         if (response.message.equalsIgnoreCase("request_in_progress")) {
             getmNavigator().enableCorporateUser(sharedPrefence.GetBoolean(SharedPrefence.IS_CORPORATE_USER));
             ReqInProgress model = CommonUtils.getSingleObject(new Gson().toJson(response.data), ReqInProgress.class);
-
             if (model != null) {
+                sharedPrefence.savevalue(SharedPrefence.ID, model.getId() + "");
                 if (model.getOnTripRequest() != null) {
                     String requestString = gson.toJson(model.getOnTripRequest());
                     TaxiRequestModel.Result metaRequest = CommonUtils.getSingleObject(requestString, TaxiRequestModel.Result.class);

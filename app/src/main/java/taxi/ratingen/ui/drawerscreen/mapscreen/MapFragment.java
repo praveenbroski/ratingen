@@ -175,6 +175,7 @@ public class MapFragment extends BaseFragment<FragmentMapBinding, MapFragmentVie
             e.printStackTrace();
         }
         mapFragmentViewModel.SetSocketListener();
+        mapFragmentViewModel.startTypesTimer();
         ((SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.mapView)).getMapAsync(this);
 
@@ -238,6 +239,7 @@ public class MapFragment extends BaseFragment<FragmentMapBinding, MapFragmentVie
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        mapFragmentViewModel.startTypesTimer();
 //        fragmentMapBinding.mapView.onDestroy();
     }
 
@@ -578,6 +580,11 @@ public class MapFragment extends BaseFragment<FragmentMapBinding, MapFragmentVie
                 LocalBroadcastManager.getInstance(getAttachedContext()).sendBroadcast(intent);
             }
         }
+    }
+
+    public void restartTypesTimer() {
+        if (mapFragmentViewModel != null)
+            mapFragmentViewModel.startTypesTimer();
     }
 
     private BroadcastReceiver mProfileReceiver = new BroadcastReceiver() {

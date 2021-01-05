@@ -18,7 +18,7 @@ public class Car {
     public Float longitude;
     @SerializedName("type")
     @Expose
-    public Integer type;
+    public String type;
     @SerializedName("bearing")
     @Expose
     public Float bearing;

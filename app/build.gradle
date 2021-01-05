@@ -17,7 +17,7 @@ android {
         targetSdkVersion 29
         versionCode 1
         multiDexEnabled true
-        versionName "1.3.2"
+        versionName "1.0.2"
         vectorDrawables.useSupportLibrary = true
         signingConfig signingConfigs.ReleaseConfig
         setProperty("archivesBaseName", "$parent.name-$versionName")
@@ -28,7 +28,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', 'BASE_URL', '"http://167.86.87.74/new-ratengine/public/"'
-            buildConfigField 'String', 'SOCKET_URL', '"http://167.86.87.74:3001/home"'
+            buildConfigField 'String', 'SOCKET_URL', '"http://167.86.87.74:3001/user"'
             buildConfigField 'String', 'PLACEAPI_KEY', '"AIzaSyAiq8aYTQJb4v9qFWdi3TohTuuU_8IAZWE"'
             buildConfigField 'String', 'BASE_VEHICLE_IMG_URL', '"http://167.86.87.74/new-ratengine/public/storage/uploads/driver/types/"'
         }
@@ -36,7 +36,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', 'BASE_URL', '"http://167.86.87.74/new-ratengine/public/"'
-            buildConfigField 'String', 'SOCKET_URL', '"http://167.86.87.74:3001/home"'
+            buildConfigField 'String', 'SOCKET_URL', '"http://167.86.87.74:3001/user"'
             buildConfigField 'String', 'PLACEAPI_KEY', '"AIzaSyAiq8aYTQJb4v9qFWdi3TohTuuU_8IAZWE"'
             buildConfigField 'String', 'BASE_VEHICLE_IMG_URL', '"http://167.86.87.74/new-ratengine/public/storage/uploads/driver/types/"'
         }

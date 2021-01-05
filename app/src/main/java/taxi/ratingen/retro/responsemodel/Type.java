@@ -23,7 +23,7 @@ public class Type extends BaseResponse implements Parcelable {
     public Integer id;
     @SerializedName("type_id")
     @Expose
-    public Integer type_id;
+    public String type_id;
     @SerializedName("duration")
     @Expose
     public String duration;

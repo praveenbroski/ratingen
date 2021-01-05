@@ -402,8 +402,8 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
             graceTime = request.waiting_grace_time;
 
         SocketHelper.init(sharedPrefence, this, TAG, true);
-        FirebaseHelper.init(sharedPrefence, this, true);
-        FirebaseHelper.addTripObserverFor("" + request.id);
+//        FirebaseHelper.init(sharedPrefence, this, true);
+//        FirebaseHelper.addTripObserverFor("" + request.id);
     }
 
 
