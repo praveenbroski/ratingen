@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import taxi.ratingen.retro.responsemodel.ClientObject;
 import taxi.ratingen.retro.responsemodel.CountryListModel;
+import taxi.ratingen.retro.responsemodel.Result;
 import taxi.ratingen.retro.responsemodel.TripRegisteredDetails;
 import taxi.ratingen.retro.responsemodel.TypeNew;
 import taxi.ratingen.ui.topdriver.TopDriverModel;
@@ -61,7 +62,7 @@ public class BaseResponse implements Serializable {
 
     @SerializedName("request_id")
     @Expose
-    public int request_id;
+    public String request_id;
 
     @SerializedName("status_code")
     @Expose
@@ -278,6 +279,9 @@ public class BaseResponse implements Serializable {
     @Expose
     public Object data;
 
+    @Expose
+    public Result result;
+
     @SerializedName("history")
     @Expose
     public List<taxi.ratingen.retro.responsemodel.history> history;
@@ -375,11 +379,11 @@ public class BaseResponse implements Serializable {
         @Expose
         public String id;
         @Expose
-        public String cancellation_fee_name;
+        public String reason;
 
         public ReasonCancel(String s, String others) {
             id = s;
-            cancellation_fee_name = others;
+            reason = others;
         }
     }
 

@@ -259,7 +259,7 @@ public class MapDaggerModel {
 
     @Provides
     CarsTypesAdapter CarsTypesAdapterAdapter(RideConfirmationFragment mapScrn) {
-        return new CarsTypesAdapter(mapScrn, new ArrayList<TypeNew>());
+        return new CarsTypesAdapter(mapScrn, new ArrayList<Type>());
     }
 
     @Provides

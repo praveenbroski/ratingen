@@ -11,6 +11,7 @@ import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.GitHubMapService;
 import taxi.ratingen.retro.GitHubService;
 import taxi.ratingen.retro.responsemodel.Favplace;
+import taxi.ratingen.utilz.CommonUtils;
 import taxi.ratingen.utilz.Constants;
 import taxi.ratingen.utilz.exception.CustomException;
 import taxi.ratingen.utilz.SharedPrefence;
@@ -82,17 +83,22 @@ public class SearchPlaceViewModel extends BaseNetwork<BaseResponse, SearchPlaceN
             System.out.println("++onPlaceEditTextchanged+++");
             getmNavigator().showPickClearButton(false);
             BaseResponse baseResponse = gson.fromJson(sharedPrefence.Getvalue(SharedPrefence.FAVLIST), BaseResponse.class);
-            if (baseResponse != null)
-                if (baseResponse.getFavplace() != null)
-                    getmNavigator().addList(baseResponse.getFavplace());
+            if (baseResponse != null && baseResponse.data != null) {
+                String favList = CommonUtils.ObjectToString(baseResponse.data);
+                List<Favplace> favPlaces = CommonUtils.stringToArray(favList, Favplace[].class);
+                getmNavigator().addList(favPlaces);
+            }
         } else if (!editable.toString().isEmpty() && editable.length() > 3) {
             getmNavigator().showPickClearButton(true);
             getPlaceApicall(editable.toString());
         } else {
             getmNavigator().showPickClearButton(false);
             BaseResponse baseResponse = gson.fromJson(sharedPrefence.Getvalue(SharedPrefence.FAVLIST), BaseResponse.class);
-            if (baseResponse != null && baseResponse.getFavplace() != null)
-                getmNavigator().addList(baseResponse.getFavplace());
+            if (baseResponse != null && baseResponse.data != null) {
+                String favList = CommonUtils.ObjectToString(baseResponse.data);
+                List<Favplace> favPlaces = CommonUtils.stringToArray(favList, Favplace[].class);
+                getmNavigator().addList(favPlaces);
+            }
         }
     }
 
@@ -103,17 +109,22 @@ public class SearchPlaceViewModel extends BaseNetwork<BaseResponse, SearchPlaceN
             System.out.println("++onPlaceEditTextchanged+++");
             getmNavigator().showclearButton(false);
             BaseResponse baseResponse = gson.fromJson(sharedPrefence.Getvalue(SharedPrefence.FAVLIST), BaseResponse.class);
-            if (baseResponse != null)
-                if (baseResponse.getFavplace() != null)
-                    getmNavigator().addList(baseResponse.getFavplace());
+            if (baseResponse != null && baseResponse.data != null) {
+                String favList = CommonUtils.ObjectToString(baseResponse.data);
+                List<Favplace> favPlaces = CommonUtils.stringToArray(favList, Favplace[].class);
+                getmNavigator().addList(favPlaces);
+            }
         } else if (!editable.toString().isEmpty() && editable.length() > 3) {
             getmNavigator().showclearButton(true);
             getPlaceApicall(editable.toString());
         } else {
             getmNavigator().showclearButton(false);
             BaseResponse baseResponse = gson.fromJson(sharedPrefence.Getvalue(SharedPrefence.FAVLIST), BaseResponse.class);
-            if (baseResponse != null && baseResponse.getFavplace() != null)
-                getmNavigator().addList(baseResponse.getFavplace());
+            if (baseResponse != null && baseResponse.data != null) {
+                String favList = CommonUtils.ObjectToString(baseResponse.data);
+                List<Favplace> favPlaces = CommonUtils.stringToArray(favList, Favplace[].class);
+                getmNavigator().addList(favPlaces);
+            }
         }
     }
 
@@ -181,12 +192,18 @@ public class SearchPlaceViewModel extends BaseNetwork<BaseResponse, SearchPlaceN
     @Override
     public void onSuccessfulApi(long taskId, BaseResponse response) {
         setIsLoading(false);
-        if (response.successMessage.equalsIgnoreCase("Favorite_Added_Successfully")) {
-            if (response.getFavplace().size() > 0) {
-                response.getFavplace().get(0).IsFavTit = true;
-                getmNavigator().addList(response.getFavplace());
-                String favList = gson.toJson(response);
-                sharedPrefence.savevalue(SharedPrefence.FAVLIST, favList);
+        if (response.message.equalsIgnoreCase("success")) {
+            if (response.data != null) {
+                String baseStr = CommonUtils.ObjectToString(response.data);
+                BaseResponse baseResponse = (BaseResponse) CommonUtils.StringToObject(baseStr, BaseResponse.class);
+                if (baseResponse.data != null) {
+                    String favList = CommonUtils.ObjectToString(baseResponse.data);
+                    List<Favplace> favPlaces = CommonUtils.stringToArray(favList, Favplace[].class);
+                    if (favPlaces.size() > 0) {
+                        getmNavigator().addList(favPlaces);
+                    }
+                    sharedPrefence.savevalue(SharedPrefence.FAVLIST, baseStr);
+                }
             }
         }
     }
@@ -245,7 +262,7 @@ public class SearchPlaceViewModel extends BaseNetwork<BaseResponse, SearchPlaceN
         hashMap.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
 
         if (getmNavigator().isNetworkConnected())
-            GetFavListNetworkcall();
+            GetFavListNetworkCall();
         else
             getmNavigator().showNetworkMessage();
     }

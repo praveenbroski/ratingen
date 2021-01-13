@@ -567,7 +567,7 @@ public class MapFragmentViewModel extends BaseNetwork<User, MapNavigator> implem
     }
 
     public void chooseDestination(View v) {
-        stopTypesTimer();
+//        stopTypesTimer();
         getmNavigator().openDestinationFragment("", driverPins, driverDatas);
     }
 
@@ -666,40 +666,40 @@ public class MapFragmentViewModel extends BaseNetwork<User, MapNavigator> implem
 
     @Override
     public void TripStatus(String trip_status) {
-        Log.i(TAG, "Trip_Status" + trip_status);
-        if (getmNavigator().getAttachedContext() != null) {
-            getmNavigator().getAttachedContext().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    JSONObject data = null;
-                    try {
-                        data = new JSONObject(trip_status);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-//                        System.out.println("+get_cars+" + data.toString());
-                    if (data != null) {
-                        BaseResponse baseResponse = gson.fromJson(data.toString(), BaseResponse.class);
-                        if (baseResponse != null && baseResponse.successMessage != null
-                                && baseResponse.successMessage.equalsIgnoreCase("Accepted") && baseResponse.getRequest() != null) {
-//                                if (baseResponse.getRequest().later != null && baseResponse.getRequest().later == 1) {
-//                                    if (getmNavigator().getAttachedcontext() != null)
-//                                        getmNavigator().showMessage(getmNavigator().getAttachedcontext().getString(R.string.Txt_DriverAccepted));
-//                                } else
-//                                    getmNavigator().openTripFragment(baseResponse.getRequest());
-
-//                                if (getmNavigator().getAttachedcontext() != null)
-//                                    getmNavigator().showMessage(getmNavigator().getAttachedcontext().getString(R.string.Txt_DriverAccepted));
-                            if (baseResponse.getRequest().later != null && baseResponse.getRequest().later == 1) {
-                                getmNavigator().openRideLaterAlert(baseResponse.getRequest());
-                            } else
-                                getmNavigator().openTripFragment(baseResponse.getRequest());
-                        }
-                    }
-                }
-            });
-        }
+//        Log.i(TAG, "Trip_Status" + trip_status);
+//        if (getmNavigator().getAttachedContext() != null) {
+//            getmNavigator().getAttachedContext().runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    JSONObject data = null;
+//                    try {
+//                        data = new JSONObject(trip_status);
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//
+////                        System.out.println("+get_cars+" + data.toString());
+//                    if (data != null) {
+//                        BaseResponse baseResponse = gson.fromJson(data.toString(), BaseResponse.class);
+//                        if (baseResponse != null && baseResponse.successMessage != null
+//                                && baseResponse.successMessage.equalsIgnoreCase("Accepted") && baseResponse.getRequest() != null) {
+////                                if (baseResponse.getRequest().later != null && baseResponse.getRequest().later == 1) {
+////                                    if (getmNavigator().getAttachedcontext() != null)
+////                                        getmNavigator().showMessage(getmNavigator().getAttachedcontext().getString(R.string.Txt_DriverAccepted));
+////                                } else
+////                                    getmNavigator().openTripFragment(baseResponse.getRequest());
+//
+////                                if (getmNavigator().getAttachedcontext() != null)
+////                                    getmNavigator().showMessage(getmNavigator().getAttachedcontext().getString(R.string.Txt_DriverAccepted));
+//                            if (baseResponse.getRequest().later != null && baseResponse.getRequest().later == 1) {
+//                                getmNavigator().openRideLaterAlert(baseResponse.getRequest());
+//                            } else
+//                                getmNavigator().openTripFragment(baseResponse.getRequest());
+//                        }
+//                    }
+//                }
+//            });
+//        }
     }
 
     @Override
@@ -952,8 +952,11 @@ public class MapFragmentViewModel extends BaseNetwork<User, MapNavigator> implem
 
     public void stopTypesTimer() {
         if (scheduledFuture != null)
-            if (!scheduledFuture.isCancelled())
+            try {
                 scheduledFuture.cancel(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
     }
 
     Runnable typesRunnable = new Runnable() {

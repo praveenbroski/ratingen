@@ -62,7 +62,6 @@ public class SearchPlaceActivity extends BaseActivity<ActivitySearchPlaceBinding
                 placeApiViewModel.dropAddress.set(getIntent().getStringExtra(Constants.EXTRA_DROP_ADDRESS));
         }
         Setup();
-
     }
 
     /** setting adapter to places API search result recycler **/
@@ -74,6 +73,8 @@ public class SearchPlaceActivity extends BaseActivity<ActivitySearchPlaceBinding
         activityPlaceApiBinding.ACPlaceRecyclerView.setAdapter(adapter);
 
         placeApiViewModel.GetFavListData();
+
+        activityPlaceApiBinding.navFavBtn.setVisibility(View.INVISIBLE);
     }
 
     @Override

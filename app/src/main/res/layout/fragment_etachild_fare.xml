@@ -427,57 +427,57 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_4sdp"
-                android:orientation="horizontal">
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="@dimen/_4sdp"-->
+<!--                android:orientation="horizontal">-->
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="@dimen/_12sdp"
-                    android:paddingEnd="@dimen/_12sdp"
-                    android:orientation="horizontal">
+<!--                <LinearLayout-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:paddingStart="@dimen/_12sdp"-->
+<!--                    android:paddingEnd="@dimen/_12sdp"-->
+<!--                    android:orientation="horizontal">-->
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="@{viewModel.translationModel.waiting_time_price}"
-                        android:fontFamily="@font/sf_regular"
-                        android:textColor="@color/clr_333333"
-                        android:textSize="@dimen/_12sdp" />
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="center_horizontal"-->
+<!--                        android:text="@{viewModel.translationModel.waiting_time_price}"-->
+<!--                        android:fontFamily="@font/sf_regular"-->
+<!--                        android:textColor="@color/clr_333333"-->
+<!--                        android:textSize="@dimen/_12sdp" />-->
 
-                </LinearLayout>
+<!--                </LinearLayout>-->
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:paddingStart="@dimen/_12sdp"
-                    android:paddingEnd="@dimen/_12sdp"
-                    android:orientation="horizontal">
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:gravity="end"-->
+<!--                    android:paddingStart="@dimen/_12sdp"-->
+<!--                    android:paddingEnd="@dimen/_12sdp"-->
+<!--                    android:orientation="horizontal">-->
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{viewModel.currency}"
-                        android:fontFamily="@font/sf_regular"
-                        android:textColor="@color/clr_333333"
-                        android:textSize="@dimen/_12sdp" />
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="@{viewModel.currency}"-->
+<!--                        android:fontFamily="@font/sf_regular"-->
+<!--                        android:textColor="@color/clr_333333"-->
+<!--                        android:textSize="@dimen/_12sdp" />-->
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{viewModel.waitingTimeCharge}"
-                        android:fontFamily="@font/sf_regular"
-                        android:textColor="@color/clr_333333"
-                        android:textSize="@dimen/_12sdp" />
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="@{viewModel.waitingTimeCharge}"-->
+<!--                        android:fontFamily="@font/sf_regular"-->
+<!--                        android:textColor="@color/clr_333333"-->
+<!--                        android:textSize="@dimen/_12sdp" />-->
 
-                </LinearLayout>
+<!--                </LinearLayout>-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
             <View
                 android:background="@color/clr_E4E9F2"

@@ -98,5 +98,6 @@
     <color name="clr_A9F6DC">#A9F6DC</color>
     <color name="clr_D5BEBD">#D5BEBD</color>
     <color name="clr_FF9391">#FF9391</color>
+    <color name="clr_disabled">#CCCCCC</color>
 
 </resources>

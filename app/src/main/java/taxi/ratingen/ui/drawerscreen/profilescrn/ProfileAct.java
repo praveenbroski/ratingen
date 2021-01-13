@@ -13,6 +13,10 @@ import androidx.databinding.library.baseAdapters.BR;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.GenericTransitionOptions;
+import com.bumptech.glide.Glide;
+import com.stfalcon.imageviewer.StfalconImageViewer;
+
 import taxi.ratingen.R;
 import taxi.ratingen.databinding.ActivityProfileBinding;
 import taxi.ratingen.ui.base.BaseActivity;
@@ -23,6 +27,7 @@ import taxi.ratingen.utilz.CommonUtils;
 import taxi.ratingen.utilz.Constants;
 import taxi.ratingen.utilz.SharedPrefence;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -146,7 +151,15 @@ public class ProfileAct extends BaseActivity<ActivityProfileBinding, ProfileView
     /** Profile pic selection options whether from Camera or Gallery **/
     @Override
     public void alertSelectCameraGalary() {
-        String[] items = new String[] {getTranslatedString(R.string.text_camera), getTranslatedString(R.string.text_galary)};
+        String[] items;
+        if (!CommonUtils.IsEmpty(profileViewModel.profileURL.get())) {
+            items = new String[] {getBaseAct().getTranslatedString(R.string.text_camera),
+                    getBaseAct().getTranslatedString(R.string.text_galary),
+                    getBaseAct().getTranslatedString(R.string.txt_view_profile)};
+        } else {
+            items = new String[] {getBaseAct().getTranslatedString(R.string.text_camera),
+                    getBaseAct().getTranslatedString(R.string.text_galary)};
+        }
         androidx.appcompat.app.AlertDialog.Builder builder1 = new androidx.appcompat.app.AlertDialog.Builder(this);
         builder1.setTitle(getTranslatedString(R.string.txt_Choose));
         builder1.setCancelable(true);
@@ -155,6 +168,15 @@ public class ProfileAct extends BaseActivity<ActivityProfileBinding, ProfileView
                 cameraIntent();
             } else if (which == 1) {
                 galleryIntent();
+            } else if (which == 2) {
+                List<String> iList = new ArrayList<>();
+                iList.add(profileViewModel.profileURL.get());
+                new StfalconImageViewer.Builder<>(getBaseAct(), iList, ((imageView, image) ->
+                        Glide.with(getBaseAct())
+                                .load(profileViewModel.profileURL.get())
+                                .transition(GenericTransitionOptions.with(R.anim.slide_left))
+                                .into(imageView)))
+                        .show(true);
             }
         }).show();
     }

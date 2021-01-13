@@ -103,14 +103,14 @@ public class OTPViewModel extends BaseNetwork<BaseResponse, OTPNavigator> {
                 Map.clear();
                 Map.put(Constants.NetworkParameters.UUId, UUIDValue.get());
                 Map.put(Constants.NetworkParameters.OTP, getmNavigator().getOpt());
-                Map.put(Constants.NetworkParameters.device_token, sharedPrefence.Getvalue(SharedPrefence.FCMTOKEN));
+                Map.put(Constants.NetworkParameters.fcm_token, sharedPrefence.Getvalue(SharedPrefence.FCMTOKEN));
                 if (RegOrLogin.get().equalsIgnoreCase("1") || RegOrLogin.get().equalsIgnoreCase("3"))
                     registerOtpValidate(Map);
                 else {
                     Map.clear();
                     Map.put(Constants.NetworkParameters.mobile, phoneNumber.get());
                     Map.put(Constants.NetworkParameters.OTP, getmNavigator().getOpt());
-                    Map.put(Constants.NetworkParameters.device_token, sharedPrefence.Getvalue(SharedPrefence.FCMTOKEN));
+                    Map.put(Constants.NetworkParameters.fcm_token, sharedPrefence.Getvalue(SharedPrefence.FCMTOKEN));
                     Map.put(Constants.NetworkParameters.login_by, "android");
                     Map.put(Constants.NetworkParameters.Role, "user");
                     getUserLoginApi(Map);

@@ -185,10 +185,10 @@ public final class Constants {
         String otpvalidate = "v1/user/otpvalidate";
         String carddefaultURL = "v1/user/carddefault";
         String deletecardURL = "v1/user/deletecard";
-        String ETAURL = "v1/application/eta";
+        String ETA_URL = "api/v1/request/eta";
         String ETA_NEW = "v1/api/eta/new";
         String otpsendURL = "v1/user/sendotp";
-        String createrequestURl = "v1/user/createrequest";
+        String createRequestURL = "api/v1/request/create";
         String createrequestLaterURl = "v1/user/ridelater";
         String createRequestNewURL = "v1/user/new/createrequest";
         String GetreferralURL = "v1/user/getreferral";
@@ -196,7 +196,7 @@ public final class Constants {
         String CompliantsURL = "api/v1/complaint-titles/list";
         String PromoURL = "v1/user/promocode/check";
         String ridelatercancelURL = "v1/user/ridelatercancel";
-        String CANCEL_REASON_LIST_URL = "v1/cancellation/list";
+        String CANCEL_REASON_LIST_URL = "api/v1/cancallation/reasons";
         String SendCompliantURL = "v1/compliants/user";
         String addwalletURL = "v1/user/addwallet";
         String addcardURL = "v1/user/addcard";
@@ -213,8 +213,8 @@ public final class Constants {
         String Reviewurl = "v1/user/review";
         String DirectionURLreferralcheckUrl = "maps/api/directions/json?";
         String DirectionURL = "maps/api/directions/json?";
-        String Requestcancelurl = "v1/user/request/cancel";
-        String ListFavurl = "v1/user/listfav";
+        String RequestCancelURL = "api/v1/request/cancel";
+        String ListFavURL = "api/v1/user/list-favorite-places";
         String ZoneSOSUrl = "api/v1/user/sos";
 //        String ZoneSOSUrl = "v1/user/zonesos";
         String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
@@ -243,7 +243,7 @@ public final class Constants {
         String REQUEST_COMPANY_KEY = "v1/client/request/token";
         String CHECK_COMPANY_KEY_STATUS = "v1/client/token/check";
         String NotificationURL ="v1/user/get/notification";
-        String getTypes = "v1/android/user/get/types";
+        String getTypes = "api/v1/types";
         String DRIVER_PROFILE_PIC = "storage/uploads/driver/profile/";
         String VALIDATE_MOBILE = "api/v1/user/validate-mobile";
         String SEND_OTP = "api/v1/user/register/send-otp";
@@ -267,6 +267,7 @@ public final class Constants {
         String dlongitude = "dlongitude";
         String dlatitude = "dlatitude";
         String paymentOpt = "paymentOpt";
+        String payment_opt = "payment_opt";
         String dlocation = "dlocation";
         String plocation = "plocation";
         String id = "id";
@@ -331,6 +332,8 @@ public final class Constants {
         String privateKey = "private_key";
         String complaint_type = "complaint_type";
         String request_type = "request_type";
+        String ride_type = "ride_type";
+        String vehicle_type = "vehicle_type";
         String user_type = "user_type";
         String promo_booked_id = "promo_booked_id";
         String new_flow = "new_flow";
@@ -348,6 +351,8 @@ public final class Constants {
         String gender = "gender";
         String PICK_LAT = "pick_lat";
         String PICK_LNG = "pick_lng";
+        String DROP_LAT = "drop_lat";
+        String DROP_LNG = "drop_lng";
 
         String later = "later";
         String cancelled = "cancelled";
@@ -361,6 +366,11 @@ public final class Constants {
         String TermsCondition = "terms_condition";
         String lat = "lat";
         String lng = "lng";
+        String PICK_ADDRESS = "pick_address";
+        String DROP_ADDRESS = "drop_address";
+        String custom_reason = "custom_reason";
+        String arrived = "arrived";
+        String fcm_token = "fcm_token";
     }
 
     public interface TaskId {
@@ -370,6 +380,8 @@ public final class Constants {
         int LOGOUT = 103;
         int SOS_LIST = 104;
         int COMPLAINTS_LIST = 105;
+        int TYPES_LIST = 106;
+        int ETA = 107;
     }
 
 }

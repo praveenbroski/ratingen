@@ -238,6 +238,7 @@ public class RideFragViewModel extends BaseNetwork<BaseResponse, RideNavigator> 
                 hashMap.put(Constants.NetworkParameters.olng, "" + type.getPicklatlng().longitude);
                 hashMap.put(Constants.NetworkParameters.dlat, "" + type.getDroplatlng().latitude);
                 hashMap.put(Constants.NetworkParameters.dlng, "" + type.getDroplatlng().longitude);
+                mCurrentTaskId = Constants.TaskId.ETA;
                 getETANetworkcall();
             }
 

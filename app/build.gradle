@@ -17,7 +17,7 @@ android {
         targetSdkVersion 29
         versionCode 1
         multiDexEnabled true
-        versionName "1.0.2"
+        versionName "1.0.3"
         vectorDrawables.useSupportLibrary = true
         signingConfig signingConfigs.ReleaseConfig
         setProperty("archivesBaseName", "$parent.name-$versionName")
@@ -120,8 +120,7 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
     implementation "com.ncorti:slidetoact:0.8.0"
-
-
+    implementation "com.github.stfalcon:stfalcon-imageviewer:0.1.0"
 }
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'

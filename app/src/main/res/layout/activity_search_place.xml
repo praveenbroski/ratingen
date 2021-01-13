@@ -86,8 +86,7 @@
                             android:layout_marginStart="@dimen/_5sdp"
                             android:layout_marginEnd="@dimen/_5sdp"
                             android:onClick="@{viewModel.onClickFav}"
-                            app:srcCompat="@drawable/ic_heart_fav"
-                            android:visibility="gone" />
+                            app:srcCompat="@drawable/ic_heart_fav" />
 
                     </RelativeLayout>
 

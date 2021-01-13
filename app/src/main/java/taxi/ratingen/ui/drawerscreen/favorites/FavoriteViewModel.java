@@ -39,7 +39,7 @@ public class FavoriteViewModel extends BaseNetwork<BaseResponse, FavoriteFragmen
         hashMap.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
 
         if (getmNavigator().isNetworkConnected())
-            GetFavListNetworkcall();
+            GetFavListNetworkCall();
         else
             getmNavigator().showNetworkMessage();
     }

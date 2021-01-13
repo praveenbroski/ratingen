@@ -194,7 +194,7 @@ public class NameMailModel extends BaseNetwork<BaseResponse, NameMailNavigator> 
     }
 
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        extraData.set(s.toString().trim());
+        extraData.set(s.toString());
         if (s.toString().trim().length() == 0) {
             isSubmitEnable.set(false);
         } else {

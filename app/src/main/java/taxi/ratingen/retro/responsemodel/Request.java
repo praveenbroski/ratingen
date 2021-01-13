@@ -48,16 +48,16 @@ public class Request implements Serializable {
     public Integer type;
     @SerializedName("pick_latitude")
     @Expose
-    public Float pickLatitude;
+    public Float pickLat;
     @SerializedName("pick_longitude")
     @Expose
-    public Float pickLongitude;
+    public Float pickLng;
     @SerializedName("drop_latitude")
     @Expose
-    public Float dropLatitude;
+    public Float dropLat;
     @SerializedName("drop_longitude")
     @Expose
-    public Float dropLongitude;
+    public Float dropLng;
     @SerializedName("pick_location")
     @Expose
     public String pickLocation;

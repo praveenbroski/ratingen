@@ -43,6 +43,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import taxi.ratingen.retro.responsemodel.NewRequestModel;
 import taxi.ratingen.ui.companyvalidation.CompanyValidationActivity;
 import taxi.ratingen.ui.drawerscreen.ridescreen.RideConfirmationFragment;
 import taxi.ratingen.ui.nodriveralert.NoDriverAct;
@@ -290,6 +291,10 @@ public abstract class BaseActivity<T extends ViewDataBinding, V> extends AppComp
 
     @Override
     public void NeedTripFragment(Request request, Driver driver) {
+
+    }
+
+    public void NeedTripFragment(NewRequestModel request) {
 
     }
 
@@ -680,6 +685,9 @@ public abstract class BaseActivity<T extends ViewDataBinding, V> extends AppComp
         finish();
     }
 
+    public void stopTypesTimerNow() {
+
+    }
 
 }
 

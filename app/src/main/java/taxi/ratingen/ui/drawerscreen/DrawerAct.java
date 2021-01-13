@@ -46,7 +46,9 @@ import taxi.ratingen.R;
 import taxi.ratingen.databinding.ActivityDrawerBinding;
 import taxi.ratingen.databinding.NavHeaderDrawerBinding;
 import taxi.ratingen.retro.responsemodel.Driver;
+import taxi.ratingen.retro.responsemodel.NewRequestModel;
 import taxi.ratingen.retro.responsemodel.Request;
+import taxi.ratingen.retro.responsemodel.TaxiRequestModel;
 import taxi.ratingen.retro.responsemodel.Type;
 import taxi.ratingen.ui.base.BaseActivity;
 import taxi.ratingen.ui.drawerscreen.complaint.ComplaiintFrag;
@@ -688,6 +690,16 @@ public class DrawerAct extends BaseActivity<ActivityDrawerBinding, DrawerViewMod
         NeedTripFragment(request, driver);
     }
 
+    @Override
+    public void ShowTripFragment(NewRequestModel request) {
+        NeedTripFragment(request);
+    }
+
+    @Override
+    public void showTripFragment(TaxiRequestModel.ResultData request, TaxiRequestModel.DriverData driver) {
+        NeedTripFragment(request, driver);
+    }
+
     /**
      * Returns reference of {@link BaseActivity}
      **/
@@ -904,15 +916,29 @@ public class DrawerAct extends BaseActivity<ActivityDrawerBinding, DrawerViewMod
      **/
     @Override
     public void NeedTripFragment(Request request, Driver driver) {
-        /* if(!CommonUtils.isAppIsInBackground(DrawerAct.this)) {*/
-        /*if (getSupportFragmentManager() != null && getSupportFragmentManager().findFragmentByTag(TripFragment.TAG) != null)
-            return;*/
+//        /* if(!CommonUtils.isAppIsInBackground(DrawerAct.this)) {*/
+//        /*if (getSupportFragmentManager() != null && getSupportFragmentManager().findFragmentByTag(TripFragment.TAG) != null)
+//            return;*/
+//        androidx.fragment.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//        transaction.disallowAddToBackStack();
+//        transaction.setTransition(androidx.fragment.app.FragmentTransaction.TRANSIT_NONE);
+//        transaction.replace(R.id.Container, TripFragment.newInstance(request, driver), TripFragment.TAG)
+//                .commitAllowingStateLoss();
+//        /* }*/
+    }
+
+    @Override
+    public void NeedTripFragment(NewRequestModel request) {
+        stopTypesTimerNow();
+        drawerViewModel.RequestInProNetwork();
+    }
+
+    public void NeedTripFragment(TaxiRequestModel.ResultData request, TaxiRequestModel.DriverData driver) {
         androidx.fragment.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.disallowAddToBackStack();
         transaction.setTransition(androidx.fragment.app.FragmentTransaction.TRANSIT_NONE);
         transaction.replace(R.id.Container, TripFragment.newInstance(request, driver), TripFragment.TAG)
                 .commitAllowingStateLoss();
-        /* }*/
     }
 
     /**
@@ -1086,5 +1112,12 @@ public class DrawerAct extends BaseActivity<ActivityDrawerBinding, DrawerViewMod
         if (fragment != null)
             fragment.setProfileImage(url);
     }
+
+     @Override
+     public void stopTypesTimerNow() {
+         MapFragment fragment = (MapFragment) getSupportFragmentManager().findFragmentByTag(MapFragment.TAG);
+         if (fragment != null)
+             fragment.stopTypesTimer();
+     }
 
 }

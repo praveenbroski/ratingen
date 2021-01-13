@@ -36,6 +36,8 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+
+import taxi.ratingen.retro.responsemodel.TaxiRequestModel;
 import taxi.ratingen.ui.drawerscreen.DrawerAct;
 import taxi.ratingen.ui.drawerscreen.tripcanceleddialog.TripCanceledDialogFrag;
 
@@ -86,8 +88,8 @@ public class TripFragment extends BaseFragment<FragmentTripBinding, TripFragView
     public static final String TAG = "TripFragment";
 
     // TODO: Rename and change types of parameters
-    private Request mParam1;
-    private Driver mParam2;
+    private TaxiRequestModel.ResultData mParam1;
+    private TaxiRequestModel.DriverData mParam2;
     boolean ispickDrop;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     View layoutMarkerPickup, layoutMArkerDrop;
@@ -118,7 +120,7 @@ public class TripFragment extends BaseFragment<FragmentTripBinding, TripFragView
      * @return A new instance of fragment TripFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TripFragment newInstance(Request param1, Driver param2) {
+    public static TripFragment newInstance(TaxiRequestModel.ResultData param1, TaxiRequestModel.DriverData param2) {
         TripFragment fragment = new TripFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_PARAM1, param1);
@@ -139,8 +141,8 @@ public class TripFragment extends BaseFragment<FragmentTripBinding, TripFragView
 
 
         if (getArguments() != null) {
-            mParam1 = (Request) getArguments().getSerializable(ARG_PARAM1);
-            mParam2 = (Driver) getArguments().getSerializable(ARG_PARAM2);
+            mParam1 = (TaxiRequestModel.ResultData) getArguments().getSerializable(ARG_PARAM1);
+            mParam2 = (TaxiRequestModel.DriverData) getArguments().getSerializable(ARG_PARAM2);
         }
 
         this.context = getbaseAct();
@@ -187,7 +189,8 @@ public class TripFragment extends BaseFragment<FragmentTripBinding, TripFragView
     };
 
     /** Opens {@link TripCanceledDialogFrag} when trip cancelled msg is received **/
-    private void openTripCancelMsg() {
+    @Override
+    public void openTripCancelMsg() {
         if (getActivity() != null) {
             if (getActivity().getSupportFragmentManager().findFragmentByTag(TripCanceledDialogFrag.TAG) == null)
                 getActivity().getSupportFragmentManager()
@@ -269,7 +272,7 @@ public class TripFragment extends BaseFragment<FragmentTripBinding, TripFragView
 
         //  ((DrawerAct) getActivity()).lockDrawer();
 
-        blink_animation(fragmentTripBinding.imgTripDot);
+//        blink_animation(fragmentTripBinding.imgTripDot);
 
         BottomSheetBehavior sheetBehavior = BottomSheetBehavior.from(fragmentTripBinding.tripBottomSheet);
         sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -280,6 +283,12 @@ public class TripFragment extends BaseFragment<FragmentTripBinding, TripFragView
                 sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             }
         });
+
+        /* disable pick drop change */
+        fragmentTripBinding.imgChangePick.setEnabled(false);
+        fragmentTripBinding.imgChangeDrop.setEnabled(false);
+        fragmentTripBinding.imgChangePick.setColorFilter(getResources().getColor(R.color.clr_disabled));
+        fragmentTripBinding.imgChangeDrop.setColorFilter(getResources().getColor(R.color.clr_disabled));
     }
 
     @Override
@@ -402,7 +411,7 @@ public class TripFragment extends BaseFragment<FragmentTripBinding, TripFragView
     /** Shows {@link cancelDialogFrag} when user clicks cancel trip button **/
     @Override
     public void ShowCancelDialog(String requestid) {
-        cancelDialogFrag newInstance = cancelDialogFrag.newInstance(requestid, "");
+        cancelDialogFrag newInstance = cancelDialogFrag.newInstance(requestid, "", tripFragViewModel.isTripArrived.get());
 //        newInstance.setTargetFragment(this, Constants.CANCELTRIPCALLBACK);
         newInstance.show(this.getFragmentManager());
     }
@@ -533,22 +542,22 @@ public class TripFragment extends BaseFragment<FragmentTripBinding, TripFragView
         Intent intent = new Intent(getContext(), SearchPlaceActivity.class);
         if (ispickDrop) {
             if (tripFragViewModel != null && tripFragViewModel.request != null
-                    && tripFragViewModel.request.pickLatitude != 0.0 && tripFragViewModel.request.pickLongitude != 0.0) {
-                latLng = new LatLng(tripFragViewModel.request.pickLatitude, tripFragViewModel.request.pickLongitude);
+                    && tripFragViewModel.request.pickLat != 0.0 && tripFragViewModel.request.pickLng != 0.0) {
+                latLng = new LatLng(tripFragViewModel.request.pickLat, tripFragViewModel.request.pickLng);
                 intent.putExtra(Constants.EXTRA_LAT_LNG, latLng);
                 intent.putExtra(Constants.EXTRA_IS_PICKUP, "1");
-                intent.putExtra(Constants.EXTRA_PICK_ADDRESS, tripFragViewModel.request.pickLocation);
-                intent.putExtra(Constants.EXTRA_DROP_ADDRESS, tripFragViewModel.request.dropLocation);
+                intent.putExtra(Constants.EXTRA_PICK_ADDRESS, tripFragViewModel.request.pickAddress);
+                intent.putExtra(Constants.EXTRA_DROP_ADDRESS, tripFragViewModel.request.dropAddress);
             }
         } else {
             if (tripFragViewModel != null && tripFragViewModel.request != null
-                    && tripFragViewModel.request.pickLatitude != 0.0 && tripFragViewModel.request.pickLongitude != 0.0
-                    && tripFragViewModel.request.dropLatitude != null && tripFragViewModel.request.dropLongitude != null) {
-                latLng = new LatLng(tripFragViewModel.request.dropLatitude, tripFragViewModel.request.dropLongitude);
+                    && tripFragViewModel.request.pickLat != 0.0 && tripFragViewModel.request.pickLng != 0.0
+                    && tripFragViewModel.request.dropLat != null && tripFragViewModel.request.dropLng != null) {
+                latLng = new LatLng(tripFragViewModel.request.dropLat, tripFragViewModel.request.dropLng);
                 intent.putExtra(Constants.EXTRA_LAT_LNG, latLng);
                 intent.putExtra(Constants.EXTRA_IS_PICKUP, "0");
-                intent.putExtra(Constants.EXTRA_PICK_ADDRESS, tripFragViewModel.request.pickLocation);
-                intent.putExtra(Constants.EXTRA_DROP_ADDRESS, tripFragViewModel.request.dropLocation);
+                intent.putExtra(Constants.EXTRA_PICK_ADDRESS, tripFragViewModel.request.pickAddress);
+                intent.putExtra(Constants.EXTRA_DROP_ADDRESS, tripFragViewModel.request.dropAddress);
             }
         }
 
@@ -667,14 +676,14 @@ public class TripFragment extends BaseFragment<FragmentTripBinding, TripFragView
 
     /** Assigns values to the variables
      * @param from From location
-     * @param pickLatitude Pickup location latitude
-     * @param pickLongitude Pickup location longitude
-     * @param dropLatitude Drop location latitude
-     * @param dropLongitude Drop location longitude **/
+     * @param pickLat Pickup location latitude
+     * @param pickLng Pickup location longitude
+     * @param dropLat Drop location latitude
+     * @param dropLng Drop location longitude **/
     @Override
-    public void setVAlue(final String from, Float pickLatitude, Float pickLongitude, final Float dropLatitude, final Float dropLongitude) {
+    public void setVAlue(final String from, Double pickLat, Double pickLng, final Double dropLat, final Double dropLng) {
         if (getActivity() != null) {
-            final LatLng pickupLatLng = new LatLng(pickLatitude, pickLongitude);
+            final LatLng pickupLatLng = new LatLng(pickLat, pickLng);
             Handler mainHandler = new Handler(getActivity().getMainLooper());
             mainHandler.post(new Runnable() {
                 @Override
@@ -699,20 +708,20 @@ public class TripFragment extends BaseFragment<FragmentTripBinding, TripFragView
 
     /** Assigns values to the variables
      * @param from From location
-     * @param pickLatitude Pickup location latitude
-     * @param pickLongitude Pickup location longitude
-     * @param dropLatitude Drop location latitude
-     * @param dropLongitude Drop location longitude **/
+     * @param pickLat Pickup location latitude
+     * @param pickLng Pickup location longitude
+     * @param dropLat Drop location latitude
+     * @param dropLng Drop location longitude **/
     @Override
-    public void setDropValue(final String from, Float pickLatitude, Float pickLongitude, final Float dropLatitude, final Float dropLongitude) {
+    public void setDropValue(final String from, Double pickLat, Double pickLng, final Double dropLat, final Double dropLng) {
         if (getActivity() != null) {
             Handler mainHandler = new Handler(getActivity().getMainLooper());
             mainHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if (dropLatitude != null && dropLongitude != null && dropLatitude != 0.0 && dropLongitude != 0.0)
+                    if (dropLat != null && dropLng != null && dropLat != 0.0 && dropLng != 0.0)
                         Drop = mgoogleMap.addMarker(new MarkerOptions()
-                                .position(new LatLng(dropLatitude, dropLongitude))
+                                .position(new LatLng(dropLat, dropLng))
                                 .title("Drop Location")
                                 .anchor(0.5f, 0.5f)
                                 .icon(BitmapDescriptorFactory.fromBitmap(createDropMArker(getActivity(), from))));
@@ -730,12 +739,12 @@ public class TripFragment extends BaseFragment<FragmentTripBinding, TripFragView
 
 
   /*  @Override
-    public void setDropValue(final String from, Float pickLatitude, Float pickLongitude, final Float dropLatitude, final Float dropLongitude) {
+    public void setDropValue(final String from, Float pickLat, Float pickLng, final Float dropLat, final Float dropLng) {
         if (getActivity() != null) {
-            final LatLng pickupLatLng = new LatLng(pickLatitude, pickLongitude);
+            final LatLng pickupLatLng = new LatLng(pickLat, pickLng);
             LatLng dropLatLng = null;
-            if (dropLatitude != null && dropLongitude != null && dropLatitude != 0.0 && dropLongitude != 0.0)
-                dropLatLng = new LatLng(dropLatitude, dropLongitude);
+            if (dropLat != null && dropLng != null && dropLat != 0.0 && dropLng != 0.0)
+                dropLatLng = new LatLng(dropLat, dropLng);
             Handler mainHandler = new Handler(getActivity().getMainLooper());
             final LatLng finalDropLatLng = dropLatLng;
             mainHandler.post(new Runnable() {
@@ -747,7 +756,7 @@ public class TripFragment extends BaseFragment<FragmentTripBinding, TripFragView
                             .anchor(0.5f, 0.5f)
                             .icon(BitmapDescriptorFactory.fromBitmap(setPickupMArker(getActivity(), from))));
 
-                    if (finalDropLatLng != null && dropLatitude != 0.0 && dropLongitude != 0.0)
+                    if (finalDropLatLng != null && dropLat != 0.0 && dropLng != 0.0)
                         mgoogleMap.addMarker(new MarkerOptions()
                                 .position(finalDropLatLng)
                                 .title("Pickup Location")
@@ -760,12 +769,12 @@ public class TripFragment extends BaseFragment<FragmentTripBinding, TripFragView
     }
 
     @Override
-    public void setVAlue(final String from, Float pickLatitude, Float pickLongitude, final Float dropLatitude, final Float dropLongitude) {
+    public void setVAlue(final String from, Float pickLat, Float pickLng, final Float dropLat, final Float dropLng) {
         if (getActivity() != null) {
-            final LatLng pickupLatLng = new LatLng(pickLatitude, pickLongitude);
+            final LatLng pickupLatLng = new LatLng(pickLat, pickLng);
             LatLng dropLatLng = null;
-            if (dropLatitude != null && dropLongitude != null && dropLatitude != 0.0 && dropLongitude != 0.0)
-                dropLatLng = new LatLng(dropLatitude, dropLongitude);
+            if (dropLat != null && dropLng != null && dropLat != 0.0 && dropLng != 0.0)
+                dropLatLng = new LatLng(dropLat, dropLng);
 
             Handler mainHandler = new Handler(getActivity().getMainLooper());
             final LatLng finalDropLatLng = dropLatLng;
@@ -778,7 +787,7 @@ public class TripFragment extends BaseFragment<FragmentTripBinding, TripFragView
                             .anchor(0.5f, 0.5f)
                             .icon(BitmapDescriptorFactory.fromBitmap(setPickupMArker(getActivity(), from))));
 
-                    if (finalDropLatLng != null && dropLatitude != 0.0 && dropLongitude != 0.0)
+                    if (finalDropLatLng != null && dropLat != 0.0 && dropLng != 0.0)
                         mgoogleMap.addMarker(new MarkerOptions()
                                 .position(finalDropLatLng)
                                 .title("Drop Location")

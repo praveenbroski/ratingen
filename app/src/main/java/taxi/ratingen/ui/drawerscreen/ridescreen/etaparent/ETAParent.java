@@ -15,7 +15,7 @@ import taxi.ratingen.R;
 import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.databinding.DialogEtaparentBinding;
 import taxi.ratingen.retro.responsemodel.Route;
-import taxi.ratingen.retro.responsemodel.TypeNew;
+import taxi.ratingen.retro.responsemodel.Type;
 import taxi.ratingen.ui.base.BaseDialog;
 import taxi.ratingen.ui.drawerscreen.ridescreen.etabasefare.EtachildBaseFare;
 import taxi.ratingen.ui.drawerscreen.ridescreen.etafarechild.EtachildFareFragment;
@@ -37,7 +37,7 @@ public class ETAParent extends BaseDialog implements ETAParentNavigator {
     public static int ETAParent_REQUEST_CODE=100001;
     public static String TAG="ETAParent";
     private BaseResponse mParam1;
-    private TypeNew mParam2;
+    private Type mParam2;
     private Route mParam3;
 
     @Inject
@@ -54,10 +54,10 @@ public class ETAParent extends BaseDialog implements ETAParentNavigator {
         return fragment;
     }
 
-    public static ETAParent newInstance(TypeNew typeNew, Route route) {
+    public static ETAParent newInstance(Type type, Route route) {
         ETAParent fragment = new ETAParent();
         Bundle bundle = new Bundle();
-        bundle.putSerializable(ARG_PARAM1, typeNew);
+        bundle.putSerializable(ARG_PARAM1, type);
         bundle.putSerializable(ARG_PARAM3, route);
         bundle.putInt(ARG_PARAM2, 1);
         fragment.setArguments(bundle);
@@ -72,7 +72,7 @@ public class ETAParent extends BaseDialog implements ETAParentNavigator {
             if (getArguments().getInt(ARG_PARAM2) == 0)
                 mParam1 = (BaseResponse)getArguments().getSerializable(ARG_PARAM1);
             else if (getArguments().getInt(ARG_PARAM2) == 1) {
-                mParam2 = (TypeNew) getArguments().getSerializable(ARG_PARAM1);
+                mParam2 = (Type) getArguments().getSerializable(ARG_PARAM1);
                 mParam3 = (Route) getArguments().getSerializable(ARG_PARAM3);
             }
         }

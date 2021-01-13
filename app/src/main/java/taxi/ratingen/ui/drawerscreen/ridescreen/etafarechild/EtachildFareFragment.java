@@ -1,6 +1,5 @@
 package taxi.ratingen.ui.drawerscreen.ridescreen.etafarechild;
 
-
 import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
@@ -12,7 +11,7 @@ import taxi.ratingen.R;
 import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.databinding.FragmentEtachildFareBinding;
 import taxi.ratingen.retro.responsemodel.Route;
-import taxi.ratingen.retro.responsemodel.TypeNew;
+import taxi.ratingen.retro.responsemodel.Type;
 import taxi.ratingen.ui.base.BaseFragment;
 import taxi.ratingen.ui.drawerscreen.ridescreen.etaparent.ETAParent;
 import taxi.ratingen.ui.drawerscreen.ridescreen.RideConfirmationFragment;
@@ -29,7 +28,7 @@ public class EtachildFareFragment extends BaseFragment<FragmentEtachildFareBindi
     private static final String ARG_PARAM3 = "param3";
     ETAParent eTAParent;
     private BaseResponse mParam1;
-    private TypeNew mParam2;
+    private Type mParam2;
     private Route mParam3;
     public static final String TAG = "EtachildFareFragment";
 
@@ -49,7 +48,7 @@ public class EtachildFareFragment extends BaseFragment<FragmentEtachildFareBindi
             if (getArguments().getSerializable(ARG_PARAM1) != null)
                 mParam1 = (BaseResponse) getArguments().getSerializable(ARG_PARAM1);
             else if (getArguments().getSerializable(ARG_PARAM2) != null) {
-                mParam2 = (TypeNew) getArguments().getSerializable(ARG_PARAM2);
+                mParam2 = (Type) getArguments().getSerializable(ARG_PARAM2);
                 mParam3 = (Route) getArguments().getSerializable(ARG_PARAM3);
             }
         }
@@ -72,7 +71,7 @@ public class EtachildFareFragment extends BaseFragment<FragmentEtachildFareBindi
         return fragment;
     }
 
-    public static EtachildFareFragment newInstance(TypeNew param1, Route routeParam, String param2) {
+    public static EtachildFareFragment newInstance(Type param1, Route routeParam, String param2) {
         EtachildFareFragment fragment = new EtachildFareFragment();
         Bundle args = new Bundle();
 //        args.putSerializable(ARG_PARAM1, param1);

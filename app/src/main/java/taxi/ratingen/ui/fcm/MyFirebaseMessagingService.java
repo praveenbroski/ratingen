@@ -68,6 +68,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Log.d(TAG, "DATA: " + remoteMessage.getData());
         Log.d(TAG, "Id: " + remoteMessage.getMessageId());
 
+        // Check if message contains a notification payload.
+        if (remoteMessage.getNotification() != null) {
+            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+            if (remoteMessage.getNotification().getTitle() != null)
+                displayNotification(remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle());
+            else
+                displayNotification(remoteMessage.getNotification().getBody());
+        }
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
@@ -376,6 +384,74 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             PowerManager.WakeLock wl_cpu = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, Constants.WAKE_LOCK_TAG2);
             wl_cpu.acquire(10000);
         }
+    }
+
+    private void displayNotification(String messageBody) {
+        Intent intent = new Intent(this, DrawerAct.class);
+        // intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent,
+                PendingIntent.FLAG_ONE_SHOT);
+        //  the activity from a service
+        String channelId = getString(R.string.default_notification_ride_admin);
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this, channelId)
+                        .setSmallIcon(R.drawable.ic_small_logo)//ic_launcher_small)
+                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
+                        .setContentText(messageBody)
+                        .setContentTitle(getString(R.string.app_name))
+                        .setAutoCancel(true)
+                        .setSound(defaultSoundUri)
+                        .setContentIntent(pendingIntent);
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel mChannel = new NotificationChannel(
+                    channelId, getString(R.string.default_notification_ride_admin), importance);
+            notificationManager.createNotificationChannel(mChannel);
+        }
+        notificationManager.notify(R.string.default_notification_ride_admin, notificationBuilder.build());
+        wakupScreen();
+    }
+
+    private void displayNotification(String messageBody, String title) {
+        Intent intent = new Intent(this, DrawerAct.class);
+        // intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent,
+                PendingIntent.FLAG_ONE_SHOT);
+        //  the activity from a service
+        String channelId = getString(R.string.default_notification_ride_admin);
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this, channelId)
+                        .setSmallIcon(R.drawable.ic_small_logo)//ic_launcher_small)
+                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_round))
+                        .setContentText(messageBody)
+                        .setContentTitle(title)
+                        .setAutoCancel(true)
+                        .setSound(defaultSoundUri)
+                        .setContentIntent(pendingIntent);
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel mChannel = new NotificationChannel(
+                    channelId, getString(R.string.default_notification_ride_admin), importance);
+            notificationManager.createNotificationChannel(mChannel);
+        }
+        notificationManager.notify(R.string.default_notification_ride_admin, notificationBuilder.build());
+        wakupScreen();
     }
 
     /** Returns translated string for given resource id **/

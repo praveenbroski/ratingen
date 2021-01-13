@@ -167,23 +167,24 @@ public abstract class BaseNetwork<T extends BaseResponse, N> implements Basecall
     /**
      * Api call to cancel the trip request.
      */
-    public void RequestcancelNetwork() {
-        gitHubService.RequestCancel(getMap()).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+    public void RequestCancelNetwork() {
+        setIsLoading(true);
+        gitHubService.RequestCancel("Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken), getMap()).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
     }
 
     /**
      * Api call for Requesting the cancellation list.
      */
-    public void RequestCancelReasonList() {
-        gitHubService.ListCancel(getMap()).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+    public void RequestCancelReasonList(String arrived) {
+        gitHubService.ListCancel(arrived, "Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken)).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
     }
 
     /**
      * Api call for getting the FavouriteList.
      */
-    public void GetFavListNetworkcall() {
+    public void GetFavListNetworkCall() {
         setIsLoading(false);
-        gitHubService.GetFavList(getMap()).enqueue((Callback<User>) baseModelCallBackListener);
+        gitHubService.GetFavList("Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken)).enqueue((Callback<User>) baseModelCallBackListener);
     }
 
     /**
@@ -300,8 +301,9 @@ public abstract class BaseNetwork<T extends BaseResponse, N> implements Basecall
      * Api call to get the ETA for trip.
      */
     public void getETANetworkcall() {
-//        setIsLoading(true);
-        gitHubService.ETACall(getMap()).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+        setIsLoading(true);
+        mCurrentTaskId = Constants.TaskId.ETA;
+        gitHubService.ETACall("Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken), getMap()).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
     }
 
     /**
@@ -315,15 +317,17 @@ public abstract class BaseNetwork<T extends BaseResponse, N> implements Basecall
     /**
      * API call to get types data for firebase
      */
-    public void getTypesNetworkCall() {
-        gitHubService.TypesCall(getMap()).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+    public void getTypesNetworkCall(String lat, String lng) {
+        setIsLoading(true);
+        mCurrentTaskId = Constants.TaskId.TYPES_LIST;
+        gitHubService.TypesCall("Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken), lat, lng).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
     }
 
     /**
      * Api call to make the Trip request.
      */
     public void CreateRequestNetwork() {
-        gitHubService.CreateRequest(getMap()).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+        gitHubService.CreateRequest("Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken), getMap()).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
     }
 
     /**

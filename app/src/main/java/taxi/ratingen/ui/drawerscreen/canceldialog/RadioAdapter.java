@@ -32,7 +32,7 @@ public class RadioAdapter extends RecyclerView.Adapter<RadioAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int i) {
         viewHolder.mRadio.setChecked(i == mSelectedItem);
-        viewHolder.cancelText.setText(mItems.get(i).cancellation_fee_name);
+        viewHolder.cancelText.setText(mItems.get(i).reason);
         viewHolder.viewParent.setTag(mItems.get(i).id);
     }
 

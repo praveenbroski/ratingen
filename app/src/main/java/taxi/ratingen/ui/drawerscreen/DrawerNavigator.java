@@ -1,7 +1,9 @@
 package taxi.ratingen.ui.drawerscreen;
 
 import taxi.ratingen.retro.responsemodel.Driver;
+import taxi.ratingen.retro.responsemodel.NewRequestModel;
 import taxi.ratingen.retro.responsemodel.Request;
+import taxi.ratingen.retro.responsemodel.TaxiRequestModel;
 import taxi.ratingen.ui.base.BaseActivity;
 import taxi.ratingen.ui.base.BaseView;
 
@@ -16,6 +18,7 @@ public interface DrawerNavigator extends BaseView{
     void ShowMapFragment();
     void ShowFeedbackFragment(Request request, boolean isCorporate);
     void ShowTripFragment(Request request, Driver driver);
+    void ShowTripFragment(NewRequestModel request);
 
     BaseActivity getBaseAct();
     /**
@@ -31,5 +34,7 @@ public interface DrawerNavigator extends BaseView{
     void onClickNotification();
 
     void setImageURL(String url);
+
+    void showTripFragment(TaxiRequestModel.ResultData resultData, TaxiRequestModel.DriverData driverData);
 
 }

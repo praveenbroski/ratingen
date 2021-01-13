@@ -1170,4 +1170,10 @@ public class TranslationModel {
     @SerializedName("txt_no_sos")
     public String txt_no_sos = "txt_no_sos";
 
+    @SerializedName("txt_request_cancel_success")
+    public String txt_request_cancel_success = "txt_request_cancel_success";
+
+    @SerializedName("txt_view_profile")
+    public String txt_view_profile = "txt_view_profile";
+
 }

@@ -3,12 +3,12 @@ package taxi.ratingen.ui.drawerscreen.ridescreen;
 import android.content.Context;
 
 import taxi.ratingen.retro.base.BaseResponse;
+import taxi.ratingen.retro.responsemodel.NewRequestModel;
 import taxi.ratingen.retro.responsemodel.Request;
 import taxi.ratingen.retro.responsemodel.Route;
 import taxi.ratingen.retro.responsemodel.ShareRideDetails;
 import taxi.ratingen.retro.responsemodel.TripRegisteredDetails;
 import taxi.ratingen.retro.responsemodel.Type;
-import taxi.ratingen.retro.responsemodel.TypeNew;
 import taxi.ratingen.ui.base.BaseActivity;
 import taxi.ratingen.ui.base.BaseView;
 
@@ -30,7 +30,7 @@ public interface RideConfirmNavigator extends BaseView {
 
     void ShowPaymentProgress(boolean hide);
 
-    void onClickPayment(TypeNew type);
+    void onClickPayment(Type type);
 
     void onClickNofSeat(ShareRideDetails shareRideDetails, String cr);
 
@@ -46,14 +46,11 @@ public interface RideConfirmNavigator extends BaseView {
 
     void logoutApp();
 
-    void addcarList(List<Type> types, int default_selected_type);
-
+    void addCarList(List<Type> types);
 
     BaseActivity getBaseAct();
 
     Type GetSelectedCarObj();
-
-    TypeNew getNewSelectedCar();
 
     void onClickRideType(boolean isAcceptShare);
 
@@ -77,8 +74,6 @@ public interface RideConfirmNavigator extends BaseView {
 
     void openTripRegisteredAlert(TripRegisteredDetails tripRegisteredDetails);
 
-    void addCarListNew(List<TypeNew> newTypes, int i);
-
     void onClickTripSchedule();
 
     void onClickNotesToDriver();
@@ -91,7 +86,12 @@ public interface RideConfirmNavigator extends BaseView {
 
     void openTripFragment(Request request);
 
+    void openTripFragment(NewRequestModel request);
+
     void promoCodeSet(String bookedID);
 
     void refreshTypesAdapter(String etaPrice, String etaTime);
+
+    void refreshTypesAdapter(List<Type> types);
+
 }

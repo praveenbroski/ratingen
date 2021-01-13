@@ -27,6 +27,7 @@ public class CancelDialogViewModel extends BaseNetwork<BaseResponse, cancelDialo
 
     HashMap<String, String> hashMap;
     String reqid;
+    boolean arrived;
     public ObservableBoolean iscancelenable;
     public ObservableField<String> otherCancelReason = new ObservableField<>();
     public ObservableBoolean otherCancelAvaialability = new ObservableBoolean(false);
@@ -50,19 +51,13 @@ public class CancelDialogViewModel extends BaseNetwork<BaseResponse, cancelDialo
     }
 
     /** calls RequestCancelReasonList API **/
-    public void setvalues(String reqid) {
+    public void setvalues(String reqid, boolean arrived) {
         this.reqid = reqid;
+        this.arrived = arrived;
 
         if (getmNavigator().isNetworkConnected()) {
             setIsLoading(true);
-            hashMap.clear();
-            hashMap.put(Constants.NetworkParameters.client_id, sharedPrefence.getCompanyID());
-            hashMap.put(Constants.NetworkParameters.client_token, sharedPrefence.getCompanyToken());
-            hashMap.put(Constants.NetworkParameters.id, sharedPrefence.Getvalue(SharedPrefence.ID));
-            hashMap.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
-            hashMap.put(Constants.NetworkParameters.user_type, "" + 1);
-            hashMap.put(Constants.NetworkParameters.request_id, "" + reqid);
-            RequestCancelReasonList();
+            RequestCancelReasonList(arrived ? "2" : "1");
         }
     }
 
@@ -85,10 +80,10 @@ public class CancelDialogViewModel extends BaseNetwork<BaseResponse, cancelDialo
                 if (getmNavigator().getSelectionPosition().equalsIgnoreCase("0")) {
                     if (otherCancelReason.get() != null && !otherCancelReason.get().isEmpty()) {
                         hashMap.put(Constants.NetworkParameters.cancel_other_reason, otherCancelReason.get());
-                        RequestcancelNetwork();
+                        RequestCancelNetwork();
 
                     } else getmNavigator().showMessage("Please enter the reason");
-                } else RequestcancelNetwork();
+                } else RequestCancelNetwork();
             }
         } else getmNavigator().showMessage("Please choose the reason");
 
@@ -98,11 +93,12 @@ public class CancelDialogViewModel extends BaseNetwork<BaseResponse, cancelDialo
     @Override
     public void onSuccessfulApi(long taskId, BaseResponse response) {
         setIsLoading(false);
-        if (response.successMessage.equalsIgnoreCase("cancellation_reason_list")) {
+        if (response.message.equalsIgnoreCase("cancellation_reasons_listed")) {
             if (response.success) {
-                if (response.reason != null) {
+                if (response.data != null) {
                     iscancelenable.set(true);
-                    reasonCancelList = response.reason;
+                    String reasonStr = CommonUtils.ObjectToString(response.data);
+                    reasonCancelList = CommonUtils.stringToArray(reasonStr, BaseResponse.ReasonCancel[].class);
                     getmNavigator().setCancelList(reasonCancelList);
                 }
             } else {

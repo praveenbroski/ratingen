@@ -5,7 +5,7 @@ import androidx.databinding.ObservableField;
 import android.view.View;
 
 import taxi.ratingen.retro.responsemodel.Route;
-import taxi.ratingen.retro.responsemodel.TypeNew;
+import taxi.ratingen.retro.responsemodel.Type;
 import taxi.ratingen.utilz.CommonUtils;
 import com.google.gson.Gson;
 import taxi.ratingen.retro.base.BaseNetwork;
@@ -44,7 +44,6 @@ public class EtachildFareViewModel extends BaseNetwork<BaseResponse, EtachildFar
         distancePrice = new ObservableField<>();
         rideTimeCost = new ObservableField<>();
     }
-
 
     @Override
     public void onSuccessfulApi(long taskId, BaseResponse response) {
@@ -86,7 +85,6 @@ public class EtachildFareViewModel extends BaseNetwork<BaseResponse, EtachildFar
                     Totalfare.set(CommonUtils.doubleDecimalFromat(Double.valueOf((mParam1.total))));
             }
 
-
             if (mParam1.tax_amount != null)
                 Taxesamt.set(CommonUtils.doubleDecimalFromat(Double.valueOf((mParam1.tax_amount))));
 
@@ -117,51 +115,24 @@ public class EtachildFareViewModel extends BaseNetwork<BaseResponse, EtachildFar
         }
     }
 
-    public void setTypeValues(TypeNew mParam2, Route mParam3) {
+    public void setTypeValues(Type mParam2, Route mParam3) {
         if (mParam2 != null) {
             if (mParam2.currency != null)
                 currency.set(mParam2.currency);
-            if (mParam2.getName() != null)
-                vType.set(mParam2.getName());
-
-            calculateFare(mParam2, mParam3);
-        }
-    }
-
-    private void calculateFare(TypeNew mParam2, Route mParam3) {
-        if (mParam2.getZoneTypePrice().getData().size() > 0) {
-            TypeNew.TypePrice rideNowPrice = null;
-            for (TypeNew.TypePrice typePrice: mParam2.getZoneTypePrice().getData()) {
-                if (typePrice.getPriceType() != null && typePrice.getPriceType() == 1) {
-                    rideNowPrice = typePrice;
-                }
-            }
-            if (rideNowPrice != null) {
-                double divideBy;
-                if (mParam2.getUnit() == 1)
-                    divideBy = 1000f;
-                else
-                    divideBy = 1609.34f;
-
-                double chargeableDistance;
-                if (mParam3.getDistanceValue() >= 1)
-                    chargeableDistance = (mParam3.getDistanceValue() / divideBy) - rideNowPrice.getBaseDistance();
-                else
-                    chargeableDistance = 0;
-
-                double distPrice = chargeableDistance * rideNowPrice.getPricePerDistance();
-                double chargeableTime = (mParam3.getDurationValue() / 60f);
-                double timePrice = chargeableTime * rideNowPrice.getPricePerDistance();
-                double rideMinFare = rideNowPrice.getBasePrice() + distPrice + timePrice;
-//                double rideMaxFare = rideMinFare + (rideMinFare / 100f);
-
-                BaseFare.set(rideNowPrice.getBasePrice() + "");
-                RatePerKm.set(rideNowPrice.getPricePerDistance() + "");
-                Ridetimecharge.set(CommonUtils.doubleDecimalFromat(timePrice));
-                waitingTimeCharge.set(rideNowPrice.getWaitingCharge() + "");
-                FaredetailsAmt.set(CommonUtils.doubleDecimalFromat(rideMinFare));
-                Taxesamt.set("0");
-                Totalfare.set(CommonUtils.doubleDecimalFromat(rideMinFare));
+            if (mParam2.name != null)
+                vType.set(mParam2.name);
+            if (mParam2.etaModel != null) {
+                if (mParam2.etaModel.currency_symbol != null)
+                    currency.set(mParam2.etaModel.currency_symbol);
+                BaseFare.set(CommonUtils.doubleDecimalFromat(mParam2.etaModel.base_price));
+                RatePerKm.set(CommonUtils.doubleDecimalFromat(mParam2.etaModel.price_per_distance));
+                distancePrice.set(CommonUtils.doubleDecimalFromat(mParam2.etaModel.distance_price));
+                Ridetimecharge.set(CommonUtils.doubleDecimalFromat(mParam2.etaModel.price_per_time));
+                rideTimeCost.set(CommonUtils.doubleDecimalFromat(mParam2.etaModel.time_price));
+                waitingTimeCharge.set("");
+                FaredetailsAmt.set(CommonUtils.doubleDecimalFromat(mParam2.etaModel.ride_fare));
+                Taxesamt.set(CommonUtils.doubleDecimalFromat(mParam2.etaModel.tax_amount));
+                Totalfare.set(CommonUtils.doubleDecimalFromat(mParam2.etaModel.total));
             }
         }
     }

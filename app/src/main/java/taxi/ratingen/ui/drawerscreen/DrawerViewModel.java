@@ -161,7 +161,7 @@ public class DrawerViewModel extends BaseNetwork<BaseResponse, DrawerNavigator> 
                                 if (metaRequest.resultData.isLater != null && metaRequest.resultData.isLater == 1) {
 //                                    getmNavigator().openRideLaterAlert(metaRequest.requestData, metaRequest.requestData.driverDetail.driverData);
                                 } else {
-//                                getmNavigator().showTripFragment(metaRequest.resultData, metaRequest.resultData.driverDetail.driverData);
+                                    getmNavigator().showTripFragment(metaRequest.resultData, metaRequest.resultData.driverDetail.driverData);
                                 }
                             }
                         } else

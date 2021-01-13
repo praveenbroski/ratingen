@@ -13,7 +13,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,24 +21,17 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import taxi.ratingen.retro.responsemodel.MarkerModel;
+
+import taxi.ratingen.retro.responsemodel.NewRequestModel;
 import taxi.ratingen.retro.responsemodel.Request;
 import taxi.ratingen.retro.responsemodel.Route;
 import taxi.ratingen.retro.responsemodel.TripRegisteredDetails;
-import taxi.ratingen.retro.responsemodel.TypeNew;
 import taxi.ratingen.ui.drawerscreen.ridescreen.payment.PaymentMethod;
-import taxi.ratingen.ui.topdriver.TopDriverAct;
-import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
-import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.AutocompleteFilter;
@@ -57,9 +49,7 @@ import taxi.ratingen.retro.responsemodel.Type;
 import taxi.ratingen.databinding.FragRideConfirmationBinding;
 import taxi.ratingen.ui.base.BaseActivity;
 import taxi.ratingen.ui.base.BaseFragment;
-import taxi.ratingen.ui.drawerscreen.DrawerAct;
 import taxi.ratingen.ui.drawerscreen.mapscrn.adapter.CarsTypesAdapter;
-import taxi.ratingen.ui.drawerscreen.placeapiscreen.PlaceApiAct;
 import taxi.ratingen.ui.drawerscreen.ridescreen.etaparent.ETAParent;
 import taxi.ratingen.ui.drawerscreen.ridescreen.waitingdialog.WaitProgressDialog;
 import taxi.ratingen.utilz.CommonUtils;
@@ -117,9 +107,9 @@ public class RideConfirmationFragment extends BaseFragment<FragRideConfirmationB
     RideTypeBottomSheet rideTypeBottomSheet;
     ChooseSeatBottomSheet chooseSeatBottomSheet;
     WaitProgressDialog waitProgressDialog;
-    private SimpleDateFormat mFormatter = new SimpleDateFormat("MMM dd, yyyy hh:mm aa", Locale.ENGLISH);
-    private SimpleDateFormat mtimeFormatter = new SimpleDateFormat("kk:mm", Locale.ENGLISH);
-    private SimpleDateFormat mdateFormatter = new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH);
+    private final SimpleDateFormat mFormatter = new SimpleDateFormat("MMM dd, yyyy hh:mm aa", Locale.ENGLISH);
+    private final SimpleDateFormat mtimeFormatter = new SimpleDateFormat("kk:mm", Locale.ENGLISH);
+    private final SimpleDateFormat mdateFormatter = new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH);
     private boolean isViaPrivateKey = false;
 
     String type_id = "";
@@ -132,12 +122,12 @@ public class RideConfirmationFragment extends BaseFragment<FragRideConfirmationB
     private LatLng crLatlng, dropUPLatlng, pickUpLatlng;
     private String pickupAddress, dropAddress, scanContent, dateformat;
     private int ride_type = 1;
-    public HashMap<String, Marker> driverPins;
-    public HashMap<String, MarkerOptions> driverPinOptions;
-    public HashMap<String, String> driverDatas;
+//    public HashMap<String, Marker> driverPins;
+//    public HashMap<String, MarkerOptions> driverPinOptions;
+//    public HashMap<String, String> driverDatas;
 
     Type getType;
-    TypeNew getTypeNew;
+//    TypeNew getTypeNew;
     String bookedID = "";
     Route routeDest = new Route();
 
@@ -184,19 +174,6 @@ public class RideConfirmationFragment extends BaseFragment<FragRideConfirmationB
         args.putString(ParamdropAddr, drop);
         args.putString(SCANCONTENT, value);
         args.putInt(RIDETYPE, 1);
-        //        args.putSerializable(DRIVER_PINS, driverPins);
-        ArrayList<MarkerModel> markerModels = new ArrayList<>();
-        for (String key: driverPins.keySet()) {
-            Marker marker = driverPins.get(key);
-            MarkerModel markerModel = new MarkerModel();
-            markerModel.setLat(marker.getPosition().latitude);
-            markerModel.setLng(marker.getPosition().longitude);
-            markerModel.setRotation(marker.getRotation());
-            markerModel.setId(key);
-            markerModels.add(markerModel);
-        }
-        args.putSerializable(DRIVER_PINS, markerModels);
-        args.putSerializable(DRIVER_DATAS, driverDatas);
 
         fragment.setArguments(args);
         return fragment;
@@ -217,19 +194,6 @@ public class RideConfirmationFragment extends BaseFragment<FragRideConfirmationB
 //        args.putString(ParamdropAddr, drop);
         args.putString(SCANCONTENT, value);
         args.putInt(RIDETYPE, 1);
-        //        args.putSerializable(DRIVER_PINS, driverPins);
-        ArrayList<MarkerModel> markerModels = new ArrayList<>();
-        for (String key: driverPins.keySet()) {
-            Marker marker = driverPins.get(key);
-            MarkerModel markerModel = new MarkerModel();
-            markerModel.setLat(marker.getPosition().latitude);
-            markerModel.setLng(marker.getPosition().longitude);
-            markerModel.setRotation(marker.getRotation());
-            markerModel.setId(key);
-            markerModels.add(markerModel);
-        }
-        args.putSerializable(DRIVER_PINS, markerModels);
-        args.putSerializable(DRIVER_DATAS, driverDatas);
 
         fragment.setArguments(args);
         return fragment;
@@ -277,22 +241,6 @@ public class RideConfirmationFragment extends BaseFragment<FragRideConfirmationB
             dateformat = getArguments().getString(RIDELATERDATE);
             ride_type = getArguments().getInt(RIDETYPE);
             isViaPrivateKey = (!CommonUtils.IsEmpty(scanContent));
-            HashMap<String, MarkerOptions> markerMap = new HashMap<>();
-            if (getArguments().getSerializable(DRIVER_PINS) != null) {
-//                driverPins = (HashMap<String, Marker>) getArguments().getSerializable(DRIVER_PINS);
-                ArrayList<MarkerModel> markerModels = (ArrayList<MarkerModel>) getArguments().getSerializable(DRIVER_PINS);
-                BitmapDescriptor bitmapDescriptorFactory = BitmapDescriptorFactory.fromResource(R.drawable.ic_new_car);
-                for (MarkerModel mm: markerModels) {
-                    MarkerOptions markerOptions = new MarkerOptions();
-                    markerOptions.position(new LatLng(mm.getLat(), mm.getLng())).anchor(0.5f, 0.5f).rotation((float) mm.getRotation()).icon(bitmapDescriptorFactory);
-                    markerMap.put(mm.getId(), markerOptions);
-                }
-            }
-            this.driverPinOptions = markerMap;
-            if (getArguments().getSerializable(DRIVER_DATAS) != null)
-                driverDatas = (HashMap<String, String>) getArguments().getSerializable(DRIVER_DATAS);
-
-            Log.v("fatal_log", driverDatas.toString());
         }
     }
 
@@ -302,12 +250,7 @@ public class RideConfirmationFragment extends BaseFragment<FragRideConfirmationB
         rideFragViewModel.setNavigator(this);
         fragmentRideBinding = getViewDataBinding();
 
-        fragmentRideBinding.backImg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goback();
-            }
-        });
+        fragmentRideBinding.backImg.setOnClickListener(v -> goback());
 
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         fragmentRideBinding.CarsRecyclerView.setLayoutManager(mLayoutManager);
@@ -322,16 +265,25 @@ public class RideConfirmationFragment extends BaseFragment<FragRideConfirmationB
 
         final BottomSheetBehavior sheetBehavior = BottomSheetBehavior.from(fragmentRideBinding.typesBottomSheet);
         sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        fragmentRideBinding.bottomSheetPersistent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
-                    sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                } else {
-                    sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                }
+        fragmentRideBinding.bottomSheetPersistent.setOnClickListener(v -> {
+            if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
+                sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            } else {
+                sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             }
         });
+
+        /* setting default payment option cash */
+        rideFragViewModel.paymentOption.set("1");
+        fragmentRideBinding.FPPaymentsymbol.setImageResource(R.drawable.ic_cash);
+        fragmentRideBinding.FPPaymentTXt.setText(getBaseAct().getTranslatedString(R.string.txt_cash));
+        /* disabling promo, ride later, notes */
+        fragmentRideBinding.llApplyPromo.setEnabled(false);
+        fragmentRideBinding.imgLater.setEnabled(false);
+        fragmentRideBinding.imgNotes.setEnabled(false);
+        fragmentRideBinding.promocode.setTextColor(getResources().getColor(R.color.clr_disabled));
+        fragmentRideBinding.imgLater.setColorFilter(getResources().getColor(R.color.clr_disabled));
+        fragmentRideBinding.imgNotes.setColorFilter(getResources().getColor(R.color.clr_disabled));
     }
 
     @Override
@@ -361,15 +313,7 @@ public class RideConfirmationFragment extends BaseFragment<FragRideConfirmationB
             googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
             //  tripFragViewModel.mapType.set(false);
         }
-        HashMap<String, Marker> markerHashMap = new HashMap<>();
-        for (String key: driverPinOptions.keySet()) {
-            MarkerOptions markerOptions = driverPinOptions.get(key);
-            Marker marker = googleMap.addMarker(markerOptions);
-            marker.setVisible(false);
-            markerHashMap.put(key, marker);
-        }
-        this.driverPins = markerHashMap;
-        rideFragViewModel.setPins(pickUpLatlng, dropUPLatlng, pickupAddress, dropAddress, googleMap, scanContent, driverPins, driverDatas);
+        rideFragViewModel.setPins(pickUpLatlng, dropUPLatlng, pickupAddress, dropAddress, googleMap, scanContent);
     }
 
     /** Go back to previous screen **/
@@ -383,7 +327,7 @@ public class RideConfirmationFragment extends BaseFragment<FragRideConfirmationB
                 .commit();
     }
 
-    /** Calls {@link SearchPlaceActivity} to search drop location when drop location card is clicked **/
+    /** Calls {@link taxi.ratingen.ui.drawerscreen.changeplace.SearchPlaceActivity} to search drop location when drop location card is clicked **/
     @Override
     public void DropCardClicked() {
 //        rideFragViewModel.getMap().clear();
@@ -429,7 +373,7 @@ public class RideConfirmationFragment extends BaseFragment<FragRideConfirmationB
     }
 
     /** {@link BroadcastReceiver} to listen to about driver availability for ride **/
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 //            Log.e("RideConfirmation", "RideConfirmation");
@@ -485,35 +429,10 @@ public class RideConfirmationFragment extends BaseFragment<FragRideConfirmationB
         }
     };
 
-//    /** Displays payment type selection {@link com.google.android.material.bottomsheet.BottomSheetDialog} with available payment methods
-//     * @param type {@link Type} response model **/
-//    @Override
-//    public void onClickPayment(Type type) {
-////        if (type == null)
-////            return;
-//
-//        Intent intent = new Intent(getActivity(), PaymentMethod.class);
-//        Bundle bundle = new Bundle();
-////        bundle.putStringArrayList(Constants.EXTRA_PAYMENT_BUNDLE, (ArrayList<String>) type.getPaymenttype());
-//        intent.putExtras(bundle);
-//        startActivityForResult(intent, Constants.BOTTOMSHEETCALLBACK);
-//
-////        paymentBottomSheet = new PaymentBottomSheet();
-////        Bundle bundle = new Bundle();
-////        bundle.putStringArrayList(Constants.EXTRA_Data, (ArrayList<String>) type.getPaymenttype());
-////        paymentBottomSheet.setArguments(bundle);
-////        paymentBottomSheet.setTargetFragment(this, Constants.BOTTOMSHEETCALLBACK);
-////        paymentBottomSheet.show(getBaseActivity().getSupportFragmentManager(), "BottomSheet Fragment");
-//
-////        Intent intent = new Intent(getAttachedcontext(), PaymentMethod.class);
-//////        Bundle bundle = new Bundle();
-//////        bundle.putStringArrayList(Constants.EXTRA_Data, (ArrayList<String>) type.getPaymenttype());
-//////        intent.putExtra(Constants.EXTRA_PAYMENT_BUNDLE, bundle);
-////        startActivityForResult(intent, Constants.REQUEST_CODE_PAYMENT_METHOD);
-//    }
-
+    /** Displays payment type selection {@link com.google.android.material.bottomsheet.BottomSheetDialog} with available payment methods
+     * @param type {@link Type} response model **/
     @Override
-    public void onClickPayment(TypeNew type) {
+    public void onClickPayment(Type type) {
         if (type == null)
             return;
 
@@ -695,7 +614,7 @@ public class RideConfirmationFragment extends BaseFragment<FragRideConfirmationB
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        rideFragViewModel.stopTypesTimer();
+//        rideFragViewModel.stopTypesTimer();
         if (waitProgressDialog != null) {
             WaitProgressDialog errorDialog = (WaitProgressDialog) getChildFragmentManager()
                     .findFragmentByTag(WaitProgressDialog.TAG);
@@ -734,51 +653,23 @@ public class RideConfirmationFragment extends BaseFragment<FragRideConfirmationB
     }
 
     /** Populates available cars to {@link List}
-     * @param types {@link List} with cars data
-     * @param defaultTypes default selected type **/
+     * @param types {@link List} with cars data **/
     @Override
-    public void addcarList(List<Type> types, int defaultTypes) {
-////    boolean isVehicleSet=false;
-//      /*  if (types != null && types.size() > 0) {
-//            for (Type vehicle : types)
-//                if (vehicle != null && vehicle.drivers != null && vehicle.drivers.size() > 0 && adapter.getSelectedCar() == null) {
-//                    adapter.selectedCarId = vehicle.id;
-//                    carSlected(vehicle);
-//                    break;
-//                }
-//        }*/
-//
-//        if (types != null && types.size() > 0 && adapter.getSelectedCar() == null) {
-//            for (Type vehicle : types)
-//                if (vehicle != null /*&& vehicle.drivers != null && vehicle.drivers.size() > 0 */ && adapter.getSelectedCar() == null) {
-//                    if (vehicle.type_id != null && vehicle.type_id == defaultTypes) {
-//                        adapter.selectedCarId = vehicle.id;
-//                        carSlected(vehicle);
-//                        break;
-//                    }
-//                }
-//        }
-//        if (!isViaPrivateKey && adapter.selectedCarId == null && adapter.getSelectedCar() == null && types.size() > 0 && types.get(0) != null) {
-//            carSlected(types.get(0));
-//            adapter.selectedCarId = types.get(0).id;
-//        }
-//        adapter.addList(types);
-    }
-
-    @Override
-    public void addCarListNew(List<TypeNew> types, int defaultTypes) {
-//        if (types != null && types.size() > 0 && adapter.getSelectedCar() == null) {
-//
-//        }
-
+    public void addCarList(List<Type> types) {
+//    boolean isVehicleSet = false;
+        if (types != null && types.size() > 0) {
+            for (Type vehicle : types)
+                if (vehicle != null && vehicle.drivers != null && vehicle.drivers.size() > 0 && adapter.getSelectedCar() == null) {
+                    adapter.selectedCarId = vehicle.type_id;
+                    carSlected(vehicle);
+                    break;
+                }
+        }
         if (!isViaPrivateKey && adapter.selectedCarId == null && adapter.getSelectedCar() == null && types.size() > 0 && types.get(0) != null) {
-            typeSelected(types.get(0));
-            adapter.selectedCarId = types.get(0).getTypeId();
+            carSlected(types.get(0));
+            adapter.selectedCarId = types.get(0).type_id;
         }
         adapter.addList(types);
-        if (!isViaPrivateKey && types.size() > 0 && types.get(0) != null) {
-            typeSelected(types.get(0));
-        }
     }
 
     @Override
@@ -897,23 +788,15 @@ public class RideConfirmationFragment extends BaseFragment<FragRideConfirmationB
 
     }
 
-    /*@Override
-    public void openTripFragment(TaxiRequestModel.ResultData resultData) {
-        rideFragViewModel.getTaxiRequestInProgress();
-    }
-
     @Override
-    public void enableCorporateUser(Boolean getBoolean) {
-
-    }
-
-    @Override
-    public void showTripFragment(TaxiRequestModel.ResultData requestData, TaxiRequestModel.DriverData driverData) {
-        if (getBaseAct() != null) {
-            ((BaseActivity) getBaseAct()).removeWaitProgressDialog();
-            ((BaseActivity) getBaseAct()).NeedTripFragment(requestData, driverData);
+    public void openTripFragment(NewRequestModel request) {
+        if (getActivity() != null)
+            ((BaseActivity) getActivity()).removeWaitProgressDialog();
+        if (request != null && getBaseActivity() != null) {
+            getBaseActivity().NeedTripFragment(request);
+            getBaseActivity().onFragmentDetached(RideConfirmationFragment.TAG);
         }
-    }*/
+    }
 
     @Override
     public void promoCodeSet(String booked_id) {
@@ -937,6 +820,13 @@ public class RideConfirmationFragment extends BaseFragment<FragRideConfirmationB
 //        adapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void refreshTypesAdapter(List<Type> types) {
+        ArrayList<Type> newTypes = new ArrayList<>(types);
+        adapter.addList(newTypes);
+        adapter.notifyDataSetChanged();
+    }
+
     /** Returns a reference of {@link BaseActivity} **/
     @Override
     public BaseActivity getBaseAct() {
@@ -949,49 +839,50 @@ public class RideConfirmationFragment extends BaseFragment<FragRideConfirmationB
         return adapter.getSelectedCar();
     }
 
-    @Override
-    public TypeNew getNewSelectedCar() {
-        return adapter.getSelectedNewCar();
-    }
+    /** Called when a car is selected
+     * @param type Car data model **/
+    public void carSlected(Type type) {
+        if (type != null && type.drivers != null && rideFragViewModel != null) {
+            rideFragViewModel.setDriverMarkers(type.drivers);
+        }
 
-//    /** Returns selected car object model **/
-//    @Override
-//    public TypeNew getNewSelectedCar() {
-//        return adapter.getSelectedNewCar();
-//    }
+        if (type != null)
+            getType = type;
 
-    /** Called when a car type is selected **/
-    public void typeSelected(TypeNew typeNew) {
-        if (typeNew != null) {
-            getTypeNew = typeNew;
-            rideFragViewModel.typeNew = typeNew;
+        JSONObject object = new JSONObject();
+        try {
+            object.put("id", sharedPrefence.Getvalue(SharedPrefence.ID));
+            object.put("type", type.type_id + "");
+            object.put("pick_lat", pickUpLatlng.latitude + "");
+            object.put("pick_lng", pickUpLatlng.longitude + "");
+            object.put("pickup_address", pickupAddress);
+            SocketHelper.sendRiderByTypes(object.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
         if (isViaPrivateKey) {
-//            rideFragViewModel.ETANetWorkcall(scanContent, ride_type, bookedID);
-            rideFragViewModel.setDriverDetailsNew(typeNew);
-            rideFragViewModel.showFirebaseCarMarkers();
+            rideFragViewModel.ETANetWorkcall(scanContent, ride_type, bookedID);
         } else {
-            rideFragViewModel.setDriverDetailsNew(typeNew);
-            rideFragViewModel.newETACall(typeNew, ride_type, bookedID);
-            rideFragViewModel.showFirebaseCarMarkers();
+            rideFragViewModel.setDriverDetails(type);
+            rideFragViewModel.ETANetWorkcall(type, ride_type, bookedID);
         }
 
         if (rideFragViewModel.sharedPrefence.GetBoolean(SharedPrefence.IS_CORPORATE_USER)) {
             rideFragViewModel.is_CorporateUser.set(true);
             setCorporateUser(true);
         } else {
-            if (rideFragViewModel.sharedPrefence.getInt(SharedPrefence.PREFFERED_PAYMENT) != -1 && typeNew.getPaymentType() != null)
+            if (rideFragViewModel.sharedPrefence.getInt(SharedPrefence.PREFFERED_PAYMENT) != -1 && type.getPaymenttype() != null)
                 switch (rideFragViewModel.sharedPrefence.getInt(SharedPrefence.PREFFERED_PAYMENT)) {
                     case 0:
-                        if (typeNew.getPaymentType().contains("card") || typeNew.getPaymentType().contains("all")) {
+                        if (type.getPaymenttype().contains("card") || type.getPaymenttype().contains("all")) {
                             fragmentRideBinding.FPPaymentsymbol.setImageResource(R.drawable.ic_card_yellow);
                             fragmentRideBinding.FPPaymentTXt.setText(getBaseAct().getTranslatedString(R.string.txt_card));
                             rideFragViewModel.paymentOption.set("0");
                         }
                         break;
                     case 1:
-                        if (typeNew.getPaymentType().contains("cash") || typeNew.getPaymentType().contains("all")) {
+                        if (type.getPaymenttype().contains("cash") || type.getPaymenttype().contains("all")) {
                             fragmentRideBinding.FPPaymentsymbol.setImageResource(R.drawable.ic_cash);
                             fragmentRideBinding.FPPaymentTXt.setText(getBaseAct().getTranslatedString(R.string.txt_cash));
                             rideFragViewModel.paymentOption.set("1");
@@ -999,59 +890,6 @@ public class RideConfirmationFragment extends BaseFragment<FragRideConfirmationB
                         }
                 }
         }
-    }
-
-    /** Called when a car is selected
-     * @param type Car data model **/
-    public void carSlected(Type type) {
-//        if (type != null && type.drivers != null && rideFragViewModel != null) {
-//            rideFragViewModel.setDriverMarkers(type.drivers);
-//        }
-//
-//        if (type != null)
-//            getType = type;
-//
-//        JSONObject object = new JSONObject();
-//        try {
-//            object.put("id", sharedPrefence.Getvalue(SharedPrefence.ID));
-//            object.put("type", type.type_id + "");
-//            object.put("pick_lat", pickUpLatlng.latitude + "");
-//            object.put("pick_lng", pickUpLatlng.longitude + "");
-//            object.put("pickup_address", pickupAddress);
-//            SocketHelper.sendRiderByTypes(object.toString());
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//
-//        if (isViaPrivateKey) {
-//            rideFragViewModel.ETANetWorkcall(scanContent, ride_type, bookedID);
-//        } else {
-//            rideFragViewModel.setDriverDetails(type);
-//            rideFragViewModel.ETANetWorkcall(type, ride_type, bookedID);
-//        }
-//
-//        if (rideFragViewModel.sharedPrefence.GetBoolean(SharedPrefence.IS_CORPORATE_USER)) {
-//            rideFragViewModel.is_CorporateUser.set(true);
-//            setCorporateUser(true);
-//        } else {
-//            if (rideFragViewModel.sharedPrefence.getInt(SharedPrefence.PREFFERED_PAYMENT) != -1 && type.getPaymenttype() != null)
-//                switch (rideFragViewModel.sharedPrefence.getInt(SharedPrefence.PREFFERED_PAYMENT)) {
-//                    case 0:
-//                        if (type.getPaymenttype().contains("card") || type.getPaymenttype().contains("all")) {
-//                            fragmentRideBinding.FPPaymentsymbol.setImageResource(R.drawable.ic_card_yellow);
-//                            fragmentRideBinding.FPPaymentTXt.setText(getBaseAct().getTranslatedString(R.string.txt_card));
-//                            rideFragViewModel.paymentOption.set("0");
-//                        }
-//                        break;
-//                    case 1:
-//                        if (type.getPaymenttype().contains("cash") || type.getPaymenttype().contains("all")) {
-//                            fragmentRideBinding.FPPaymentsymbol.setImageResource(R.drawable.ic_cash);
-//                            fragmentRideBinding.FPPaymentTXt.setText(getBaseAct().getTranslatedString(R.string.txt_cash));
-//                            rideFragViewModel.paymentOption.set("1");
-//                            break;
-//                        }
-//                }
-//        }
     }
 
     /** Setups available payment options returned by server via API
@@ -1076,79 +914,6 @@ public class RideConfirmationFragment extends BaseFragment<FragRideConfirmationB
                     }
             }
     }
-
-//    /** Called when ride later options is chosen. Calls {@link SlideDateTimePicker} dialog to select desired ride date & time **/
-//    @Override
-//    public void RideLaterClicked() {
-//        new SlideDateTimePicker.Builder(getChildFragmentManager())
-//                .setListener(listener)
-//                .setInitialDate(new Date())
-//                .setMinDate(new Date())
-//                .setIs24HourTime(false)
-//                .build()
-//                .show();
-//    }
-//
-//    /** Listens to changes in {@link SlideDateTimePicker} via {@link SlideDateTimeListener} **/
-//    private SlideDateTimeListener listener = new SlideDateTimeListener() {
-//
-//        @Override
-//        public void onDateTimeSet(Date date) {
-//            long different = 0;
-//
-//            String currentdate = mdateFormatter.format(new Date());
-//            String selecteddate = mdateFormatter.format(date);
-//            if (rideFragViewModel.type == null)
-//                return;
-//            try {
-//                if (mdateFormatter.parse(currentdate).compareTo(mdateFormatter.parse(selecteddate)) == 0) {
-//                    Calendar now = Calendar.getInstance();
-//                    now.add(Calendar.MINUTE, 15);
-//
-//                    String After30Time = mtimeFormatter.format(now.getTime());
-//                    String Selectedtime = mtimeFormatter.format(date);
-//
-//
-//                    different = mtimeFormatter.parse(After30Time).getTime() - mtimeFormatter.parse(Selectedtime).getTime();
-//
-//                    if (different < 0) {
-//                        rideFragViewModel.type.setdate(mFormatter.format(date));
-//                        rideFragViewModel.type.setIsFrom(Constants.RideLater);
-//                        rideFragViewModel.type.setpicklatlng(pickUpLatlng);
-//                        rideFragViewModel.type.setDroplatlng(dropUPLatlng);
-//                        rideFragViewModel.type.setpickAddress(pickupAddress);
-//                        rideFragViewModel.type.setDropAddress(dropAddress);
-//                        rideFragViewModel.type.setScanContent(scanContent);
-//                        rideFragViewModel.OnClickConfirmBooking("");
-//                    } else {
-//                        showMessage(getBaseAct().getTranslatedString(R.string.Txt_Schedule_Alert));
-//                    }
-//
-//                } else {
-//                    rideFragViewModel.type.setdate(mFormatter.format(date));
-//                    rideFragViewModel.type.setIsFrom(Constants.RideLater);
-//                    rideFragViewModel.type.setpicklatlng(pickUpLatlng);
-//                    rideFragViewModel.type.setDroplatlng(dropUPLatlng);
-//                    rideFragViewModel.type.setpickAddress(pickupAddress);
-//                    rideFragViewModel.type.setDropAddress(dropAddress);
-//                    rideFragViewModel.type.setScanContent(scanContent);
-//                    rideFragViewModel.OnClickConfirmBooking("");
-//                }
-//
-//
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
-//
-//
-//        }
-//
-//        // Optional cancel listener
-//        @Override
-//        public void onDateTimeCancel() {
-//
-//        }
-//    };
 
     /** Notifies to the user there are no drivers available **/
     @Override
@@ -1191,12 +956,7 @@ public class RideConfirmationFragment extends BaseFragment<FragRideConfirmationB
                 rideFragViewModel.topdriverApi();
             }
         });
-        no.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-            }
-        });
+        no.setOnClickListener(v -> alertDialog.dismiss());
         alertDialog.show();
     }
 
@@ -1204,12 +964,6 @@ public class RideConfirmationFragment extends BaseFragment<FragRideConfirmationB
      * @param id Id of the request **/
     @Override
     public void onclickpromoCode(String id) {
-//        Intent intent = new Intent(getBaseActivity(), PromoAct.class);
-//        intent.putExtra("isRide", "1");
-//        intent.putExtra("typeId", id);
-//        getBaseActivity().startActivityForResult(intent, Constants.RIDE_PROMO_RESULT);
-//        getBaseActivity().overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up);
-
         BottomSheetDialog promoDialog = new BottomSheetDialog(getAttachedcontext(), R.style.AppBottomSheetDialogTheme);
         promoDialog.setContentView(R.layout.promo_bottom_sheet);
         promoDialog.show();
@@ -1231,7 +985,7 @@ public class RideConfirmationFragment extends BaseFragment<FragRideConfirmationB
                 if (CommonUtils.IsEmpty(sPromoCode)) {
                     RideConfirmationFragment.this.showMessage(RideConfirmationFragment.this.getBaseAct().getTranslatedString(R.string.Validate_Promocode));
                 } else {
-                    rideFragViewModel.applyPromoAPICall(getTypeNew.getTypeId(), sPromoCode);
+//                    rideFragViewModel.applyPromoAPICall(getTypeNew.getTypeId(), sPromoCode);
                 }
             }
         });
@@ -1344,15 +1098,9 @@ public class RideConfirmationFragment extends BaseFragment<FragRideConfirmationB
 //        startActivity(topDriver);
     }
 
-//    public void fareDetailsClicked(Type request) {
-//        if (rideFragViewModel.baseResponse != null) {
-//            openETADialog(rideFragViewModel.baseResponse);
-//        }
-////        ETAParent.newInstance(request, routeDest).show(getChildFragmentManager());
-//    }
-
-    public void fareDetailsClicked(TypeNew request) {
-        ETAParent.newInstance(request, routeDest).show(getChildFragmentManager());
+    public void fareDetailsClicked(Type request) {
+        if (request.etaModel != null)
+            ETAParent.newInstance(request, routeDest).show(getChildFragmentManager());
     }
 
 }

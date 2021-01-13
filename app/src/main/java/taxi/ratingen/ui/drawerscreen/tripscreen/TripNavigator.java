@@ -32,7 +32,10 @@ public interface TripNavigator extends BaseView {
     void callTripCancel();
 
 
-    void setDropValue(String from, Float pickLatitude, Float pickLongitude, Float dropLatitude, Float dropLongitude);
+    void setDropValue(String from, Double pickLat, Double pickLng, Double dropLat, Double dropLng);
 
-    void setVAlue(String from, Float pickLatitude, Float pickLongitude, Float dropLatitude, Float dropLongitude);
+    void setVAlue(String from, Double pickLat, Double pickLng, Double dropLat, Double dropLng);
+
+    void openTripCancelMsg();
+
 }

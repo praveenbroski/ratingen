@@ -4,6 +4,8 @@ import androidx.databinding.ObservableBoolean;
 import android.view.View;
 
 import com.google.gson.Gson;
+
+import taxi.ratingen.R;
 import taxi.ratingen.retro.base.BaseNetwork;
 import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.GitHubService;
@@ -20,15 +22,15 @@ import java.util.HashMap;
 public class WaitingProgressViewModel extends BaseNetwork<BaseResponse, WaitProgressNavigator> {
     HashMap<String,String> hashMap;
     SharedPrefence sharedPrefence;
-    ObservableBoolean IsRequestcompleted;
+    ObservableBoolean IsRequestCompleted;
     View view;
     public WaitingProgressViewModel(GitHubService gitHubService,
                                     HashMap<String, String> hashMap,
                                     SharedPrefence sharedPrefence, Gson gson){
         super(gitHubService,sharedPrefence,gson);
-        this.hashMap=hashMap;
-        this.sharedPrefence=sharedPrefence;
-        IsRequestcompleted=new ObservableBoolean(false);
+        this.hashMap = hashMap;
+        this.sharedPrefence = sharedPrefence;
+        IsRequestCompleted = new ObservableBoolean(false);
     }
 
     /** Callback for successful API calls
@@ -36,9 +38,8 @@ public class WaitingProgressViewModel extends BaseNetwork<BaseResponse, WaitProg
      * @param response Response model **/
     @Override
     public void onSuccessfulApi(long taskId, BaseResponse response) {
-        if(response.successMessage.equalsIgnoreCase("Trip cancelled")){
-//            getmNavigator().showSnackBar(view, response.successMessage);
-            getmNavigator().showMessage(response.successMessage);
+        if (response.message.equalsIgnoreCase("request_cancelled_by_user")) {
+            getmNavigator().showMessage(getmNavigator().getBaseAct().getTranslatedString(R.string.txt_request_cancel_success));
             getmNavigator().dismissDialog();
         }
     }
@@ -63,29 +64,21 @@ public class WaitingProgressViewModel extends BaseNetwork<BaseResponse, WaitProg
     public HashMap<String, String> getMap() {
         return hashMap;
     }
-    /** Calls cancel request API to cancel the booking **/
-    public void OnclickcancelRequest(View view){
-        this.view=view;
 
+    /** Calls cancel request API to cancel the booking **/
+    public void onClickCancelRequest(View view){
+        this.view = view;
     }
 
-
-    public void cancelTrip()
-    {
-        if(getmNavigator().isNetworkConnected()) {
+    public void cancelTrip() {
+        if (getmNavigator().isNetworkConnected()) {
             hashMap.clear();
-            hashMap.put(Constants.NetworkParameters.client_id, sharedPrefence.getCompanyID());
-            hashMap.put(Constants.NetworkParameters.client_token, sharedPrefence.getCompanyToken());
-            hashMap.put(Constants.NetworkParameters.id, sharedPrefence.Getvalue(SharedPrefence.ID));
-            hashMap.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
             hashMap.put(Constants.NetworkParameters.request_id, getmNavigator().getRequestid());
-            hashMap.put(Constants.NetworkParameters.reason,"0");
-            hashMap.put(Constants.NetworkParameters.cancel_other_reason,"User Cancelled");
-            RequestcancelNetwork();
-        }else {
+            hashMap.put(Constants.NetworkParameters.custom_reason, "User Cancelled");
+            RequestCancelNetwork();
+        } else {
             getmNavigator().showNetworkMessage();
         }
     }
-
 
 }

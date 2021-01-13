@@ -3,6 +3,7 @@ package taxi.ratingen.ui.drawerscreen.profilescrn.edit;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 
 import androidx.databinding.library.baseAdapters.BR;
@@ -70,8 +71,10 @@ public class NameMailEdit extends BaseActivity<ActivityNameMailEditBinding, Name
         nameMailModel.mode.set(mode);
         if (bundle.getString(Constants.EXTRA_VALUE) != null) {
             nameMailModel.extraData.set(bundle.getString(Constants.EXTRA_VALUE));
-            if (mode == 3)
+            if (mode == 3) {
+                activityNameMailBinding.etUpdateVal.setInputType(InputType.TYPE_CLASS_PHONE);
                 nameMailModel.extraMobile.set(bundle.getString(Constants.EXTRA_VALUE));
+            }
             if (nameMailModel.extraData.get().length() > 0) {
                 nameMailModel.isSubmitEnable.set(true);
             }

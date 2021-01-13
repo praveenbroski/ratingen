@@ -18,6 +18,12 @@ public class Type extends BaseResponse implements Parcelable {
     @SerializedName("icon")
     @Expose
     public String icon;
+    @SerializedName("capacity")
+    @Expose
+    public Integer capacity;
+    @SerializedName("luggage_capacity")
+    @Expose
+    public Integer luggageCapacity;
     @SerializedName("zone_id")
     @Expose
     public Integer id;
@@ -33,8 +39,10 @@ public class Type extends BaseResponse implements Parcelable {
     @SerializedName("drivers")
     public List<Car> drivers = null;
     @SerializedName("preferred_payment")
-
     public Integer preferred_payment;
+
+    @Expose
+    public ETAModel etaModel;
 
     public Boolean isselected;
     public String IsFrom;
@@ -151,6 +159,5 @@ public class Type extends BaseResponse implements Parcelable {
         parcel.writeString(pickAddress);
         parcel.writeString(IsFrom);
     }
-
 
 }

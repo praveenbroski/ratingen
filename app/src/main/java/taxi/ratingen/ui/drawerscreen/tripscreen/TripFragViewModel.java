@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import taxi.ratingen.retro.responsemodel.MarkerResponseModel;
+import taxi.ratingen.retro.responsemodel.TaxiRequestModel;
 import taxi.ratingen.retro.responsemodel.TranslationModel;
 
 import com.bumptech.glide.Glide;
@@ -95,12 +96,13 @@ import static com.google.android.gms.maps.model.JointType.ROUND;
 
 public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> implements
         GoogleApiClient.ConnectionCallbacks, OnMapReadyCallback, SocketHelper.SocketListener, FirebaseHelper.FirebaseObserver {
+
     private static final String TAG = "TripFragViewModel";
     HashMap<String, String> hashMap;
     SharedPrefence sharedPrefence;
-    Request request;
+    TaxiRequestModel.ResultData request;
     GitHubMapService gitHubMapService;
-    Driver driver;
+    TaxiRequestModel.DriverData driver;
     private GoogleApiClient mGoogleApiClient;
     Marker marker;
     //  Socket mSocket;
@@ -111,7 +113,7 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
     public Route routeDest1;
     List<Car> cars;
     boolean isPickupDrop;
-    public ObservableField<String> firstName, lastName, profileurl, car_number, car_model, car_color, tripOTP,
+    public ObservableField<String> driverName, profileurl, car_number, car_model, car_color, tripOTP,
             StatusofTrip, Distance, paymenttype, pickupLocation, dropLocation, waitingtime, arrivalTime;
     public ObservableField<String> userRating;
     public ObservableBoolean isTrpStatusShown, isTripArrived, isTripStared, isShare, isPromodone, dropcheck, isExpCollpClicked;
@@ -144,10 +146,9 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
         gsoncustom = new GsonBuilder()
                 .registerTypeAdapter(BaseResponse.class, new BaseResponse.OptionsDeserilizer())
                 .create();
-        firstName = new ObservableField<>();
+        driverName = new ObservableField<>();
         car_number = new ObservableField<>();
         car_model = new ObservableField<>();
-        lastName = new ObservableField<>();
         Distance = new ObservableField<>();
         isPromodone = new ObservableBoolean(true);
         isTripArrived = new ObservableBoolean(false);
@@ -196,33 +197,33 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
     public void onSuccessfulApi(long taskId, BaseResponse response) {
         setIsLoading(false);
         if (response.successMessage.equalsIgnoreCase("trip_pick_up_location_changed")) {
-            if (response.request != null) {
-                request.pickLongitude = response.request.pickLongitude;
-                request.pickLatitude = response.request.pickLatitude;
-                request.pickLocation = response.request.pickLocation;
-                if (request.dropLatitude != null && request.dropLongitude != null && request.dropLatitude != 0 && request.dropLongitude != 0 && response.request.pickLatitude != 0 && response.request.pickLongitude != 0) {
-                    DrawPathCurrentToHero(true, new LatLng(response.request.pickLatitude, response.request.pickLongitude), new LatLng(request.dropLatitude, request.dropLongitude));
-                } else {
-                    if (markerPickup != null)
-                        markerPickup.remove();
-                    //   boundLatLang();
-                }
-                pickupLocation.set(response.request.pickLocation);
-            }
+//            if (response.request != null) {
+//                request.pickLng = response.request.pickLng;
+//                request.pickLat = response.request.pickLat;
+//                request.pickLocation = response.request.pickLocation;
+//                if (request.dropLat != null && request.dropLng != null && request.dropLat != 0 && request.dropLng != 0 && response.request.pickLat != 0 && response.request.pickLng != 0) {
+//                    DrawPathCurrentToHero(true, new LatLng(response.request.pickLat, response.request.pickLng), new LatLng(request.dropLat, request.dropLng));
+//                } else {
+//                    if (markerPickup != null)
+//                        markerPickup.remove();
+//                    //   boundLatLang();
+//                }
+//                pickupLocation.set(response.request.pickLocation);
+//            }
         } else if (response.successMessage.equalsIgnoreCase("trip_drop_location_changed")) {
-            if (response.request != null) {
-                request.dropLongitude = response.request.dropLongitude;
-                request.dropLatitude = response.request.dropLatitude;
-                request.dropLocation = response.request.dropLocation;
-                if (request.pickLatitude != null && request.pickLongitude != null && request.pickLatitude != 0 && request.pickLongitude != 0 && response.request.dropLatitude != 0 && response.request.dropLongitude != 0) {
-                    DrawPathCurrentToHero(true, new LatLng(request.pickLatitude, request.pickLongitude), new LatLng(response.request.dropLatitude, response.request.dropLongitude));
-                } else {
-                    if (markerDrop != null)
-                        markerDrop.remove();
-                    //  boundLatLang();
-                }
-                dropLocation.set(response.request.dropLocation);
-            }
+//            if (response.request != null) {
+//                request.dropLng = response.request.dropLng;
+//                request.dropLat = response.request.dropLat;
+//                request.dropLocation = response.request.dropLocation;
+//                if (request.pickLat != null && request.pickLng != null && request.pickLat != 0 && request.pickLng != 0 && response.request.dropLat != 0 && response.request.dropLng != 0) {
+//                    DrawPathCurrentToHero(true, new LatLng(request.pickLat, request.pickLng), new LatLng(response.request.dropLat, response.request.dropLng));
+//                } else {
+//                    if (markerDrop != null)
+//                        markerDrop.remove();
+//                    //  boundLatLang();
+//                }
+//                dropLocation.set(response.request.dropLocation);
+//            }
         } else if (response.successMessage.equalsIgnoreCase("ride promocode available")) {
             isPromodone.set(false);
             enablePromoOption.set(false);
@@ -307,20 +308,20 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
         hashMap.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
         hashMap.put(Constants.NetworkParameters.request_id, "" + request.id);
         hashMap.put(Constants.NetworkParameters.reason, "0");
-        RequestcancelNetwork();
+        RequestCancelNetwork();
     }
 
     /** Call phone {@link Intent} to make phone call to diver when call button is clicked **/
     public void OnclickCall(View view) {
         Intent callIntent = new Intent(Intent.ACTION_DIAL);
-        callIntent.setData(Uri.parse("tel:" + driver.phoneNumber));
+        callIntent.setData(Uri.parse("tel:" + driver.mobile));
         view.getContext().startActivity(callIntent);
     }
 
     /** Opens compose message screen with driver's phone number on it via {@link Intent} when sms button is clicked **/
     public void OnclickSms(View view) {
         Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-        sendIntent.setData(Uri.parse("sms:" + driver.phoneNumber));
+        sendIntent.setData(Uri.parse("sms:" + driver.mobile));
         view.getContext().startActivity(sendIntent);
     }
 
@@ -332,59 +333,57 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
     /** Assigns values to variables using data from API
      * @param mParam1 {@link Request} response model
      * @param mParam2 {@link Driver} response model **/
-    public void setValues(Request mParam1, Driver mParam2) {
-        Distance.set("0.0 " /*+ getmNavigator().getbaseAct().getString(R.string.text_km)*/);
+    public void setValues(TaxiRequestModel.ResultData mParam1, TaxiRequestModel.DriverData mParam2) {
+        Distance.set("0.0");
 
         request = mParam1;
         driver = mParam2;
 
-        if (!CommonUtils.IsEmpty(driver.firstname))
-            firstName.set(driver.firstname);
+        if (!CommonUtils.IsEmpty(driver.name))
+            driverName.set(driver.name);
 
-        if (!CommonUtils.IsEmpty(driver.lastname))
-            lastName.set(driver.lastname);
+        if (!CommonUtils.IsEmpty(driver.profilePicture))
+            profileurl.set(driver.profilePicture);
 
-        if (!CommonUtils.IsEmpty(driver.profilePic))
-            profileurl.set(Constants.URL.BaseURL + Constants.URL.DRIVER_PROFILE_PIC + driver.profilePic);
+        if (!CommonUtils.IsEmpty(driver.carNumber))
+            car_number.set(driver.carNumber);
 
+        if (!CommonUtils.IsEmpty(driver.carColor))
+            car_color.set(driver.carColor);
 
-        if (!CommonUtils.IsEmpty(driver.carnumber))
-            car_number.set(driver.carnumber);
+        if (!CommonUtils.IsEmpty(driver.carModelName))
+            car_model.set(driver.carModelName);
 
-        if (!CommonUtils.IsEmpty(driver.car_colour))
-            car_color.set(driver.car_colour);
+        if (driver.rating > 0.0)
+            userRating.set(driver.rating + "");
 
-        if (!CommonUtils.IsEmpty(driver.carmodel))
-            car_model.set(driver.carmodel);
-
-        if (driver.review > 0.0)
-            userRating.set(driver.review + "");
-
-
-        isPromodone.set(request.promo_used == 0);
-        enablePromoOption.set(request.promo_used == 0);
+//        isPromodone.set(request.promo_used == 0);
+//        enablePromoOption.set(request.promo_used == 0);
+        isPromodone.set(true);
+        enablePromoOption.set(false);
         if (request.paymentOpt != null) {
             paymenttype.set(getmNavigator().getbaseAct().getTranslatedString(
-                    request.paymentOpt == 0 ? R.string.txt_card :
-                            request.paymentOpt == 1 ? R.string.txt_cash :
-                                    request.paymentOpt == 4 ? R.string.text_corporate :
+                    request.paymentOpt.equals("0") ? R.string.txt_card :
+                            request.paymentOpt.equals("1") ? R.string.txt_cash :
+                                    request.paymentOpt.equals("4") ? R.string.text_corporate :
                                             R.string.txt_wallet));
         }
-        if (!CommonUtils.IsEmpty(request.request_otp))
-            tripOTP.set(translationModel.text_otp + ": " + request.request_otp);
+        if (!CommonUtils.IsEmpty(request.requestOtp))
+            tripOTP.set(translationModel.text_otp + ": " + request.requestOtp);
 
-        if (mParam1.dropLatitude != null && mParam1.dropLongitude != null && mParam1.dropLatitude != 0 && mParam1.dropLongitude != 0 && mParam1.pickLatitude != 0 && mParam1.pickLongitude != 0) {
-            DrawPathCurrentToHero(true, new LatLng(request.pickLatitude, request.pickLongitude), new LatLng(request.dropLatitude, request.dropLongitude));
+        if (mParam1.dropLat != null && mParam1.dropLng != null && mParam1.dropLat != 0 && mParam1.dropLng != 0 && mParam1.pickLat != 0 && mParam1.pickLng != 0) {
+            DrawPathCurrentToHero(true, new LatLng(request.pickLat, request.pickLng), new LatLng(request.dropLat, request.dropLng));
         }
-        if (!CommonUtils.IsEmpty(mParam1.pickLocation))
-            pickupLocation.set(mParam1.pickLocation);
-        if (!CommonUtils.IsEmpty(mParam1.dropLocation)) {
+        if (!CommonUtils.IsEmpty(mParam1.pickAddress))
+            pickupLocation.set(mParam1.pickAddress);
+        if (!CommonUtils.IsEmpty(mParam1.dropAddress)) {
             dropcheck.set(true);
-            dropLocation.set(mParam1.dropLocation);
+            dropLocation.set(mParam1.dropAddress);
         } else dropcheck.set(false);
 
         if (request.isCompleted == 1) {
-            getmNavigator().ShowFeedBackScreen(request, request.isCorporate == 1);
+//            getmNavigator().ShowFeedBackScreen(request, false);
+////            getmNavigator().ShowFeedBackScreen(request, request.isCorporate == 1);
         } else if (request.isTripStart == 1) {
             StatusofTrip.set(translationModel.txt_driver_started_destination);
             isTripStared.set(false);
@@ -397,13 +396,12 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
             isTripArrived.set(true);
             waitingtime.set("0.0");
         }
-        isShare.set(request.is_share == 1);
-        if (request.waiting_grace_time != 0)
-            graceTime = request.waiting_grace_time;
+//        isShare.set(request.isShare == 1);
+        isShare.set(false);
+//        if (request.waiting_grace_time != 0)
+//            graceTime = request.waiting_grace_time;
 
         SocketHelper.init(sharedPrefence, this, TAG, true);
-//        FirebaseHelper.init(sharedPrefence, this, true);
-//        FirebaseHelper.addTripObserverFor("" + request.id);
     }
 
 
@@ -564,10 +562,10 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
 
             mGoogleApiClient.connect();
         }
-        if (request.pickLatitude != null && request.pickLongitude != null && request.pickLatitude != 0 && request.pickLongitude != 0) {
+        if (request.pickLat != null && request.pickLng != null && request.pickLat != 0 && request.pickLng != 0) {
             boundLatLang();
-//            if (request.dropLatitude != null && request.dropLongitude != null && request.dropLatitude !=0 && request.dropLongitude != 0)
-//                DrawPathCurrentToHero(true, new LatLng(request.pickLatitude, request.pickLongitude), new LatLng(request.dropLatitude, request.dropLongitude));
+//            if (request.dropLat != null && request.dropLng != null && request.dropLat !=0 && request.dropLng != 0)
+//                DrawPathCurrentToHero(true, new LatLng(request.pickLat, request.pickLng), new LatLng(request.dropLat, request.dropLng));
         }
     }
 
@@ -590,15 +588,15 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
         LatLngBounds.Builder bld = new LatLngBounds.Builder();
 //        if (isTripArrived.get() && getmNavigator().getbaseAct() != null)
         if (getmNavigator().getbaseAct() != null) {
-            Marker mPick = markerPickup = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(request.pickLatitude, request.pickLongitude)).title("Pickup Point").icon(CommonUtils.getBitmapDescriptor(getmNavigator().getbaseAct(), R.drawable.ic_pick_pin)));
+            Marker mPick = markerPickup = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(request.pickLat, request.pickLng)).title("Pickup Point").icon(CommonUtils.getBitmapDescriptor(getmNavigator().getbaseAct(), R.drawable.ic_pick_pin)));
             mPick.setAnchor(0.5f, 0.5f);
         }
-        if (request.dropLatitude != null && request.dropLongitude != null && getmNavigator().getbaseAct() != null) {
-            Marker mDrop = markerDrop = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(request.dropLatitude, request.dropLongitude)).title("Drop Point").icon(CommonUtils.getBitmapDescriptor(getmNavigator().getbaseAct(), R.drawable.ic_drop_pin)));
-            bld.include(new LatLng(request.dropLatitude, request.dropLongitude));
+        if (request.dropLat != null && request.dropLng != null && getmNavigator().getbaseAct() != null) {
+            Marker mDrop = markerDrop = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(request.dropLat, request.dropLng)).title("Drop Point").icon(CommonUtils.getBitmapDescriptor(getmNavigator().getbaseAct(), R.drawable.ic_drop_pin)));
+            bld.include(new LatLng(request.dropLat, request.dropLng));
             mDrop.setAnchor(0.5f, 0.5f);
         }
-        bld.include(new LatLng(request.pickLatitude, request.pickLongitude));
+        bld.include(new LatLng(request.pickLat, request.pickLng));
         if (driver != null && driver.latitude != null && driver.longitude != null)
             bld.include(new LatLng(driver.latitude, driver.longitude));
         if (isMapRendered.get())
@@ -609,7 +607,7 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
     /** {@link Socket} connection successful callback **/
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (driver.latitude != 0 && driver.longitude != 0) {
+        if (driver.latitude != null && driver.latitude != 0 && driver.longitude != null && driver.longitude != 0) {
             if (marker == null)
                 marker = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(driver.latitude, driver.longitude)).title("Driver Point").icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_new_car)));
             else {
@@ -758,14 +756,14 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
      * @param context Current {@link Context}
      * @param from Address of pickup location **/
     private void createPickupCustomMarker(Context context, String from) {
-        getmNavigator().setVAlue(from, request.pickLatitude, request.pickLongitude, request.dropLatitude, request.dropLongitude);
+        getmNavigator().setVAlue(from, request.pickLat, request.pickLng, request.dropLat, request.dropLng);
     }
 
     /** Creates custom marker for drop location
      * @param context Current {@link Context}
      * @param from Address of drop location **/
     private void createDropMArker(Context context, String from) {
-        getmNavigator().setDropValue(from, request.pickLatitude, request.pickLongitude, request.dropLatitude, request.dropLongitude);
+        getmNavigator().setDropValue(from, request.pickLat, request.pickLng, request.dropLat, request.dropLng);
     }
 
     /** Callback for {@link GoogleMap} loading complete **/
@@ -785,74 +783,100 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
     public void TripStatus(final String trip_status) {
         Log.i(TAG, "trip_status" + trip_status);
         if (getmNavigator().getbaseAct() != null) {
-            getmNavigator().getbaseAct().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    BaseResponse baseResponse = null;
-                    JSONObject data = null;
-                    try {
-                        data = new JSONObject(trip_status);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    //System.out.println("+get_cars+" + data.toString());
-                    if (data != null) {
-                        baseResponse = gson.fromJson(data.toString(), BaseResponse.class);
-                    }
+            getmNavigator().getbaseAct().runOnUiThread(() -> {
+                BaseResponse baseResponse = null;
+                JSONObject data = null;
+                try {
+                    data = new JSONObject(trip_status);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                //System.out.println("+get_cars+" + data.toString());
+                if (data != null) {
+                    baseResponse = gson.fromJson(data.toString(), BaseResponse.class);
+                }
 
-                    if (baseResponse != null)
-                        if (baseResponse.success && mGoogleMap != null) {
-
-                            if (baseResponse.successMessage == null) {
-                                if (!CommonUtils.IsEmpty(baseResponse.waiting_time)) {
-                                    waitingValue = baseResponse.waiting_time;
-                                    waitingtime.set(baseResponse.waiting_time + (getmNavigator().getbaseAct() != null ? getmNavigator().getbaseAct().getTranslatedString(R.string.txt_min) : " Mins"));
-                                }
+                if (baseResponse != null)
+                    if (baseResponse.success && mGoogleMap != null) {
+                        if (baseResponse.successMessage == null) {
+                            if (!CommonUtils.IsEmpty(baseResponse.waiting_time)) {
+                                waitingValue = baseResponse.waiting_time;
+                                waitingtime.set(baseResponse.waiting_time + (getmNavigator().getbaseAct() != null ? getmNavigator().getbaseAct().getTranslatedString(R.string.txt_min) : " Mins"));
+                            }
 //                                    cancelationFeeApplied = baseResponse.show_cancellation_reason;
-                                if (baseResponse.trip_start != null) {
+                            if (baseResponse.trip_start != null) {
 
-                                    if (baseResponse.trip_start == 1) {
-                                        isTripStared.set(false);
-                                    }
-
-                                    if (baseResponse.distancee != null) {
-                                        Distance.set("" + CommonUtils.doubleDecimalFromat(baseResponse.distancee));
-                                    }
-                                } else {
-                                    driverLatLng.set(new LatLng(baseResponse.lat, baseResponse.lng));
+                                if (baseResponse.trip_start == 1) {
+                                    isTripStared.set(false);
                                 }
 
-                            } else if (baseResponse.successMessage != null && baseResponse.getRequest() != null) {
-                                if (baseResponse.getRequest().isCompleted == 1)
-                                    getmNavigator().ShowFeedBackScreen(baseResponse.getRequest(), baseResponse.getRequest().isCorporate == 1);
-                                if (baseResponse.getRequest().isTripStart == 1) {
-                                    StatusofTrip.set(translationModel.txt_driver_started_destination);
-                                    isTripStared.set(false);
-                                    isTripArrived.set(true);
-                                    waitingtime.set("0.0");
-                                    enablePromoOption.set(false);
-                                } else if (baseResponse.getRequest().isDriverArrived == 1) {
-                                    StatusofTrip.set(translationModel.txt_driver_arrived_pickup);
-                                    isTripArrived.set(true);
-                                    waitingtime.set("0.0");
-                                    mGoogleMap.clear();
-                                    drawSavedRoute();
-                                    boundLatLang();
-                                    marker = null;
-                                    if (driver.latitude != 0 && driver.longitude != 0) {
-                                        if (marker == null)
-                                            marker = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(driver.latitude, driver.longitude)).title("Driver Point").icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_new_car)));
-                                        else {
-                                            marker.setPosition(new LatLng(driver.latitude, driver.longitude));
-                                            marker.setAnchor(0.5f, 0.5f);
-                                        }
+                                if (baseResponse.distancee != null) {
+                                    Distance.set("" + CommonUtils.doubleDecimalFromat(baseResponse.distancee));
+                                }
+                            } else {
+                                driverLatLng.set(new LatLng(baseResponse.lat, baseResponse.lng));
+                            }
+
+                        } else if (baseResponse.successMessage != null) {
+                            if (baseResponse.successMessage.equalsIgnoreCase("driver_arrived")) {
+                                StatusofTrip.set(translationModel.txt_driver_arrived_pickup);
+                                isTripArrived.set(true);
+                                waitingtime.set("0.0");
+                                mGoogleMap.clear();
+                                drawSavedRoute();
+                                boundLatLang();
+                                marker = null;
+                                if (driver.latitude != null && driver.latitude != 0 && driver.longitude != 0 && driver.longitude != 0) {
+                                    if (marker == null)
+                                        marker = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(driver.latitude, driver.longitude)).title("Driver Point").icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_new_car)));
+                                    else {
+                                        marker.setPosition(new LatLng(driver.latitude, driver.longitude));
+                                        marker.setAnchor(0.5f, 0.5f);
+                                    }
+                                }
+                            } else if (baseResponse.successMessage.equalsIgnoreCase("request_cancelled_by_driver")) {
+                                getmNavigator().openTripCancelMsg();
+                            } else if (baseResponse.successMessage.equalsIgnoreCase("driver_location_got_successfully")) {
+                                mGoogleMap.clear();
+                                drawSavedRoute();
+                                boundLatLang();
+                                marker = null;
+                                if (baseResponse.lat != null && baseResponse.lat != 0 && baseResponse.lng != 0 && baseResponse.lng != 0) {
+                                    if (marker == null)
+                                        marker = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(baseResponse.lat, baseResponse.lng)).title("Driver Point").icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_new_car)));
+                                    else {
+                                        marker.setPosition(new LatLng(baseResponse.lat, baseResponse.lng));
+                                        marker.setAnchor(0.5f, 0.5f);
                                     }
                                 }
                             }
+//                            if (baseResponse.getRequest().isCompleted == 1)
+//                                getmNavigator().ShowFeedBackScreen(baseResponse.getRequest(), baseResponse.getRequest().isCorporate == 1);
+//                            if (baseResponse.getRequest().isTripStart == 1) {
+//                                StatusofTrip.set(translationModel.txt_driver_started_destination);
+//                                isTripStared.set(false);
+//                                isTripArrived.set(true);
+//                                waitingtime.set("0.0");
+//                                enablePromoOption.set(false);
+//                            } else if (baseResponse.getRequest().isDriverArrived == 1) {
+//                                StatusofTrip.set(translationModel.txt_driver_arrived_pickup);
+//                                isTripArrived.set(true);
+//                                waitingtime.set("0.0");
+//                                mGoogleMap.clear();
+//                                drawSavedRoute();
+//                                boundLatLang();
+//                                marker = null;
+//                                if (driver.latitude != 0 && driver.longitude != 0) {
+//                                    if (marker == null)
+//                                        marker = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(driver.latitude, driver.longitude)).title("Driver Point").icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_new_car)));
+//                                    else {
+//                                        marker.setPosition(new LatLng(driver.latitude, driver.longitude));
+//                                        marker.setAnchor(0.5f, 0.5f);
+//                                    }
+//                                }
+//                            }
                         }
-
-
-                }
+                    }
             });
         }
     }
@@ -949,7 +973,7 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
             baseResponse = gson.fromJson(data.toString(), MarkerResponseModel.class);
             if (!isTripArrived.get() && baseResponse != null && baseResponse.getDuration() != null) {
                 createPickupCustomMarker(getmNavigator().getbaseAct(), baseResponse.getDuration());
-                /* if (isTripArrived.get() && request.dropLongitude != null && request.dropLatitude != null && request.dropLongitude != 0.0 && request.dropLatitude != 0.0) {
+                /* if (isTripArrived.get() && request.dropLng != null && request.dropLat != null && request.dropLng != 0.0 && request.dropLat != 0.0) {
                     if (baseResponse.getDuration() != null) {
                         createDropMArker(getmNavigator().getbaseAct(), baseResponse.getDuration());
                     }

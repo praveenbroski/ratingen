@@ -32,6 +32,7 @@ import dagger.android.support.AndroidSupportInjection;
  */
 
 public class WaitProgressDialog extends BaseDialog implements WaitProgressNavigator {
+
     private static final String ARG_PARAM1 = "param1";
     public static final String TAG = "WaitProgressDialog";
     private String mParam1;
@@ -118,7 +119,7 @@ public class WaitProgressDialog extends BaseDialog implements WaitProgressNaviga
      * Returns reference for {@link Activity}
      **/
     @Override
-    public Activity getBaseAct() {
+    public BaseActivity getBaseAct() {
         return getBaseActivity();
     }
 

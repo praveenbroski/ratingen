@@ -101,7 +101,7 @@ public class PlaceApiViewModel extends BaseNetwork<BaseResponse, PlaceApiNavigat
         hashMap.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
 
         if (getmNavigator().isNetworkConnected())
-            GetFavListNetworkcall();
+            GetFavListNetworkCall();
         else
             getmNavigator().showNetworkMessage();
     }

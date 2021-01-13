@@ -171,9 +171,9 @@ public class HistoryDetViewModel extends BaseNetwork<BaseResponse, HistoryDetNav
 
             iscancelShown.set(model.isDriverStarted == 1);
 
-            pickupLatlng.set(new LatLng(model.pickLatitude, model.pickLongitude));
-            if (model.dropLatitude != null)
-                dropLatlng.set(new LatLng(model.dropLatitude, model.dropLongitude));
+            pickupLatlng.set(new LatLng(model.pickLat, model.pickLng));
+            if (model.dropLat != null)
+                dropLatlng.set(new LatLng(model.dropLat, model.dropLng));
             isCompleted.set(model.isCompleted == 1);
             iscancelled.set(model.isCancelled == 1);
             islater.set(model.later == 1);

@@ -7,7 +7,6 @@ import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
 
-import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -15,7 +14,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -37,6 +35,8 @@ import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.GitHubMapService;
 import taxi.ratingen.retro.GitHubService;
 import taxi.ratingen.retro.responsemodel.Car;
+import taxi.ratingen.retro.responsemodel.ETAModel;
+import taxi.ratingen.retro.responsemodel.NewRequestModel;
 import taxi.ratingen.retro.responsemodel.Route;
 import taxi.ratingen.retro.responsemodel.ShareRideDetails;
 import taxi.ratingen.retro.responsemodel.Step;
@@ -44,14 +44,12 @@ import taxi.ratingen.retro.responsemodel.Type;
 import taxi.ratingen.retro.responsemodel.TypeNew;
 import taxi.ratingen.utilz.CommonUtils;
 import taxi.ratingen.utilz.Constants;
-import taxi.ratingen.utilz.FirebaseHelper;
 import taxi.ratingen.utilz.SocketHelper;
 import taxi.ratingen.utilz.exception.CustomException;
 import taxi.ratingen.utilz.MyComponent;
 import taxi.ratingen.utilz.SharedPrefence;
 import taxi.ratingen.utilz.SocketMessageModel;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -61,7 +59,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -71,7 +68,6 @@ import java.util.Random;
 import java.util.TimeZone;
 import java.util.concurrent.ScheduledFuture;
 
-import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -84,7 +80,7 @@ import static com.google.android.gms.maps.model.JointType.ROUND;
  */
 
 public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideConfirmNavigator>
-        implements SocketHelper.SocketListener, FirebaseHelper.FirebaseObserver {
+        implements SocketHelper.SocketListener {
 
     private static final String TAG = "RideConfirmation";
     public Type type;
@@ -130,18 +126,14 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
     int DriverTypeId = 0;
     private String typeId;
     private String reqId;
-    List<Type> getTypesResponse;
+    List<Type> getTypesResponse = null;
     List<TypeNew> getTypeNewResponse = new ArrayList<>();
     int rideType = 1;
     String dateFormat = "";
     String bookedId = "";
     String currentRideETA;
 
-    HashMap<String, Marker> driverPins = new HashMap<>();
-    HashMap<String, String> driverDatas = new HashMap<>();
-
-
-    public Route routeDest;
+    public Route routeDest = null;
     public List<LatLng> pointsDest;
     public PolylineOptions lineOptionsDest1, lineOptionDesDark;
     Polyline polyLineDest1, polyLineDestDark;
@@ -194,7 +186,6 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
         this.googleMap = googleMap;
         changeMapStyle();
         SetValues();
-
     }
 
     /** Setups Pickup and Drop markers on {@link GoogleMap}
@@ -204,14 +195,12 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
      * @param dropAddr Address string of drop location
      * @param googleMap {@link GoogleMap}
      * @param scanContent String parameter **/
-    public void setPins(LatLng pickup, LatLng drop, String pickupAddr, String dropAddr, GoogleMap googleMap, String scanContent, HashMap<String, Marker> driverPins, HashMap<String, String> driverDatas) {
+    public void setPins(LatLng pickup, LatLng drop, String pickupAddr, String dropAddr, GoogleMap googleMap, String scanContent) {
         this.pickup = pickup;
         this.drop = drop;
         this.dropAddr = dropAddr;
         this.pickupAddr = pickupAddr;
         this.scancontent = scanContent;
-        this.driverPins = driverPins;
-        this.driverDatas = driverDatas;
 
         if (!CommonUtils.IsEmpty(scanContent)) {
             isScanEnabled.set(true);
@@ -219,7 +208,7 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
 //            ETANetWorkcall(scanContent, rideType, "");
         }
 
-//        getTypesAPI();
+        getTypesAPI();
 
         if (dropAddr == null || dropAddr.isEmpty()) {
             isDropEmpty.set(false);
@@ -247,13 +236,13 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
 //        Types(SocketHelper.getLastLoadedTypes());
 //        //mSocket.emit("types", gson.toJson(socketMessageModel));
 
+        Types(SocketHelper.getLastLoadedTypes());
         setPikupDropBoundMarkers(true);
         if (!CommonUtils.IsEmpty(pickupAddr))
             PickAddress.set(pickupAddr);
         if (!CommonUtils.IsEmpty(dropAddr))
             DropAddress.set(dropAddr);
-        NofSeat.set("Choose Seat ");
-        FirebaseHelper.addObservers(this);
+        NofSeat.set("Choose Seat");
         SocketHelper.init(sharedPrefence, this, TAG, false);
         addLastKnownMarkers();
     }
@@ -273,7 +262,10 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
             buildbound();
 
         if (pickup != null && drop != null) {
-            drawPathPickToDrop(pickup, drop);
+            if (routeDest == null)
+                drawPathPickToDrop(pickup, drop);
+            else
+                drawRoute();
         }
     }
 
@@ -301,42 +293,7 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
                     routeDest = new Route();
                     CommonUtils.parseRoute(response.body(), routeDest);
                     getmNavigator().setRouteData(routeDest);
-                    final ArrayList<Step> step = routeDest.getListStep();
-                    System.out.println("step size=====> " + step.size());
-                    pointsDest = new ArrayList<>();
-                    lineOptionsDest1 = new PolylineOptions();
-                    lineOptionDesDark = new PolylineOptions();
-
-                    lineOptionsDest1.geodesic(true);
-                    lineOptionDesDark.geodesic(true);
-
-                    for (int i = 0; i < step.size(); i++) {
-                        List<LatLng> path = step.get(i).getListPoints();
-                        System.out.println("step =====> " + i + " and "
-                                + path.size());
-                        pointsDest.addAll(path);
-                    }
-                    if (polyLineDest1 != null)
-                        polyLineDest1.remove();
-                    lineOptionsDest1.addAll(pointsDest);
-                    lineOptionsDest1.width(10f);
-                    lineOptionsDest1.startCap(new SquareCap());
-                    lineOptionsDest1.endCap(new SquareCap());
-                    lineOptionsDest1.jointType(ROUND);
-
-                    if (getmNavigator().isAddedInAct()) {
-                        lineOptionsDest1.color(getmNavigator().getBaseAct().getResources().getColor(
-                                R.color.clr_FB4A46));
-                    }
-                    try {
-                        if (lineOptionsDest1 != null && googleMap != null) {
-                            polyLineDest1 = googleMap.addPolyline(lineOptionsDest1);
-                            polyLineDestDark = googleMap.addPolyline(lineOptionsDest1);
-                            buildbound();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    drawRoute();
                 }
             }
 
@@ -345,6 +302,45 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
                 getmNavigator().showMessage(t.getMessage());
             }
         });
+    }
+
+    public void drawRoute() {
+        final ArrayList<Step> step = routeDest.getListStep();
+        System.out.println("step size=====> " + step.size());
+        pointsDest = new ArrayList<>();
+        lineOptionsDest1 = new PolylineOptions();
+        lineOptionDesDark = new PolylineOptions();
+
+        lineOptionsDest1.geodesic(true);
+        lineOptionDesDark.geodesic(true);
+
+        for (int i = 0; i < step.size(); i++) {
+            List<LatLng> path = step.get(i).getListPoints();
+            System.out.println("step =====> " + i + " and "
+                    + path.size());
+            pointsDest.addAll(path);
+        }
+        if (polyLineDest1 != null)
+            polyLineDest1.remove();
+        lineOptionsDest1.addAll(pointsDest);
+        lineOptionsDest1.width(10f);
+        lineOptionsDest1.startCap(new SquareCap());
+        lineOptionsDest1.endCap(new SquareCap());
+        lineOptionsDest1.jointType(ROUND);
+
+        if (getmNavigator().isAddedInAct()) {
+            lineOptionsDest1.color(getmNavigator().getBaseAct().getResources().getColor(
+                    R.color.clr_FB4A46));
+        }
+        try {
+            if (lineOptionsDest1 != null && googleMap != null) {
+                polyLineDest1 = googleMap.addPolyline(lineOptionsDest1);
+                polyLineDestDark = googleMap.addPolyline(lineOptionsDest1);
+                buildbound();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /** Calls ETA API to get fare and other details
@@ -361,28 +357,22 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
             DropAddress.set(dropAddr);
         }
         if (getmNavigator().isNetworkConnected()) {
-
             if (pickup != null && this.type != null) {
                 hashMap.clear();
                 if (!bookedId.equalsIgnoreCase(""))
                     hashMap.put(Constants.NetworkParameters.promo_booked_id, this.bookedId);
-                hashMap.put(Constants.NetworkParameters.request_type, "" + rideType);
-                hashMap.put(Constants.NetworkParameters.id, sharedPrefence.Getvalue(SharedPrefence.ID));
-                hashMap.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
-                hashMap.put(Constants.NetworkParameters.type_id, "" + this.type.id);
-                hashMap.put(Constants.NetworkParameters.car_id, "" + this.type.type_id);
-                hashMap.put(Constants.NetworkParameters.olat, "" + pickup.latitude);
-                hashMap.put(Constants.NetworkParameters.olng, "" + pickup.longitude);
+                hashMap.put(Constants.NetworkParameters.PICK_LAT, "" + pickup.latitude);
+                hashMap.put(Constants.NetworkParameters.PICK_LNG, "" + pickup.longitude);
                 if (drop != null) {
-                    hashMap.put(Constants.NetworkParameters.dlat, "" + drop.latitude);
-                    hashMap.put(Constants.NetworkParameters.dlng, "" + drop.longitude);
+                    hashMap.put(Constants.NetworkParameters.DROP_LAT, "" + drop.latitude);
+                    hashMap.put(Constants.NetworkParameters.DROP_LNG, "" + drop.longitude);
                 }
+                hashMap.put(Constants.NetworkParameters.vehicle_type, "" + type.type_id);
+                hashMap.put(Constants.NetworkParameters.ride_type, "" + rideType);
 
                 isEtaAVailable.set(false);
                 getETANetworkcall();
             }
-
-
         } else {
             if (getmNavigator() != null)
                 getmNavigator().showNetworkMessage();
@@ -407,22 +397,21 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
                 hashMap.clear();
                 if (!scancontent.isEmpty()) {
                     hashMap.put(Constants.NetworkParameters.privateKey, scancontent);
-                    hashMap.put(Constants.NetworkParameters.request_type, "1");
+                    hashMap.put(Constants.NetworkParameters.ride_type, "1");
                 } else
-                    hashMap.put(Constants.NetworkParameters.request_type, "" + rideType);
+                    hashMap.put(Constants.NetworkParameters.ride_type, "" + rideType);
 
                 if (!ridePromoResult.equalsIgnoreCase(""))
                     hashMap.put(Constants.NetworkParameters.promo_booked_id, ridePromoResult);
 
-                hashMap.put(Constants.NetworkParameters.id, sharedPrefence.Getvalue(SharedPrefence.ID));
-                hashMap.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
-//                hashMap.put(Constants.NetworkParameters.car_id, "" + this.type.type_id);
-                hashMap.put(Constants.NetworkParameters.olat, "" + pickup.latitude);
-                hashMap.put(Constants.NetworkParameters.olng, "" + pickup.longitude);
+                hashMap.put(Constants.NetworkParameters.PICK_LAT, "" + pickup.latitude);
+                hashMap.put(Constants.NetworkParameters.PICK_LNG, "" + pickup.longitude);
                 if (drop != null) {
-                    hashMap.put(Constants.NetworkParameters.dlat, "" + drop.latitude);
-                    hashMap.put(Constants.NetworkParameters.dlng, "" + drop.longitude);
+                    hashMap.put(Constants.NetworkParameters.DROP_LAT, "" + drop.latitude);
+                    hashMap.put(Constants.NetworkParameters.DROP_LNG, "" + drop.longitude);
                 }
+                hashMap.put(Constants.NetworkParameters.vehicle_type, "" + type.type_id);
+
                 isEtaAVailable.set(false);
                 setIsLoading(true);
                 getETANetworkcall();
@@ -501,13 +490,7 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
     public void getTypesAPI() {
         if (getmNavigator().isNetworkConnected()) {
             setIsLoading(true);
-
-            hashMap.clear();
-            hashMap.put(Constants.NetworkParameters.id, sharedPrefence.Getvalue(SharedPrefence.ID));
-            hashMap.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
-            hashMap.put(Constants.NetworkParameters.PICK_LAT, "" + pickup.latitude);
-            hashMap.put(Constants.NetworkParameters.PICK_LNG, "" + pickup.longitude);
-            getTypesNetworkCall();
+            getTypesNetworkCall(pickup.latitude + "", pickup.longitude + "");
         } else {
             getmNavigator().showNetworkMessage();
         }
@@ -533,7 +516,7 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
     /** Calls when payment is clicked. Opens choose payment {@link com.google.android.material.bottomsheet.BottomSheetDialog} **/
     public void onclickPayment(View view) {
         if (!is_CorporateUser.get())
-            getmNavigator().onClickPayment(typeNew);
+            getmNavigator().onClickPayment(type);
 
     }
 
@@ -705,77 +688,67 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
         is_enableBooking.set(true);
 
         if (response != null && response.success) {
-            if (response.successMessage.equalsIgnoreCase("types_listed")&& response.message.equalsIgnoreCase("success")) {
-                if (response.getNewTypes() != null) {
-//                    String typesResponse = CommonUtils.arrayToString((ArrayList<Object>) response.data);
-                    getTypeNewResponse.addAll(response.getNewTypes());
-                    for (TypeNew typeNew: getTypeNewResponse) {
-                        if (typeNew.getZoneTypePrice()!=null&&typeNew.getZoneTypePrice().getData().size() > 0) {
-                            TypeNew.TypePrice rideNowPrice = null;
-                            for (TypeNew.TypePrice typePrice: typeNew.getZoneTypePrice().getData()) {
-                                if (typePrice.getPriceType() != null && typePrice.getPriceType() == 1) {
-                                    rideNowPrice = typePrice;
+            if (response.message != null) {
+                if (response.message.equalsIgnoreCase("types_listed")) {
+                    if (response.data != null) {
+                        String typesString = CommonUtils.ObjectToString(response.data);
+                        List<Type> apiTypes = CommonUtils.stringToArray(typesString, Type[].class);
+                        if (getTypesResponse != null) {
+                            for (Type typeApi: apiTypes) {
+                                String apiTypeId = typeApi.type_id;
+                                for (Type typeSocket: getTypesResponse) {
+                                    String socketTypeId = typeSocket.type_id;
+                                    if (apiTypeId.equalsIgnoreCase(socketTypeId)) {
+                                        typeSocket.capacity = typeApi.capacity;
+                                        typeSocket.icon = typeApi.icon;
+                                        typeSocket.is_accept_share_ride = typeApi.is_accept_share_ride;
+                                        typeSocket.luggageCapacity = typeApi.luggageCapacity;
+                                        break;
+                                    }
                                 }
                             }
-                            if (rideNowPrice != null) {
-                                double divideBy;
-                                if (typeNew.getUnit() == 1)
-                                    divideBy = 1000f;
-                                else
-                                    divideBy = 1609.34f;
-
-                                double chargeableDistance;
-                                if (routeDest != null) {
-                                    if (routeDest.getDistanceValue() >= 1)
-                                        chargeableDistance = (routeDest.getDistanceValue() / divideBy) - rideNowPrice.getBaseDistance();
-                                    else
-                                        chargeableDistance = 0;
-                                } else
-                                    chargeableDistance = 0;
-
-                                double distPrice = chargeableDistance * rideNowPrice.getPricePerDistance();
-                                double chargeableTime = 0;
-                                if (routeDest != null) {
-                                    chargeableTime = (routeDest.getDurationValue() / 60f);
+                            getmNavigator().addCarList(getTypesResponse);
+                        }
+                    }
+                } else if (response.message.equalsIgnoreCase("eta_listed")) {
+                    baseResponse = response;
+                    if (response.data != null) {
+                        String etaString = CommonUtils.ObjectToString(response.data);
+                        ETAModel etaModel = (ETAModel) CommonUtils.StringToObject(etaString, ETAModel.class);
+                        if (getTypesResponse != null) {
+                            for (Type type_: getTypesResponse) {
+                                if (type_.type_id.equalsIgnoreCase(this.type.type_id)) {
+                                    type.etaModel = etaModel;
+                                    break;
                                 }
-                                double timePrice = chargeableTime * rideNowPrice.getPricePerDistance();
-                                double rideMinFare = rideNowPrice.getBasePrice() + distPrice + timePrice;
-                                double rideMaxFare = rideMinFare + ((rideMinFare / 100f) * 8);
-                                typeNew.etaPrice = typeNew.currency + CommonUtils.doubleDecimalFromat(rideMinFare) + " - " +
-                                        typeNew.currency + CommonUtils.doubleDecimalFromat(rideMaxFare);
-                            } else {
-                                typeNew.etaPrice = "NA";
                             }
-                        } else {
-                            typeNew.etaPrice = "NA";
+                        }
+                        getmNavigator().addCarList(getTypesResponse);
+                    }
+                } else if (response.message.equalsIgnoreCase("request_created")) {
+                    if (getmNavigator().isAttached()) {
+                        if (response.data != null) {
+                            String requestStr = CommonUtils.ObjectToString(response.data);
+                            NewRequestModel requestModel = (NewRequestModel) CommonUtils.StringToObject(requestStr, NewRequestModel.class);
+                            getmNavigator().showMessage(getmNavigator().getBaseAct().getTranslatedString(R.string.Txt_RideCreated));
+                            getmNavigator().ShowWaitingDialog(requestModel.id);
                         }
                     }
-                    getmNavigator().addCarListNew(getTypeNewResponse, 2);
-                    calculateETA();
-                    if (getTypeNewResponse.size() > 0) {
-                        if (getTypeNewResponse.get(0) != null && getTypeNewResponse.get(0).getPreferredPayment() != null) {
-                            sharedPrefence.saveInt(SharedPrefence.PREFFERED_PAYMENT, getTypeNewResponse.get(0).getPreferredPayment());
-                        }
-                    }
-                    if (!CommonUtils.IsEmpty(scancontent)) {
-                        isScanEnabled.set(true);
-                        is_enableBooking.set(true);
-//            ETANetWorkcall(scanContent, rideType, "");
-                    }
                 }
-            }else if (response.successMessage.equalsIgnoreCase("user_declined"))
-                getmNavigator().openBlockedAlert();
-            else if (response.successMessage.equalsIgnoreCase("trip_registered_within_period"))
-                getmNavigator().openTripRegisteredAlert(response.getTripRegisteredDetails());
-            else if (response.successMessage.equalsIgnoreCase("Create_Request_successfully")) {
-                if (getmNavigator().isAttached()) {
-                    getmNavigator().showMessage(getmNavigator().getBaseAct().getTranslatedString(R.string.Txt_RideCreated));
-                    getmNavigator().ShowWaitingDialog("" + response.request.id);
-                }
-            }else if (response.successMessage.equalsIgnoreCase("ride promocode available")) {
-                String bookedID = response.promoCodeQueue.getPromoBookedId();
-                getmNavigator().promoCodeSet(bookedID);
-            } else if (response.successMessage.equalsIgnoreCase("Trip_registered_successfully")) {
+            } else {
+                if (response.successMessage.equalsIgnoreCase("user_declined"))
+                    getmNavigator().openBlockedAlert();
+                else if (response.successMessage.equalsIgnoreCase("trip_registered_within_period"))
+                    getmNavigator().openTripRegisteredAlert(response.getTripRegisteredDetails());
+                else if (response.successMessage.equalsIgnoreCase("Create_Request_successfully")) {
+                    if (getmNavigator().isAttached()) {
+                        getmNavigator().showMessage(getmNavigator().getBaseAct().getTranslatedString(R.string.Txt_RideCreated));
+                        getmNavigator().ShowWaitingDialog("" + response.request.id);
+                    }
+                } else if (response.successMessage.equalsIgnoreCase("ride promocode available")) {
+                    String bookedID = response.promoCodeQueue.getPromoBookedId();
+                    getmNavigator().promoCodeSet(bookedID);
+                } else if (response.successMessage.equalsIgnoreCase("Trip_registered_successfully")) {
 //                if (typeNew != null)
 //                    typeId = typeNew.zoneId;
 //                reqId = response.request_id;
@@ -783,13 +756,13 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
 //                if (typeNew != null)
 //                    getmNavigator().scheduleSucess("" + typeNew.zoneId, "" + response.request_id, sharedPrefence.Getvalue(SharedPrefence.ID), sharedPrefence.Getvalue(SharedPrefence.TOKEN), pickup.latitude, pickup.longitude);
 
-                if (typeNew != null)
-                    typeId = typeNew.getTypeId()+"";
-                reqId = response.request_id+"";
-                //  getmNavigator().openAlert(response.currency, response.DriverAddCharges);
-                if (typeNew != null)
-                    getmNavigator().scheduleSucess("" + typeNew.getTypeId(), "" + response.request_id, sharedPrefence.Getvalue(SharedPrefence.ID), sharedPrefence.Getvalue(SharedPrefence.TOKEN), pickup.latitude, pickup.longitude);
-            }  /*else if (response.message.equalsIgnoreCase("request_in_progress")) {
+                    if (typeNew != null)
+                        typeId = typeNew.getTypeId() + "";
+                    reqId = response.request_id + "";
+                    //  getmNavigator().openAlert(response.currency, response.DriverAddCharges);
+                    if (typeNew != null)
+                        getmNavigator().scheduleSucess("" + typeNew.getTypeId(), "" + response.request_id, sharedPrefence.Getvalue(SharedPrefence.ID), sharedPrefence.Getvalue(SharedPrefence.TOKEN), pickup.latitude, pickup.longitude);
+                }  /*else if (response.message.equalsIgnoreCase("request_in_progress")) {
                 getmNavigator().enableCorporateUser(sharedPrefence.GetBoolean(SharedPrefence.IS_CORPORATE_USER));
                 ReqInProgress model = CommonUtils.getSingleObject(new Gson().toJson(response.data), ReqInProgress.class);
 
@@ -807,78 +780,79 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
                     }
                 }
             }*/
+            }
         }
 
     }
 
     private void calculateETA() {
-        if (getTypeNewResponse != null) {
-            HashMap<String, List<Float>> distances = new HashMap<>();
-            for (TypeNew typeNew: getTypeNewResponse) {
-                List<Float> distanceList = new ArrayList<>();
-                for (String driverId: driverPins.keySet()) {
-                    String driverData = driverDatas.get(driverId);
-                    try {
-                        JSONObject jsonObject = new JSONObject(driverData);
-                        if (jsonObject.has("type")) {
-                            String typeId = jsonObject.getString("type");
-                            if (typeId.equalsIgnoreCase(typeNew.getTypeId())) {
-                                String[] arr = jsonObject.getString("l")
-                                        .replace("[", "")
-                                        .replace("]", "")
-                                        .split(",");
-                                LatLng carLatLng = new LatLng(Double.parseDouble(arr[0]), Double.parseDouble(arr[1]));
-
-                                Location pickLocation = new Location("pickup");
-                                pickLocation.setLatitude(pickup.latitude);
-                                pickLocation.setLongitude(pickup.longitude);
-
-                                Location driverLocation = new Location("driver");
-                                driverLocation.setLatitude(carLatLng.latitude);
-                                driverLocation.setLongitude(carLatLng.longitude);
-
-                                float distance = driverLocation.distanceTo(pickLocation);
-                                distanceList.add(distance);
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    distances.put(typeNew.getTypeId(), distanceList);
-                }
-            }
-            Log.v("http_log", distances.toString());
-            for (TypeNew typeNew: getTypeNewResponse) {
-                String typeId = typeNew.getTypeId();
-                if (distances.get(typeId) != null) {
-                    List<Float> distanceList = distances.get(typeId);
-                    if (distanceList.size() > 0) {
-                        float minDistance = Collections.min(distances.get(typeId));
-                        int speed = 50;
-                        float time = (minDistance / 1000) / (float) speed;
-                        String sMinutes = String.format(Locale.ENGLISH, "%.0f", (time * 60));
-                        int iMinutes = Integer.parseInt(sMinutes);
-                        if (iMinutes >= 60) {
-                            int hours = iMinutes / 60;
-                            int minutes = iMinutes % 60;
-                            if (hours == 1) {
-                                typeNew.etaTime = hours + " hr " + minutes + " mins";
-                            } else {
-                                typeNew.etaTime = hours + " hrs " + minutes + " mins";
-                            }
-                        } else if (iMinutes == 1 || iMinutes == 0) {
-                            typeNew.etaTime = iMinutes + " min";
-                        } else {
-                            typeNew.etaTime = iMinutes + " mins";
-                        }
-                    } else {
-                        typeNew.etaTime = "NA";
-                    }
-                } else {
-                    typeNew.etaTime = "NA";
-                }
-            }
-        }
+//        if (getTypeNewResponse != null) {
+//            HashMap<String, List<Float>> distances = new HashMap<>();
+//            for (TypeNew typeNew: getTypeNewResponse) {
+//                List<Float> distanceList = new ArrayList<>();
+//                for (String driverId: driverPins.keySet()) {
+//                    String driverData = driverDatas.get(driverId);
+//                    try {
+//                        JSONObject jsonObject = new JSONObject(driverData);
+//                        if (jsonObject.has("type")) {
+//                            String typeId = jsonObject.getString("type");
+//                            if (typeId.equalsIgnoreCase(typeNew.getTypeId())) {
+//                                String[] arr = jsonObject.getString("l")
+//                                        .replace("[", "")
+//                                        .replace("]", "")
+//                                        .split(",");
+//                                LatLng carLatLng = new LatLng(Double.parseDouble(arr[0]), Double.parseDouble(arr[1]));
+//
+//                                Location pickLocation = new Location("pickup");
+//                                pickLocation.setLatitude(pickup.latitude);
+//                                pickLocation.setLongitude(pickup.longitude);
+//
+//                                Location driverLocation = new Location("driver");
+//                                driverLocation.setLatitude(carLatLng.latitude);
+//                                driverLocation.setLongitude(carLatLng.longitude);
+//
+//                                float distance = driverLocation.distanceTo(pickLocation);
+//                                distanceList.add(distance);
+//                            }
+//                        }
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                    distances.put(typeNew.getTypeId(), distanceList);
+//                }
+//            }
+//            Log.v("http_log", distances.toString());
+//            for (TypeNew typeNew: getTypeNewResponse) {
+//                String typeId = typeNew.getTypeId();
+//                if (distances.get(typeId) != null) {
+//                    List<Float> distanceList = distances.get(typeId);
+//                    if (distanceList.size() > 0) {
+//                        float minDistance = Collections.min(distances.get(typeId));
+//                        int speed = 50;
+//                        float time = (minDistance / 1000) / (float) speed;
+//                        String sMinutes = String.format(Locale.ENGLISH, "%.0f", (time * 60));
+//                        int iMinutes = Integer.parseInt(sMinutes);
+//                        if (iMinutes >= 60) {
+//                            int hours = iMinutes / 60;
+//                            int minutes = iMinutes % 60;
+//                            if (hours == 1) {
+//                                typeNew.etaTime = hours + " hr " + minutes + " mins";
+//                            } else {
+//                                typeNew.etaTime = hours + " hrs " + minutes + " mins";
+//                            }
+//                        } else if (iMinutes == 1 || iMinutes == 0) {
+//                            typeNew.etaTime = iMinutes + " min";
+//                        } else {
+//                            typeNew.etaTime = iMinutes + " mins";
+//                        }
+//                    } else {
+//                        typeNew.etaTime = "NA";
+//                    }
+//                } else {
+//                    typeNew.etaTime = "NA";
+//                }
+//            }
+//        }
     }
 
     /** Callback for failed API calls
@@ -1011,6 +985,7 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
             if (googleMap != null) {
                 googleMap.clear();
             }
+            isDriversAvailable.set(false);
         }
         setPikupDropBoundMarkers(false);
     }
@@ -1103,7 +1078,7 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
     /** Click listener for ride confirmation button. Calls create request API **/
     public void onclickConfirm(View view) {
         if (rideType == 1) {
-            if (typeNew != null) {
+            if (type != null) {
                 if (!CommonUtils.IsEmpty(paymentOption.get())) {
                     if (isShareRide.get())
                         if (nofUser == null || nofUser == 0) {
@@ -1112,26 +1087,22 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
                         }
                     is_enableBooking.set(false);
                     hashMap.clear();
-//                if (drop == null)
-//                    return;
                     if (!scancontent.isEmpty())
                         hashMap.put(Constants.NetworkParameters.privateKey, scancontent);
-                    hashMap.put(Constants.NetworkParameters.id, sharedPrefence.Getvalue(SharedPrefence.ID));
-                    hashMap.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
-                    hashMap.put(Constants.NetworkParameters.type, "" + typeNew.getTypeId());
-//                    hashMap.put(Constants.NetworkParameters.type, "" + typeNew.zoneId);
-                    hashMap.put(Constants.NetworkParameters.platitude, "" + pickup.latitude);
-                    hashMap.put(Constants.NetworkParameters.plongitude, "" + pickup.longitude);
+                    hashMap.put(Constants.NetworkParameters.ride_type, rideType + "");
+                    hashMap.put(Constants.NetworkParameters.vehicle_type, "" + type.type_id);
+                    hashMap.put(Constants.NetworkParameters.PICK_LAT, "" + pickup.latitude);
+                    hashMap.put(Constants.NetworkParameters.PICK_LNG, "" + pickup.longitude);
+                    hashMap.put(Constants.NetworkParameters.PICK_ADDRESS, "" + PickAddress.get());
                     if (isPromoAvail.get())
                         hashMap.put(Constants.NetworkParameters.promo_booked_id, bookedId);
 
                     if (!CommonUtils.IsEmpty(DropAddress.get())) {
-                        hashMap.put(Constants.NetworkParameters.dlongitude, "" + drop.longitude);
-                        hashMap.put(Constants.NetworkParameters.dlatitude, "" + drop.latitude);
-                        hashMap.put(Constants.NetworkParameters.dlocation, "" + DropAddress.get());
+                        hashMap.put(Constants.NetworkParameters.DROP_LAT, "" + drop.latitude);
+                        hashMap.put(Constants.NetworkParameters.DROP_LNG, "" + drop.longitude);
+                        hashMap.put(Constants.NetworkParameters.DROP_ADDRESS, "" + DropAddress.get());
                     }
-                    hashMap.put(Constants.NetworkParameters.paymentOpt, "" + paymentOption.get());
-                    hashMap.put(Constants.NetworkParameters.plocation, "" + PickAddress.get());
+                    hashMap.put(Constants.NetworkParameters.payment_opt, "" + paymentOption.get());
                     hashMap.put(Constants.NetworkParameters.no_of_seats, "" + nofUser);
                     hashMap.put(Constants.NetworkParameters.is_share, "" + isShare);
 
@@ -1139,35 +1110,6 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
                     if (!CommonUtils.IsEmpty(driverNotes.get())) {
                         hashMap.put(Constants.NetworkParameters.driver_notes, "" + driverNotes.get());
                     }
-
-                    /* Add driver details to the request **/
-                    JSONArray jDrivers = new JSONArray();
-                    if (getmNavigator().getNewSelectedCar() != null) {
-                        try {
-                            for (String key: driverDatas.keySet()) {
-                                JSONObject jData = new JSONObject(driverDatas.get(key));
-                                String d_id = jData.getString("id");
-                                Marker marker = driverPins.get(key);
-                                String typeId = jData.getString("type");
-
-                                if (typeId.equalsIgnoreCase(getmNavigator().getNewSelectedCar().getTypeId())) {
-                                    JSONObject jDriver = new JSONObject();
-                                    jDriver.put("driver_id", d_id);
-                                    jDriver.put("driver_lat", marker.getPosition().latitude);
-                                    jDriver.put("driver_lng", marker.getPosition().longitude);
-
-                                    jDrivers.put(jDriver);
-                                }
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    if (jDrivers.length() == 0) {
-                        getmNavigator().showMessage(getmNavigator().getBaseAct().getTranslatedString(R.string.Txt_NoDriverFound));
-                        return;
-                    }
-                    hashMap.put("drivers", jDrivers.toString());
 
                     setIsLoading(true);
                     CreateRequestNetwork();
@@ -1207,100 +1149,95 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
         getmNavigator().onClickNotesToDriver();
     }
 
-
-//        /** {@link SocketHelper} callback when types data receives
-//         * @param typesString String data of {@link Type} **/
-//    @Override
-//    public void Types(final String typesString) {
-//        if (getmNavigator().getBaseAct() != null)
-//            getmNavigator().getBaseAct().runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    //JSONObject data = (JSONObject) args[0];
-//                    BaseResponse baseResponse = gson.fromJson(typesString, BaseResponse.class);
-//                    if (baseResponse != null && baseResponse.success) {
-////                        Istypedata.set(true);
-//                        getmNavigator().addcarList(baseResponse.getTypes(), baseResponse.default_selected_type);
-//                        // getmNavigator().addcarList(baseResponse.getTypes());
-//                        if (baseResponse.getTypes() != null)
-//                            if (baseResponse.getTypes().size() > 0) {
-//                                getTypesResponse = baseResponse.getTypes();
-//
-//
-//                                final List<Car> driverlist = new ArrayList<>();
-//                                if (getmNavigator().GetSelectedCarObj() != null) {
-//                                    if (getmNavigator().GetSelectedCarObj().drivers != null) {
-//                                        String result = "";
-//                                        for (Car driverS : getmNavigator().GetSelectedCarObj().drivers)
-//                                            if (driverS != null)
-//                                                result = result + "," + driverS.id;
-//                                        Log.e(TAG, "keys listOfDriver=" + result);
-//                                        driverlist.addAll(getmNavigator().GetSelectedCarObj().drivers);
-//                                    }
-//                                } else
-//                                    for (Type type : baseResponse.getTypes()) {
-//                                        if (type != null)
-//                                            if (type.drivers != null)
-//                                                driverlist.addAll(type.drivers);
-//                                    }
-//                                Log.e(TAG, "keys-- Types Size=" + driverlist.size());
-//                                if (driverlist != null && getmNavigator() != null && getmNavigator().getBaseAct() != null)
-//                                    getmNavigator().getBaseAct().runOnUiThread(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-//                                            if (driverlist != null) {
-//                                                if (googleMap != null) {
-//                                                    googleMap.clear();
-//                                                }
-//                                                setDriverMarkers(driverlist);
-//                                            }
-//                                        }
-//                                    });
-//                                if (baseResponse.getTypes().get(0) != null && baseResponse.getTypes().get(0).preferred_payment != null)
-//                                    sharedPrefence.saveInt(SharedPrefence.PREFFERED_PAYMENT, baseResponse.getTypes().get(0).preferred_payment);
-//                            }
-//                    }
-//                }
-//            });
-//
-//    }
-
     @Override
     public void Types(String typesString) {
+//        Log.v("http_log", "typesString: " + typesString);
+        if (typesString == null || CommonUtils.IsEmpty(typesString))
+            return;
+        if (getmNavigator().getBaseAct() != null) {
+            getmNavigator().getBaseAct().runOnUiThread(() -> {
+                try {
+                    JSONObject data = new JSONObject(typesString);
+                    BaseResponse baseResponse = gson.fromJson(data.toString(), BaseResponse.class);
+                    if (baseResponse != null && baseResponse.success) {
+                        if (baseResponse.getTypes() != null)
+                            if (baseResponse.getTypes().size() > 0) {
+                                if (getTypesResponse == null) {
+                                    getTypesResponse = new ArrayList<>();
+                                    getTypesResponse = baseResponse.getTypes();
+                                } else {
+                                    List<Type> socketTypes = baseResponse.getTypes();
+                                    for (Type socketType: socketTypes) {
+                                        String socketTypeId = socketType.type_id;
+                                        for (Type savedType: getTypesResponse) {
+                                            String savedTypeId = savedType.type_id;
+                                            if (socketTypeId.equalsIgnoreCase(savedTypeId)) {
+                                                savedType.drivers = socketType.drivers;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                getmNavigator().addCarList(getTypesResponse);
 
+                                final List<Car> driverList = new ArrayList<>();
+                                if (getmNavigator().GetSelectedCarObj() != null) {
+                                    StringBuilder result = new StringBuilder();
+                                    for (Car drivers : getmNavigator().GetSelectedCarObj().drivers) {
+                                        if (drivers != null)
+                                            result.append(",").append(drivers.id);
+                                        Log.v(TAG, "keys listOfDriver = " + result);
+                                        driverList.addAll(getmNavigator().GetSelectedCarObj().drivers);
+                                    }
+                                } else {
+                                    for (Type type : baseResponse.getTypes()) {
+                                        if (type != null)
+                                            if (type.drivers != null)
+                                                driverList.addAll(type.drivers);
+                                    }
+                                    Log.e(TAG, "keys-- Types Size = " + driverList.size());
+                                    if (driverList != null && getmNavigator() != null && getmNavigator().getBaseAct() != null)
+                                        getmNavigator().getBaseAct().runOnUiThread(() -> {
+                                            if (driverList != null) {
+                                                if (googleMap != null) {
+                                                    googleMap.clear();
+                                                }
+                                                setDriverMarkers(driverList);
+                                            }
+                                        });
+                                    if (baseResponse.getTypes().get(0) != null && baseResponse.getTypes().get(0).preferred_payment != null)
+                                        sharedPrefence.saveInt(SharedPrefence.PREFFERED_PAYMENT, baseResponse.getTypes().get(0).preferred_payment);
+                                }
+                            }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
     }
 
     @Override
     public void TripStatus(final String trip_status) {
         Log.i(TAG, "Trip_Status" + trip_status);
         if (getmNavigator().getBaseAct() != null) {
-            getmNavigator().getBaseAct().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    JSONObject data = null;
-                    try {
-                        data = new JSONObject(trip_status);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    if (data != null) {
-                        BaseResponse baseResponse = gson.fromJson(data.toString(), BaseResponse.class);
-                        if (baseResponse != null && baseResponse.successMessage != null
-                                && baseResponse.successMessage.equalsIgnoreCase("Accepted") && baseResponse.getRequest() != null) {
-//                                if (baseResponse.getRequest().later != null && baseResponse.getRequest().later == 1) {
-//                                    if (getmNavigator().getAttachedcontext() != null)
-//                                        getmNavigator().showMessage(getmNavigator().getAttachedcontext().getString(R.string.Txt_DriverAccepted));
-//                                } else
-//                                    getmNavigator().openTripFragment(baseResponse.getRequest());
-
-//                                if (getmNavigator().getAttachedcontext() != null)
-//                                    getmNavigator().showMessage(getmNavigator().getAttachedcontext().getString(R.string.Txt_DriverAccepted));
-                            if (baseResponse.getRequest().later != null && baseResponse.getRequest().later == 1) {
+            getmNavigator().getBaseAct().runOnUiThread(() -> {
+                if (trip_status != null && !CommonUtils.IsEmpty(trip_status)) {
+                    BaseResponse baseResponse = gson.fromJson(trip_status, BaseResponse.class);
+                    if (baseResponse != null && baseResponse.successMessage != null
+                            && baseResponse.successMessage.equalsIgnoreCase("trip_accepted")) {
+                        if (baseResponse.result != null && baseResponse.result.data != null) {
+                            String requestStr = CommonUtils.ObjectToString(baseResponse.result.data);
+                            NewRequestModel requestModel = CommonUtils.getSingleObject(requestStr + "", NewRequestModel.class);
+                            if (requestModel.is_later != null && requestModel.is_later == 1) {
 //                                getmNavigator().openRideLaterAlert(baseResponse.getRequest());
-                            } else
-                                getmNavigator().openTripFragment(baseResponse.getRequest());
+                            } else {
+                                getmNavigator().openTripFragment(requestModel);
+                            }
                         }
+                    } else if (baseResponse != null && baseResponse.successMessage != null
+                            && baseResponse.successMessage.equalsIgnoreCase("no_driver_found")) {
+                        getmNavigator().notifyNoDriverMessage();
                     }
                 }
             });
@@ -1348,174 +1285,15 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
 
     }
 
-    @Override
-    public void driverEnteredFence(String key, GeoLocation location, String response) {
-        Log.v("fatal_log", "Driver entered1: " + response);
-        try {
-            JSONObject jsonObject = new JSONObject(response);
-            if (jsonObject.has("is_active")) {
-                long updatedAt = jsonObject.getLong("updated_at");
-                long currentTime = new Date().getTime();
-                long diff = (currentTime - updatedAt) / 1000;
-                if (diff < (5 * 60)) {
-                    double bearing = jsonObject.getDouble("bearing");
-                    if (driverPins.containsKey(key)) {
-                        Marker driverPin = driverPins.get(key);
-                        driverPin.remove();
-
-                        bitmapDescriptorFactory = BitmapDescriptorFactory.fromResource(R.drawable.ic_new_car);
-                        markeroption.position(new LatLng(location.latitude, location.longitude)).anchor(0.5f, 0.5f).rotation((float) bearing).icon(bitmapDescriptorFactory).visible(false);
-                        Marker marker = googleMap.addMarker(markeroption);
-
-                        driverPins.put(key, marker);
-                        driverDatas.put(key, response);
-                    } else {
-                        bitmapDescriptorFactory = BitmapDescriptorFactory.fromResource(R.drawable.ic_new_car);
-                        markeroption.position(new LatLng(location.latitude, location.longitude)).anchor(0.5f, 0.5f).rotation((float) bearing).icon(bitmapDescriptorFactory).visible(false);
-                        Marker marker = googleMap.addMarker(markeroption);
-
-                        driverPins.put(key, marker);
-                        driverDatas.put(key, response);
-                    }
-                    showFirebaseCarMarkers();
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public void addLastKnownMarkers() {
-        for (String key: driverPins.keySet()) {
-            Marker marker = driverPins.get(key);
-            bitmapDescriptorFactory = BitmapDescriptorFactory.fromResource(R.drawable.ic_new_car);
-            markeroption.position(marker.getPosition()).anchor(0.5f, 0.5f).rotation(marker.getRotation()).icon(bitmapDescriptorFactory);
-            Marker nMarker = googleMap.addMarker(markeroption);
-            driverPins.put(key, nMarker);
-            nMarker.setVisible(false);
-        }
-    }
-
-    public void showFirebaseCarMarkers() {
-        for (String key: driverPins.keySet()) {
-            driverPins.get(key).setVisible(false);
-            FirebaseHelper.removeObserverFor(key);
-        }
-
-        int driverCount = 0;
-        for (String key: driverPins.keySet()) {
-            String driverId = key;
-            String driverData = driverDatas.get(driverId);
-            try {
-                JSONObject jsonObject = new JSONObject(driverData);
-                if (jsonObject.has("type")) {
-                    String typeId = jsonObject.getString("type");
-                    if (getmNavigator().getNewSelectedCar() != null) {
-                        if (getmNavigator().getNewSelectedCar().getTypeId().equals(typeId)) {
-                            Marker marker = driverPins.get(key);
-                            marker.setVisible(true);
-                            driverCount++;
-                            FirebaseHelper.addObserverFor(driverId);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        isDriversAvailable.set(driverCount > 0);
-    }
-
-    @Override
-    public void driverExitedFence(String key, String response) {
-        if (driverPins.containsKey(key)) {
-            Marker marker = driverPins.get(key);
-            marker.remove();
-            driverPins.remove(key);
-            driverDatas.remove(key);
-
-            FirebaseHelper.removeObserverFor(key);
-        }
-    }
-
-    @Override
-    public void driverMovesInFence(String key, GeoLocation location, String response) {
-        Log.v("fatal_log", "Driver moves1: " + response);
-        try {
-            JSONObject jsonObject = new JSONObject(response);
-            if (jsonObject.has("is_active")) {
-                boolean isActive = jsonObject.getBoolean("is_active");
-                if (isActive) {
-                    if (driverPins.containsKey(key)) {
-                        Log.v("fatal_log", "If");
-                        Marker driverPin = driverPins.get(key);
-                        driverPin.setPosition(new LatLng(location.latitude, location.longitude));
-                        driverPin.setRotation((float) jsonObject.getDouble("bearing"));
-
-                        driverPins.put(key, driverPin);
-                        driverDatas.put(key, response);
-
-                        showFirebaseCarMarkers();
-                    } else {
-                        Log.v("fatal_log", "Else");
-                        long updatedAt = jsonObject.getLong("updated_at");
-                        long currentTime = new Date().getTime();
-                        long diff = (currentTime - updatedAt) / 1000;
-                        if (diff < (5 * 60)) {
-                            double bearing = jsonObject.getDouble("bearing");
-                            bitmapDescriptorFactory = BitmapDescriptorFactory.fromResource(R.drawable.ic_new_car);
-                            markeroption.position(new LatLng(location.latitude, location.longitude)).anchor(0.5f, 0.5f).rotation((float) bearing).icon(bitmapDescriptorFactory).visible(false);
-                            Marker marker = googleMap.addMarker(markeroption);
-                            driverPins.put(key, marker);
-                            driverDatas.put(key, response);
-
-                            FirebaseHelper.addObserverFor(key);
-
-                            showFirebaseCarMarkers();
-                        }
-                    }
-                } else {
-                    if (driverPins.containsKey(key)) {
-                        Marker marker = driverPins.get(key);
-                        marker.remove();
-                        driverPins.remove(key);
-                        driverDatas.remove(key);
-
-                        FirebaseHelper.removeObserverFor(key);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void driverWentOffline(String key) {
-        Log.v("fatal_log", "driverWentOffline1: " + key);
-        try {
-            if (driverPins.containsKey(key)) {
-                Marker driverPin = driverPins.get(key);
-                driverPin.remove();
-                driverPins.remove(key);
-                driverDatas.remove(key);
-
-                FirebaseHelper.removeObserverFor(key);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void driverDataUpdated(String key, String response) {
-        Log.v("fatal_log", "driverDataUpdated1: " + response);
-    }
-
-    @Override
-    public void tripStatusReceived(String response) {
-
+//        for (String key: driverPins.keySet()) {
+//            Marker marker = driverPins.get(key);
+//            bitmapDescriptorFactory = BitmapDescriptorFactory.fromResource(R.drawable.ic_new_car);
+//            markeroption.position(marker.getPosition()).anchor(0.5f, 0.5f).rotation(marker.getRotation()).icon(bitmapDescriptorFactory);
+//            Marker nMarker = googleMap.addMarker(markeroption);
+//            driverPins.put(key, nMarker);
+//            nMarker.setVisible(false);
+//        }
     }
 
     public void applyPromoAPICall(String zoneId, String promocode) {

@@ -108,11 +108,13 @@
                     android:layout_centerVertical="true" />
 
                 <TextView
+                    android:visibility="gone"
+                    android:enabled="false"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_marginTop="@dimen/_15sdp"
-                    android:background="@drawable/curved_border_small"
+                    android:background="@drawable/btn_primary"
                     android:drawableStart="@drawable/layer_private_key"
                     android:drawablePadding="@dimen/_12sdp"
                     android:layout_marginEnd="@dimen/_8sdp"

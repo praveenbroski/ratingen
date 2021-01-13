@@ -16,11 +16,11 @@ public class SocketHelper {
     static SharedPrefence sharedPrefence;
     static SocketListener socketDataReceiver;
     static String TAG = "SocketHelperLog";
-    static String pendingTypeData, typesDriversData = "";
+    static String TAG_EVENT = "SocketHelperEventLog";
+    static String pendingTypeData, typesDriversData = null;
 
     static Long lastSocketConnected, isDriversLastListed;
     static boolean isInsideTrip = false, isDisconnectCalled = true;
-    static boolean isListenersAdded = false;
 
     public static void init(SharedPrefence prefence, SocketListener socketDataReceivers, String tag, boolean isInTrip) {
         sharedPrefence = prefence;
@@ -39,7 +39,7 @@ public class SocketHelper {
         try {
             if (mSocket == null)
                 mSocket = IO.socket(Constants.URL.SOCKET_URL, opts);
-            if (!(mSocket.connected()) && !isListenersAdded) {
+            if (!(mSocket.connected())) {
                 Log.v(TAG, "xxxxxxxxxxxxxxxxxxxxx " + (mSocket != null ? ("Is connected: " + mSocket.connected()) : "mSocket is Null"));
                 mSocket.on(Socket.EVENT_CONNECT, onConnect);
                 mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
@@ -50,8 +50,8 @@ public class SocketHelper {
                 mSocket.on("cancelled_request", cancelled_request);
                 mSocket.on("ride_later_cancelled_because_of_no_driver_found", rideLaterNoCaptainAlert);
                 mSocket.on(Constants.NetworkParameters.TIME_TAKES, duration_handler);
-                mSocket.connect();
-                isListenersAdded = true;
+                if(isDisconnectCalled)
+                    mSocket.connect();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -82,7 +82,6 @@ public class SocketHelper {
         mSocket.off("cancelled_request", cancelled_request);
         mSocket.off("ride_later_cancelled_because_of_no_driver_found", rideLaterNoCaptainAlert);
         mSocket.off(Constants.NetworkParameters.TIME_TAKES, duration_handler);
-        isListenersAdded = false;
     }
 
     private static Emitter.Listener onConnect = new Emitter.Listener() {
@@ -97,7 +96,7 @@ public class SocketHelper {
             }
             if (socketDataReceiver != null && socketDataReceiver.isNetworkConnected() && isDisconnectCalled) {
                 mSocket.emit(Constants.NetworkParameters.start_connect, object.toString());
-                isDisconnectCalled = false;
+                isDisconnectCalled=false;
                 Log.v(TAG, "start_connect = " + object.toString() + " Connected = " + mSocket.connected());
             }
             /* if ((System.currentTimeMillis() - lastSocketConnected) > 2000 && socketDataReceiver != null
@@ -113,7 +112,7 @@ public class SocketHelper {
         @Override
         public void call(Object... args) {
             Log.v(TAG, "onDisconnect");
-            isDisconnectCalled = true;
+            isDisconnectCalled=true;
             if (socketDataReceiver != null)
                 socketDataReceiver.OnDisconnect();
         }
@@ -123,7 +122,7 @@ public class SocketHelper {
         @Override
         public void call(Object... args) {
             Log.v(TAG, "onConnectError");
-            isDisconnectCalled = true;
+            isDisconnectCalled=true;
             if (socketDataReceiver != null)
                 socketDataReceiver.OnConnectError();
         }
@@ -142,7 +141,7 @@ public class SocketHelper {
     private static Emitter.Listener trip_status = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
-            Log.v(TAG, "trip_status: " + args[0].toString());
+            Log.v(TAG_EVENT, "trip_status: " + args[0].toString());
             if (socketDataReceiver != null && args != null)
                 socketDataReceiver.TripStatus(args[0].toString());
         }
@@ -151,8 +150,8 @@ public class SocketHelper {
     private static Emitter.Listener cancelled_request = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            Log.v(TAG, "cancelled_request");
-            if (args != null && args.length > 0 && args[0] != null && !CommonUtils.IsEmpty(args[0].toString()) && socketDataReceiver != null && args != null)
+            Log.v(TAG_EVENT, "cancelled_request");
+            if (args != null && args.length > 0 && args[0] != null && !CommonUtils.IsEmpty(args[0].toString()) && socketDataReceiver != null)
                 socketDataReceiver.CancelledRequest(args[0].toString());
         }
     };
@@ -160,7 +159,7 @@ public class SocketHelper {
     private static Emitter.Listener rideLaterNoCaptainAlert = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            if (args != null && args.length > 0 && args[0] != null && !CommonUtils.IsEmpty(args[0].toString()) && socketDataReceiver != null && args != null) {
+            if (args != null && args.length > 0 && args[0] != null && !CommonUtils.IsEmpty(args[0].toString()) && socketDataReceiver != null) {
                 socketDataReceiver.RideLaterNoCaptainAlert(args[0].toString());
             }
         }
@@ -169,7 +168,7 @@ public class SocketHelper {
     private static Emitter.Listener duration_handler = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-            if (args != null && args.length > 0 && args[0] != null && !CommonUtils.IsEmpty(args[0].toString()) && socketDataReceiver != null && args != null) {
+            if (args != null && args.length > 0 && args[0] != null && !CommonUtils.IsEmpty(args[0].toString()) && socketDataReceiver != null) {
                 socketDataReceiver.DurationHandler(args[0].toString());
             }
         }

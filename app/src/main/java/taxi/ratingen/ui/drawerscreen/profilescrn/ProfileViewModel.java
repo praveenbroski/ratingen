@@ -66,6 +66,7 @@ public class ProfileViewModel extends BaseNetwork<BaseResponse, ProfileNavigator
     public ObservableField<String> Phone_Number = new ObservableField<>("");
     public ObservableBoolean mIsEditable = new ObservableBoolean(true);
     public ObservableField<GenericsType> bitmap_profilePicture = new ObservableField<>();
+    public ObservableField<String> profileURL = new ObservableField<>("");
     public ObservableFloat userReview = new ObservableFloat();
     public ObservableField<String> txt_Language_update = new ObservableField<>();
 
@@ -170,6 +171,7 @@ public class ProfileViewModel extends BaseNetwork<BaseResponse, ProfileNavigator
             if (!CommonUtils.IsEmpty(user.getProfilePicture())) {
                 genericsType.set(user.getProfilePicture());
                 bitmap_profilePicture.set(genericsType);
+                profileURL.set(user.getProfilePicture());
             }
             Phone_Number.set(CommonUtils.IsEmpty(user.getMobile()) ? "" : user.getMobile());
             userReview.set(user.getRating());

@@ -239,7 +239,7 @@ public class MapFragment extends BaseFragment<FragmentMapBinding, MapFragmentVie
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mapFragmentViewModel.startTypesTimer();
+        mapFragmentViewModel.stopTypesTimer();
 //        fragmentMapBinding.mapView.onDestroy();
     }
 
@@ -674,6 +674,10 @@ public class MapFragment extends BaseFragment<FragmentMapBinding, MapFragmentVie
 
     public void setProfileImage(String url) {
         mapFragmentViewModel.ImageUrl.set(url);
+    }
+
+    public void stopTypesTimer() {
+        mapFragmentViewModel.stopTypesTimer();
     }
 
 }

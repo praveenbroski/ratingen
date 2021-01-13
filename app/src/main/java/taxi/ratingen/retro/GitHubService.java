@@ -3,6 +3,7 @@ package taxi.ratingen.retro;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.responsemodel.Payment;
 import taxi.ratingen.retro.responsemodel.User;
@@ -75,21 +76,21 @@ public interface GitHubService {
     Call<Payment> DeleteCard(@FieldMap Map<String, String> options);
 
     @FormUrlEncoded
-    @POST(Constants.URL.ETAURL)
-    Call<BaseResponse> ETACall(@FieldMap Map<String, String> options);
+    @POST(Constants.URL.ETA_URL)
+    Call<BaseResponse> ETACall(@Header("Authorization") String bearer, @FieldMap Map<String, String> options);
 
     @FormUrlEncoded
     @POST(Constants.URL.ETA_NEW)
     Call<BaseResponse> newETACall(@FieldMap Map<String, String> options);
 
-    @FormUrlEncoded
-    @POST(Constants.URL.getTypes)
-    Call<BaseResponse> TypesCall(@FieldMap Map<String, String> options);
+    @GET(Constants.URL.getTypes + "/{" + Constants.NetworkParameters.lat + "}/{" + Constants.NetworkParameters.lng + "}")
+    Call<BaseResponse> TypesCall(@Header("Authorization") String bearer,
+                                 @Path(Constants.NetworkParameters.lat) String lat,
+                                 @Path(Constants.NetworkParameters.lng) String lng);
 
     @FormUrlEncoded
-    @POST(Constants.URL.createrequestURl)
-//    @POST(Constants.URL.createRequestNewURL)
-    Call<BaseResponse> CreateRequest(@FieldMap Map<String, String> options);
+    @POST(Constants.URL.createRequestURL)
+    Call<BaseResponse> CreateRequest(@Header("Authorization") String bearer, @FieldMap Map<String, String> options);
 
     @FormUrlEncoded
     @POST(Constants.URL.createrequestLaterURl)
@@ -140,17 +141,15 @@ public interface GitHubService {
     @POST(Constants.URL.Reviewurl)
     Call<BaseResponse> ReviewNetwork(@FieldMap Map<String, String> options);
 
-    @FormUrlEncoded
-    @POST(Constants.URL.CANCEL_REASON_LIST_URL)
-    Call<BaseResponse> ListCancel(@FieldMap Map<String, String> options);
+    @GET(Constants.URL.CANCEL_REASON_LIST_URL)
+    Call<BaseResponse> ListCancel(@Query(Constants.NetworkParameters.arrived) String arrived, @Header("Authorization") String bearer);
 
     @FormUrlEncoded
-    @POST(Constants.URL.Requestcancelurl)
-    Call<BaseResponse> RequestCancel(@FieldMap Map<String, String> options);
+    @POST(Constants.URL.RequestCancelURL)
+    Call<BaseResponse> RequestCancel(@Header("Authorization") String bearer, @FieldMap Map<String, String> options);
 
-    @FormUrlEncoded
-    @POST(Constants.URL.ListFavurl)
-    Call<User> GetFavList(@FieldMap Map<String, String> options);
+    @GET(Constants.URL.ListFavURL)
+    Call<User> GetFavList(@Header("Authorization") String bearer);
 
     @FormUrlEncoded
     @POST(Constants.URL.GetreferralURL)
@@ -202,7 +201,6 @@ public interface GitHubService {
     @POST(Constants.URL.FAQ_LIST)
     Call<BaseResponse> getFaqList(@FieldMap Map<String, String> options);
 
-
     @GET(Constants.URL.TRANSLATIONS_DOC)
     Call<BaseResponse> getTranslationsDoc();
 
@@ -240,7 +238,6 @@ public interface GitHubService {
     @POST(Constants.URL.CANCELLATION_LIST)
     Call<BaseResponse> getCancelationlist(@FieldMap Map<String, String> options);
 
-
     @FormUrlEncoded
     @POST(Constants.URL.PROMOCODE_ETA)
     Call<BaseResponse> getPrmocode(@FieldMap Map<String, String> options);
@@ -269,6 +266,7 @@ public interface GitHubService {
     @FormUrlEncoded
     @POST(Constants.URL.CHECKOUTID)
     Call<Payment> getCheckId(@FieldMap Map<String, String> map);
+
     @FormUrlEncoded
     @POST(Constants.URL.REQUEST_COMPANY_KEY)
     Call<User> getCompanyKey(@FieldMap Map<String, String> options);

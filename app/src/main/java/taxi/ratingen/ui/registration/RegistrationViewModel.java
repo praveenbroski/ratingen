@@ -108,8 +108,8 @@ public class RegistrationViewModel extends BaseNetwork<BaseResponse, Registratio
             if (isValidation()) {
                 setIsLoading(true);
                 requestbody.clear();
-                requestbody.put(Constants.NetworkParameters.device_token, RequestBody.create(MediaType.parse("text/plain"), sharedPrefence.Getvalue(SharedPrefence.FCMTOKEN)));
-                requestbody.put(Constants.NetworkParameters.login_by, RequestBody.create(MediaType.parse("text/plain"), "1"));
+                requestbody.put(Constants.NetworkParameters.fcm_token, RequestBody.create(MediaType.parse("text/plain"), sharedPrefence.Getvalue(SharedPrefence.FCMTOKEN)));
+                requestbody.put(Constants.NetworkParameters.login_by, RequestBody.create(MediaType.parse("text/plain"), "android"));
                 requestbody.put(Constants.NetworkParameters.country, RequestBody.create(MediaType.parse("text/plain"), countryID.get()));
                 if (!CommonUtils.IsEmpty(userFName.get())&&!CommonUtils.IsEmpty(userLName.get()))
                     requestbody.put(Constants.NetworkParameters.name, RequestBody.create(MediaType.parse("text/plain"), userFName.get() + " " + userLName.get()));

@@ -43,7 +43,7 @@ public class TaxiRequestModel extends BaseResponse implements Serializable {
         public String requestNumber;
         @SerializedName("request_otp")
         @Expose
-        public Integer requestOtp;
+        public String requestOtp;
         @SerializedName("is_later")
         @Expose
         public Integer isLater;
@@ -299,10 +299,10 @@ public class TaxiRequestModel extends BaseResponse implements Serializable {
         public String vehicleTypeName;
         @SerializedName("car_make")
         @Expose
-        public Integer carMake;
+        public String carMake;
         @SerializedName("car_model")
         @Expose
-        public Integer carModel;
+        public String carModel;
         @SerializedName("car_make_name")
         @Expose
         public String carMakeName;
@@ -317,10 +317,10 @@ public class TaxiRequestModel extends BaseResponse implements Serializable {
         public String carNumber;
         @SerializedName("rating")
         @Expose
-        public String rating;
+        public Double rating;
         @SerializedName("no_of_ratings")
         @Expose
-        public Object noOfRatings;
+        public Integer noOfRatings;
         @SerializedName("latitude")
         @Expose
         public Double latitude;
