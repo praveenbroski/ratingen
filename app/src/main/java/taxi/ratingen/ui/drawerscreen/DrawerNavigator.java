@@ -14,10 +14,15 @@ import taxi.ratingen.ui.base.BaseView;
 public interface DrawerNavigator extends BaseView{
 
     void logout();
+
     void openOptionalActivity();
+
     void ShowMapFragment();
+
     void ShowFeedbackFragment(Request request, boolean isCorporate);
+
     void ShowTripFragment(Request request, Driver driver);
+
     void ShowTripFragment(NewRequestModel request);
 
     BaseActivity getBaseAct();
@@ -36,5 +41,7 @@ public interface DrawerNavigator extends BaseView{
     void setImageURL(String url);
 
     void showTripFragment(TaxiRequestModel.ResultData resultData, TaxiRequestModel.DriverData driverData);
+
+    void ShowFeedbackFragment(TaxiRequestModel.ResultData resultData, boolean isCorporate);
 
 }

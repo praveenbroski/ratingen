@@ -372,6 +372,12 @@ public class TripFragment extends BaseFragment<FragmentTripBinding, TripFragView
         getbaseAct().NeedFeedbackFragment(request, isCorporate);
     }
 
+    @Override
+    public void ShowFeedBackScreen(TaxiRequestModel.ResultData request, boolean isCorporate) {
+        sharedPrefence.saveBoolean(SharedPrefence.MAPTYPE, false);
+        getbaseAct().NeedFeedbackFragment(request, isCorporate);
+    }
+
     /** Starts {@link PromoAct} when promo is selected **/
     @Override
     public void ShowPromoCodeScrn(String reqid) {

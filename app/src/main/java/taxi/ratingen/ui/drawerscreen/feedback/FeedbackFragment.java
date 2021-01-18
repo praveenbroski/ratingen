@@ -14,8 +14,8 @@ import android.view.View;
 
 import taxi.ratingen.BR;
 import taxi.ratingen.R;
-import taxi.ratingen.retro.responsemodel.Request;
 import taxi.ratingen.databinding.FragmentFeedbackBinding;
+import taxi.ratingen.retro.responsemodel.TaxiRequestModel;
 import taxi.ratingen.ui.base.BaseFragment;
 import taxi.ratingen.ui.drawerscreen.billdialog.BillDialogFragment;
 import taxi.ratingen.utilz.Constants;
@@ -28,14 +28,15 @@ import javax.inject.Inject;
  * create an instance of this fragment.
  */
 public class FeedbackFragment extends BaseFragment<FragmentFeedbackBinding, FeedbackViewModel> implements FeedbackNavigator {
+
     public static final String TAG = "FeedbackFragment";
     @Inject
     FeedbackViewModel viewModel;
     FragmentFeedbackBinding layoutBinding;
-    Request model;
+    TaxiRequestModel.ResultData model;
     static boolean isCorporate;
 
-    public static FeedbackFragment newInstance(Request param1, boolean isCorporate) {
+    public static FeedbackFragment newInstance(TaxiRequestModel.ResultData param1, boolean isCorporate) {
         FeedbackFragment fragment = new FeedbackFragment();
         Bundle args = new Bundle();
         args.putSerializable(Constants.EXTRA_Data, param1);
@@ -44,12 +45,11 @@ public class FeedbackFragment extends BaseFragment<FragmentFeedbackBinding, Feed
         return fragment;
     }
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null)
-            model = (Request) getArguments().getSerializable(Constants.EXTRA_Data);
+            model = (TaxiRequestModel.ResultData) getArguments().getSerializable(Constants.EXTRA_Data);
         isCorporate = getArguments().getBoolean(Constants.EXTRA_IS_CORPORATE);
     }
 
@@ -59,9 +59,9 @@ public class FeedbackFragment extends BaseFragment<FragmentFeedbackBinding, Feed
         layoutBinding = getViewDataBinding();
         viewModel.setNavigator(this);
         viewModel.setUserDetails(model);
-        if (model.bill != null)
-            if (!isCorporate && model.bill.show_bill == 1)
-                BillDialogFragment.newInstance(model, "").show(this.getChildFragmentManager());
+//        if (model.bill != null)
+//            if (!isCorporate && model.bill.show_bill == 1)
+//                BillDialogFragment.newInstance(model, "").show(this.getChildFragmentManager());
 
 
         Drawable drawable1 = layoutBinding.ratingUserFeedback.getProgressDrawable();

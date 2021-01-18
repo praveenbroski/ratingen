@@ -160,8 +160,8 @@ public abstract class BaseNetwork<T extends BaseResponse, N> implements Basecall
     /**
      * Api call for giving feedback of driver.
      */
-    public void reviewDriverNetwork() {
-        gitHubService.ReviewNetwork(getMap()).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+    public void reviewDriverNetwork(HashMap<String, String> hashMap) {
+        gitHubService.ReviewNetwork("Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken), hashMap).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
     }
 
     /**
@@ -516,32 +516,26 @@ public abstract class BaseNetwork<T extends BaseResponse, N> implements Basecall
         @Override
         public void onResponse(Call<T> call, Response<T> response) {
             if (response.isSuccessful() && response.body() != null) {
-                if (response.body().success || response.body().tokenType != null) {
+                if (response.body().success != null || response.body().tokenType != null) {
                     onSuccessfulApi(mCurrentTaskId, response.body());
                 } else {
                     if (response.message() != null) {
                         onFailureApi(mCurrentTaskId, new CustomException(response.message()));
                     } else {
-                        String errorMsg = CommonUtils.converErrors(response.errorBody());
-                        Log.e("Response==", "respp===" + errorMsg);
-                        if (TextUtils.isEmpty(errorMsg))
-                            errorMsg = response.message();
-                        onFailureApi(mCurrentTaskId, new CustomException(errorMsg));
+                        CustomException errorMsg = CommonUtils.convertToException(response.errorBody());
+                        Log.e("Response==", "respp === " + errorMsg.getMessage());
+                        onFailureApi(mCurrentTaskId, errorMsg);
                     }
-
                 }
             } else {
-                String errorMsg = CommonUtils.converErrors(response.errorBody());
-                Log.e("Response==", "respp111===" + errorMsg);
-                if (TextUtils.isEmpty(errorMsg))
-                    errorMsg = response.message();
-                onFailureApi(mCurrentTaskId, new CustomException(errorMsg));
+                CustomException errorMsg = CommonUtils.convertToException(response.errorBody());
+                Log.e("Response==", "respp111 === " + (errorMsg != null ? errorMsg.getMessage() : ""));
+                onFailureApi(mCurrentTaskId, errorMsg);
             }
         }
 
         @Override
         public void onFailure(Call<T> call, Throwable t) {
-
             onFailureApi(mCurrentTaskId, new CustomException(501, t.getLocalizedMessage()));
         }
     };

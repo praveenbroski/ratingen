@@ -1228,7 +1228,7 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
                             && baseResponse.successMessage.equalsIgnoreCase("trip_accepted")) {
                         if (baseResponse.result != null && baseResponse.result.data != null) {
                             String requestStr = CommonUtils.ObjectToString(baseResponse.result.data);
-                            NewRequestModel requestModel = CommonUtils.getSingleObject(requestStr + "", NewRequestModel.class);
+                            NewRequestModel requestModel = (NewRequestModel) CommonUtils.StringToObject(requestStr + "", NewRequestModel.class);
                             if (requestModel.is_later != null && requestModel.is_later == 1) {
 //                                getmNavigator().openRideLaterAlert(baseResponse.getRequest());
                             } else {

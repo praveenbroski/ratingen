@@ -44,6 +44,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import taxi.ratingen.retro.responsemodel.NewRequestModel;
+import taxi.ratingen.retro.responsemodel.TaxiRequestModel;
 import taxi.ratingen.ui.companyvalidation.CompanyValidationActivity;
 import taxi.ratingen.ui.drawerscreen.ridescreen.RideConfirmationFragment;
 import taxi.ratingen.ui.nodriveralert.NoDriverAct;
@@ -299,6 +300,10 @@ public abstract class BaseActivity<T extends ViewDataBinding, V> extends AppComp
     }
 
     public void NeedFeedbackFragment(Request request, boolean isCorporate) {
+
+    }
+
+    public void NeedFeedbackFragment(TaxiRequestModel.ResultData request, boolean isCorporate) {
 
     }
 

@@ -138,8 +138,8 @@ public interface GitHubService {
     Call<User> AddFav(@FieldMap Map<String, String> options);
 
     @FormUrlEncoded
-    @POST(Constants.URL.Reviewurl)
-    Call<BaseResponse> ReviewNetwork(@FieldMap Map<String, String> options);
+    @POST(Constants.URL.ReviewURL)
+    Call<BaseResponse> ReviewNetwork(@Header("Authorization") String bearer, @FieldMap Map<String, String> options);
 
     @GET(Constants.URL.CANCEL_REASON_LIST_URL)
     Call<BaseResponse> ListCancel(@Query(Constants.NetworkParameters.arrived) String arrived, @Header("Authorization") String bearer);

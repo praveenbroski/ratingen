@@ -62,7 +62,7 @@ public class NewRequestModel extends BaseResponse implements Serializable, Parce
     public int is_cancelled;
     @SerializedName("cancel_method")
     @Expose
-    public int cancel_method;
+    public String cancel_method;
     @SerializedName("payment_opt")
     @Expose
     public String payment_opt;
@@ -126,7 +126,7 @@ public class NewRequestModel extends BaseResponse implements Serializable, Parce
         total_time = in.readString();
         is_completed = in.readInt();
         is_cancelled = in.readInt();
-        cancel_method = in.readInt();
+        cancel_method = in.readString();
         payment_opt = in.readString();
         is_paid = in.readInt();
         user_rated = in.readInt();
@@ -161,7 +161,7 @@ public class NewRequestModel extends BaseResponse implements Serializable, Parce
         dest.writeString(total_time);
         dest.writeInt(is_completed);
         dest.writeInt(is_cancelled);
-        dest.writeInt(cancel_method);
+        dest.writeString(cancel_method);
         dest.writeString(payment_opt);
         dest.writeInt(is_paid);
         dest.writeInt(user_rated);

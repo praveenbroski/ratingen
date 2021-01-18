@@ -11,9 +11,6 @@
             type="taxi.ratingen.ui.drawerscreen.tripscreen.TripFragViewModel" />
 
     </data>
-    <!--
-    @attrib keepScreenOn used to keep screen always awake or ON while trip
-    -->
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"

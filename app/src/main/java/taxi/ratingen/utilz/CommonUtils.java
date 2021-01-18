@@ -65,6 +65,7 @@ import taxi.ratingen.retro.responsemodel.CountryListModel;
 import taxi.ratingen.retro.responsemodel.Route;
 import taxi.ratingen.retro.responsemodel.Step;
 import taxi.ratingen.ui.base.BaseActivity;
+import taxi.ratingen.utilz.exception.CustomException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -624,6 +625,33 @@ public final class CommonUtils {
             e.printStackTrace();
         }
         return value;
+    }
+
+    public static CustomException convertToException(ResponseBody response) {
+        String value = "";
+        CustomException exception = null;
+        try {
+            BaseResponse baseResponse = (BaseResponse) CommonUtils.StringToObject(response.string(), BaseResponse.class);
+            if (baseResponse != null && baseResponse.getErrors() != null) {
+                Log.e("respo==", "" + baseResponse.getErrors());
+                for (Map.Entry<String, List<String>> error : baseResponse.getErrors().entrySet()) {
+                    value = KeySearchClass.KeySearch(error);
+                }
+                if (IsEmpty(value)) {
+                    value = baseResponse.message;
+                }
+                exception = new CustomException(baseResponse.statusCode, value);
+            } else {
+                Log.e("ErrorMessage==", "msg" + baseResponse.message);
+                if (!TextUtils.isEmpty(baseResponse.message))
+                    value = baseResponse.message;
+                exception = new CustomException(baseResponse.statusCode, value);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return exception;
     }
 
 }

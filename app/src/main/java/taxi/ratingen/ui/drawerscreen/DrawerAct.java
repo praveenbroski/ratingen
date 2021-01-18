@@ -679,6 +679,11 @@ public class DrawerAct extends BaseActivity<ActivityDrawerBinding, DrawerViewMod
         NeedFeedbackFragment(request, isCorporate);
     }
 
+    @Override
+    public void ShowFeedbackFragment(TaxiRequestModel.ResultData resultData, boolean isCorporate) {
+        NeedFeedbackFragment(resultData, isCorporate);
+    }
+
     /**
      * Called to open {@link TripFragment}
      *
@@ -843,10 +848,24 @@ public class DrawerAct extends BaseActivity<ActivityDrawerBinding, DrawerViewMod
      * @param isCorporate true/false
      **/
     public void NeedFeedbackFragment(Request request, boolean isCorporate) {
+//        androidx.fragment.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//        transaction.disallowAddToBackStack();
+//        transaction.setTransition(androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+//        transaction.replace(R.id.Container, FeedbackFragment.newInstance(request, isCorporate), FeedbackFragment.TAG)
+//                .commitAllowingStateLoss();
+    }
+
+    /**
+     * Replace current fragment with {@link FeedbackFragment}
+     *
+     * @param requestData     {@link Request} model
+     * @param isCorporate true/false
+     **/
+    public void NeedFeedbackFragment(TaxiRequestModel.ResultData requestData, boolean isCorporate) {
         androidx.fragment.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.disallowAddToBackStack();
         transaction.setTransition(androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        transaction.replace(R.id.Container, FeedbackFragment.newInstance(request, isCorporate), FeedbackFragment.TAG)
+        transaction.replace(R.id.Container, FeedbackFragment.newInstance(requestData, isCorporate), FeedbackFragment.TAG)
                 .commitAllowingStateLoss();
     }
 

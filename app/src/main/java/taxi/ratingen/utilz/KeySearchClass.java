@@ -27,6 +27,12 @@ class KeySearchClass {
                 searchValue = search.getValue().get(0);
             else if(search.getKey().equalsIgnoreCase(Constants.NetworkParameters.name))
                 searchValue = search.getValue().get(0);
+            else if(search.getKey().equalsIgnoreCase(Constants.NetworkParameters.request_id))
+                searchValue = search.getValue().get(0);
+            else if(search.getKey().equalsIgnoreCase(Constants.NetworkParameters.rating))
+                searchValue = search.getValue().get(0);
+            else if(search.getKey().equalsIgnoreCase(Constants.NetworkParameters.comment))
+                searchValue = search.getValue().get(0);
 
         return searchValue;
     }

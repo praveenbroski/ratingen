@@ -17,7 +17,7 @@ import taxi.ratingen.R;
 import taxi.ratingen.retro.base.BaseNetwork;
 import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.GitHubService;
-import taxi.ratingen.retro.responsemodel.Request;
+import taxi.ratingen.retro.responsemodel.TaxiRequestModel;
 import taxi.ratingen.utilz.CommonUtils;
 import taxi.ratingen.utilz.Constants;
 import taxi.ratingen.utilz.exception.CustomException;
@@ -42,7 +42,7 @@ public class FeedbackViewModel extends BaseNetwork<BaseResponse, FeedbackNavigat
     GitHubService gitHubService;
     SharedPrefence sharedPrefence;
     HashMap<String, String> map;
-    Request request;
+    TaxiRequestModel.ResultData request;
 
     public FeedbackViewModel(GitHubService gitHubService, SharedPrefence sharedPrefence, HashMap<String, String> map, Gson gson) {
         super(gitHubService, sharedPrefence, gson);
@@ -55,17 +55,19 @@ public class FeedbackViewModel extends BaseNetwork<BaseResponse, FeedbackNavigat
     /**
      * set user's name & profile picture
      **/
-    public void setUserDetails(Request model) {
+    public void setUserDetails(TaxiRequestModel.ResultData model) {
         this.request = model;
-        if (model.driver != null) {
-            userName.set(model.driver.firstname + " " + model.driver.lastname);
-            if (!CommonUtils.IsEmpty(model.driver.profilePic))
-                userPic.set(Constants.URL.BaseURL + Constants.URL.DRIVER_PROFILE_PIC + model.driver.profilePic);
-            savedRating.set(model.driver.review);
-            if (!CommonUtils.IsEmpty(model.driver.carnumber))
-                carNumber.set(model.driver.carnumber);
-            if (!CommonUtils.IsEmpty(model.driver.carmodel))
-                carModel.set(model.driver.carmodel);
+        if (model != null) {
+            if (model.driverDetail != null && model.driverDetail.driverData != null) {
+                userName.set(model.driverDetail.driverData.name);
+                if (!CommonUtils.IsEmpty(model.driverDetail.driverData.profilePicture))
+                    userPic.set(model.driverDetail.driverData.profilePicture);
+                savedRating.set(model.driverDetail.driverData.rating);
+                if (!CommonUtils.IsEmpty(model.driverDetail.driverData.carNumber))
+                    carNumber.set(model.driverDetail.driverData.carNumber);
+                if (!CommonUtils.IsEmpty(model.driverDetail.driverData.carModel))
+                    carModel.set(model.driverDetail.driverData.carModel);
+            }
         }
     }
 
@@ -75,14 +77,11 @@ public class FeedbackViewModel extends BaseNetwork<BaseResponse, FeedbackNavigat
     public void updateReview(View view) {
         if (validataion()) {
             setIsLoading(true);
-            map.put(Constants.NetworkParameters.client_id, sharedPrefence.getCompanyID());
-            map.put(Constants.NetworkParameters.client_token, sharedPrefence.getCompanyToken());
-            map.put(Constants.NetworkParameters.id, sharedPrefence.Getvalue(SharedPrefence.ID));
-            map.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
+            map.clear();
             map.put(Constants.NetworkParameters.request_id, request.id + "");
             map.put(Constants.NetworkParameters.rating, Math.round(userReview.get()) + "");
             map.put(Constants.NetworkParameters.comment, CommonUtils.IsEmpty(txt_comments.get()) ? "" : txt_comments.get());
-            reviewDriverNetwork();
+            reviewDriverNetwork(map);
         }
     }
 
@@ -120,7 +119,7 @@ public class FeedbackViewModel extends BaseNetwork<BaseResponse, FeedbackNavigat
             return;
         }*/
         if (response.success) {
-            if (response.successMessage.equalsIgnoreCase("rated successfully"))
+            if (response.message.equalsIgnoreCase("rated_successfully"))
                 getmNavigator().ShowHomeFragment();
         } else {
             if (response.errorCode == 904) {

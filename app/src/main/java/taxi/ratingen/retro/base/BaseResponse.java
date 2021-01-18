@@ -55,7 +55,7 @@ public class BaseResponse implements Serializable {
 
     @SerializedName("success")
     @Expose
-    public boolean success;
+    public Boolean success;
     @SerializedName("error_code")
     @Expose
     public Integer errorCode;

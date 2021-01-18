@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import taxi.ratingen.retro.responsemodel.MarkerResponseModel;
+import taxi.ratingen.retro.responsemodel.NewRequestModel;
 import taxi.ratingen.retro.responsemodel.TaxiRequestModel;
 import taxi.ratingen.retro.responsemodel.TranslationModel;
 
@@ -368,7 +369,7 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
                                     request.paymentOpt.equals("4") ? R.string.text_corporate :
                                             R.string.txt_wallet));
         }
-        if (!CommonUtils.IsEmpty(request.requestOtp))
+        if (request.requestOtp != null)
             tripOTP.set(translationModel.text_otp + ": " + request.requestOtp);
 
         if (mParam1.dropLat != null && mParam1.dropLng != null && mParam1.dropLat != 0 && mParam1.dropLng != 0 && mParam1.pickLat != 0 && mParam1.pickLng != 0) {
@@ -832,6 +833,23 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
                                     else {
                                         marker.setPosition(new LatLng(driver.latitude, driver.longitude));
                                         marker.setAnchor(0.5f, 0.5f);
+                                    }
+                                }
+                            } else if (baseResponse.successMessage.equalsIgnoreCase("driver_started_the_trip")) {
+                                StatusofTrip.set(translationModel.txt_driver_started_destination);
+                                isTripStared.set(false);
+                                isTripArrived.set(true);
+                                waitingtime.set("0.0");
+                                enablePromoOption.set(false);
+                            } else if (baseResponse.successMessage.equalsIgnoreCase("driver_end_the_trip")) {
+                                if (baseResponse.result != null) {
+                                    String requestStrBase = CommonUtils.ObjectToString(baseResponse.result);
+                                    BaseResponse requestBase = (BaseResponse) CommonUtils.StringToObject(requestStrBase, BaseResponse.class);
+                                    if (requestBase.data != null) {
+                                        String requestStr = CommonUtils.ObjectToString(requestBase.data);
+                                        TaxiRequestModel.ResultData metaRequest = (TaxiRequestModel.ResultData) CommonUtils.StringToObject(requestStr, TaxiRequestModel.ResultData.class);
+                                        if (metaRequest != null)
+                                            getmNavigator().ShowFeedBackScreen(metaRequest, false);
                                     }
                                 }
                             } else if (baseResponse.successMessage.equalsIgnoreCase("request_cancelled_by_driver")) {

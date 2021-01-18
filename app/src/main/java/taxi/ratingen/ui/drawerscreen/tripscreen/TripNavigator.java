@@ -1,6 +1,7 @@
 package taxi.ratingen.ui.drawerscreen.tripscreen;
 
 import taxi.ratingen.retro.responsemodel.Request;
+import taxi.ratingen.retro.responsemodel.TaxiRequestModel;
 import taxi.ratingen.ui.base.BaseActivity;
 import taxi.ratingen.ui.base.BaseView;
 
@@ -37,5 +38,7 @@ public interface TripNavigator extends BaseView {
     void setVAlue(String from, Double pickLat, Double pickLng, Double dropLat, Double dropLng);
 
     void openTripCancelMsg();
+
+    void ShowFeedBackScreen(TaxiRequestModel.ResultData metaRequest, boolean isCorporate);
 
 }

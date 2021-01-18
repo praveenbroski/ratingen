@@ -156,7 +156,7 @@ public class DrawerViewModel extends BaseNetwork<BaseResponse, DrawerNavigator> 
                     if (metaRequest != null) {
                         if (metaRequest.resultData != null) {
                             if (metaRequest.resultData.isCompleted == 1) {
-//                            getmNavigator().ShowFeedbackFragment(metaRequest.resultData, false);
+                            getmNavigator().ShowFeedbackFragment(metaRequest.resultData, false);
                             } else {
                                 if (metaRequest.resultData.isLater != null && metaRequest.resultData.isLater == 1) {
 //                                    getmNavigator().openRideLaterAlert(metaRequest.requestData, metaRequest.requestData.driverDetail.driverData);

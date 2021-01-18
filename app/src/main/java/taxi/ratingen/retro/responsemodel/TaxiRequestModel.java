@@ -43,7 +43,7 @@ public class TaxiRequestModel extends BaseResponse implements Serializable {
         public String requestNumber;
         @SerializedName("request_otp")
         @Expose
-        public String requestOtp;
+        public Integer requestOtp;
         @SerializedName("is_later")
         @Expose
         public Integer isLater;
@@ -317,7 +317,7 @@ public class TaxiRequestModel extends BaseResponse implements Serializable {
         public String carNumber;
         @SerializedName("rating")
         @Expose
-        public Double rating;
+        public Float rating;
         @SerializedName("no_of_ratings")
         @Expose
         public Integer noOfRatings;

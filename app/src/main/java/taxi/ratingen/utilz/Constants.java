@@ -210,7 +210,7 @@ public final class Constants {
         String requestInProgressURL = "api/v1/user/requestInprogress";
         String historyListURL = "v1/user/historyList";
         String AddFavurl = "v1/user/addfav";
-        String Reviewurl = "v1/user/review";
+        String ReviewURL = "api/v1/request/rating";
         String DirectionURLreferralcheckUrl = "maps/api/directions/json?";
         String DirectionURL = "maps/api/directions/json?";
         String RequestCancelURL = "api/v1/request/cancel";
@@ -382,6 +382,10 @@ public final class Constants {
         int COMPLAINTS_LIST = 105;
         int TYPES_LIST = 106;
         int ETA = 107;
+    }
+
+    public interface StatusCodes {
+        int STATUS_OK = 200;
     }
 
 }
