@@ -17,6 +17,7 @@ import taxi.ratingen.R;
 import taxi.ratingen.databinding.FragmentBillDialogBinding;
 import taxi.ratingen.retro.responsemodel.Bill;
 import taxi.ratingen.retro.responsemodel.Request;
+import taxi.ratingen.retro.responsemodel.TaxiRequestModel;
 import taxi.ratingen.ui.base.BaseActivity;
 import taxi.ratingen.ui.base.BaseDialog;
 import taxi.ratingen.ui.drawerscreen.DrawerAct;
@@ -36,7 +37,7 @@ public class BillDialogFragment extends BaseDialog implements BillDialogNavigato
     private static final String TAG = "BillDialogFragment";
 
     // TODO: Rename and change types of parameters
-    private Request mParam1;
+    TaxiRequestModel.ResultData mParam1;
     private String mParam2;
 
     AddChargeBillAdapter adapter;
@@ -44,6 +45,7 @@ public class BillDialogFragment extends BaseDialog implements BillDialogNavigato
     @Inject
     BillDialogViewModel billDialogViewModel;
     FragmentBillDialogBinding binding;
+
     public BillDialogFragment() {
         // Required empty public constructor
     }
@@ -57,7 +59,7 @@ public class BillDialogFragment extends BaseDialog implements BillDialogNavigato
      * @return A new instance of fragment BillDialogFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static BillDialogFragment newInstance(Request param1, String param2) {
+    public static BillDialogFragment newInstance(TaxiRequestModel.ResultData param1, String param2) {
         BillDialogFragment fragment = new BillDialogFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_PARAM1, param1);
@@ -70,7 +72,7 @@ public class BillDialogFragment extends BaseDialog implements BillDialogNavigato
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = (Request) getArguments().getSerializable(ARG_PARAM1);
+            mParam1 = (TaxiRequestModel.ResultData) getArguments().getSerializable(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -105,16 +107,16 @@ public class BillDialogFragment extends BaseDialog implements BillDialogNavigato
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);
         }
-        mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        if(mParam1!=null&&mParam1.bill!=null&&mParam1.bill.additionalCharge!=null) {
-            binding.recyclerAddCharges.setLayoutManager(mLayoutManager);
-            adapter = new AddChargeBillAdapter(mParam1.bill.currency,(ArrayList<Bill.AdditionalCharge>) mParam1.bill.additionalCharge, (DrawerAct) getActivity());
-            Log.d("keys","size--"+mParam1.bill.additionalCharge.size());
-            binding.recyclerAddCharges.setAdapter(adapter);
-            billDialogViewModel.isAddnlChargeAvailable.set(mParam1.bill.additionalCharge.size()>0);
-        }else{
-            billDialogViewModel.isAddnlChargeAvailable.set(false);
-        }
+//        mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+//        if (mParam1 != null && mParam1.bill != null && mParam1.bill.additionalCharge != null) {
+//            binding.recyclerAddCharges.setLayoutManager(mLayoutManager);
+//            adapter = new AddChargeBillAdapter(mParam1.bill.currency,(ArrayList<Bill.AdditionalCharge>) mParam1.bill.additionalCharge, (DrawerAct) getActivity());
+//            Log.d("keys","size--" + mParam1.bill.additionalCharge.size());
+//            binding.recyclerAddCharges.setAdapter(adapter);
+//            billDialogViewModel.isAddnlChargeAvailable.set(mParam1.bill.additionalCharge.size() > 0);
+//        } else {
+//            billDialogViewModel.isAddnlChargeAvailable.set(false);
+//        }
     }
 
     /** shows {@link BillDialogFragment} **/

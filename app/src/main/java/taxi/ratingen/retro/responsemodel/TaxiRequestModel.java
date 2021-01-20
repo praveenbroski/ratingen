@@ -47,6 +47,9 @@ public class TaxiRequestModel extends BaseResponse implements Serializable {
         @SerializedName("is_later")
         @Expose
         public Integer isLater;
+        @SerializedName("is_share")
+        @Expose
+        public Integer isShare;
         @SerializedName("user_id")
         @Expose
         public Integer userId;
@@ -80,9 +83,9 @@ public class TaxiRequestModel extends BaseResponse implements Serializable {
         @SerializedName("is_completed")
         @Expose
         public Integer isCompleted;
-        //        @SerializedName("is_cancelled")
-//        @Expose
-//        public Integer isCancelled;
+        @SerializedName("is_cancelled")
+        @Expose
+        public Integer isCancelled;
         @SerializedName("cancel_method")
         @Expose
         public String cancelMethod;
@@ -157,6 +160,9 @@ public class TaxiRequestModel extends BaseResponse implements Serializable {
         @SerializedName("is_later")
         @Expose
         public Integer isLater;
+        @SerializedName("is_share")
+        @Expose
+        public Integer isShare;
         @SerializedName("user_id")
         @Expose
         public Integer userId;
@@ -366,7 +372,7 @@ public class TaxiRequestModel extends BaseResponse implements Serializable {
         public String profilePicture;
         @SerializedName("active")
         @Expose
-        public Integer active;
+        public Boolean active;
         @SerializedName("email_confirmed")
         @Expose
         public Integer emailConfirmed;
@@ -454,13 +460,16 @@ public class TaxiRequestModel extends BaseResponse implements Serializable {
         public String requestedCurrencyCode;
         @SerializedName("requested_currency_symbol")
         @Expose
-        public String getRequestedCurrencySymbol;
+        public String requestedCurrencySymbol;
         @SerializedName("admin_commision_with_tax")
         @Expose
         public Double adminCommisionWithTax;
         @SerializedName("referral_amount")
         @Expose
         public Double referral_amount;
+        @SerializedName("total_additional_charge")
+        @Expose
+        public Double totalAdditionalCharge;
 
     }
 

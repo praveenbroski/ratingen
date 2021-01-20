@@ -14,10 +14,9 @@ import taxi.ratingen.R;
 import taxi.ratingen.retro.GitHubService;
 import taxi.ratingen.retro.base.BaseNetwork;
 import taxi.ratingen.retro.base.BaseResponse;
-import taxi.ratingen.retro.responsemodel.Request;
+import taxi.ratingen.retro.responsemodel.TaxiRequestModel;
 import taxi.ratingen.ui.base.BaseActivity;
 import taxi.ratingen.utilz.CommonUtils;
-import taxi.ratingen.utilz.Constants;
 import taxi.ratingen.utilz.SharedPrefence;
 import taxi.ratingen.utilz.exception.CustomException;
 
@@ -28,8 +27,8 @@ import java.util.HashMap;
  */
 
 public class BillDialogViewModel extends BaseNetwork<BaseResponse, BillDialogNavigator> {
-    public String time, distance, baseprice, distanceCost, distanceperunit, timeCost, timecostperunit, pickup, drop,
-            waitingPrice, serviceTAx, refferalBonus, promoBonus, walletAmount, total, txt_Additional_Charge, total_trip_cost,
+    public String time, distance, basePrice, distanceCost, distancePerUnit, timeCost, timeCostPerUnit, pickup, drop,
+            waitingPrice, serviceTAx, referralBonus, promoBonus, walletAmount, total, txt_Additional_Charge, total_trip_cost,
             cancellation_fees, zone_fees, custom_captain_fee, profilePic, rating;
     public String driverName, vehType, reqId, dateTime, duration;
     public String currency;
@@ -44,65 +43,63 @@ public class BillDialogViewModel extends BaseNetwork<BaseResponse, BillDialogNav
         super(gitHubService, sharedPrefence, gson);
     }
 
-
     /**
      * sets the bill values
      **/
-    public void setBillDetails(Request request) {
+    public void setBillDetails(TaxiRequestModel.ResultData request) {
         context = getmNavigator().getAttachedContext();
         currency = context.getTranslatedString(R.string.Rs);
 
         if (request != null) {
-            time = request.time + " " + context.getTranslatedString(R.string.txt_min);
-            isShare = (request.is_share == 1);
-            distance = CommonUtils.doubleDecimalFromat(Double.valueOf(request.distance)) + " " + (request.bill.unit_in_words != null ? request.bill.unit_in_words : context.getTranslatedString(R.string.text_km));
-            if (request.bill != null) {
-                if (!CommonUtils.IsEmpty(request.bill.currency))
-                    currency = request.bill.currency;
+            time = request.totalTime + " " + context.getTranslatedString(R.string.txt_min);
+            isShare = (request.isShare != null && request.isShare == 1);
+            distance = CommonUtils.doubleDecimalFromat(request.totalDistance) + " " + (request.unit != null ? request.unit : context.getTranslatedString(R.string.text_km));
+            if (request.billDetail.billData != null) {
+                TaxiRequestModel.BillData bill = request.billDetail.billData;
+                if (!CommonUtils.IsEmpty(bill.requestedCurrencySymbol))
+                    currency = bill.requestedCurrencySymbol;
 
-                if (request.bill.cancellation_fee != null && request.bill.cancellation_fee != 0.0)
-                    cancellation_fees = currency + " " + CommonUtils.doubleDecimalFromat(request.bill.cancellation_fee);
+                if (bill.cancellationFee != null && bill.cancellationFee != 0.0)
+                    cancellation_fees = currency + " " + CommonUtils.doubleDecimalFromat(bill.cancellationFee);
                 else cancelFee.set(false);
 
-                if (request.bill.drop_out_of_zone_fee != null && request.bill.drop_out_of_zone_fee != 0.0)
-                    zone_fees = currency + " " + CommonUtils.doubleDecimalFromat(request.bill.drop_out_of_zone_fee);
-                else zoneFee.set(false);
+//                if (request.bill.drop_out_of_zone_fee != null && request.bill.drop_out_of_zone_fee != 0.0)
+//                    zone_fees = currency + " " + CommonUtils.doubleDecimalFromat(request.bill.drop_out_of_zone_fee);
+//                else zoneFee.set(false);
 
-                baseprice = currency + " " + CommonUtils.doubleDecimalFromat(isShare ? request.bill.ride_fare : request.bill.base_price);
-                distanceCost = currency + " " + CommonUtils.doubleDecimalFromat(request.bill.distance_price);
-//                distanceperunit = currency + CommonUtils.doubleDecimalFromat(request.bill.price_per_distance) + " / " + context.getTranslatedString(R.string.text_km);
-                distanceperunit = currency + " " + CommonUtils.doubleDecimalFromat(request.bill.price_per_distance) + " / " + (request.bill.unit_in_words != null ? request.bill.unit_in_words : context.getTranslatedString(R.string.text_km));
-                distance = CommonUtils.doubleDecimalFromat(Double.valueOf(request.distance)) + " " + (request.bill.unit_in_words != null ? request.bill.unit_in_words : context.getTranslatedString(R.string.text_km));
-                timeCost = currency + " " + CommonUtils.doubleDecimalFromat(request.bill.time_price);
-                timecostperunit = currency + " " + CommonUtils.doubleDecimalFromat(request.bill.price_per_time) + " / " + context.getTranslatedString(R.string.txt_min);
-                waitingPrice = currency + " " + CommonUtils.doubleDecimalFromat(request.bill.waiting_price);
-                serviceTAx = currency + " " + CommonUtils.doubleDecimalFromat(request.bill.service_tax);
-                refferalBonus = "-" + currency + " " + CommonUtils.doubleDecimalFromat(request.bill.referral_amount);
-                promoBonus = "-" + currency + " " + CommonUtils.doubleDecimalFromat(request.bill.promo_amount);
-                total = currency + " " + CommonUtils.doubleDecimalFromat(request.bill.total);
-                isWalletTrip = request.paymentOpt == 2 || request.paymentOpt == 3;
-                txt_Additional_Charge = currency + " " + CommonUtils.doubleDecimalFromat(request.bill.totalAdditionalCharge == null ? 0 : request.bill.totalAdditionalCharge);
-                walletAmount = currency + " " + CommonUtils.doubleDecimalFromat(request.bill.wallet_amount);
-                if (request.bill.cancellation_fee != null)
-                    total_trip_cost = currency + " " + CommonUtils.doubleDecimalFromat(request.bill.total - request.bill.cancellation_fee) + " +";
+                basePrice = currency + " " + CommonUtils.doubleDecimalFromat(isShare ? bill.basePrice : bill.basePrice);
+                distanceCost = currency + " " + CommonUtils.doubleDecimalFromat(bill.distancePrice);
+                distancePerUnit = currency + " " + CommonUtils.doubleDecimalFromat(bill.pricePerDistance) + " / " + (request.unit != null ? request.unit : context.getTranslatedString(R.string.text_km));
+                distance = CommonUtils.doubleDecimalFromat(request.totalDistance) + " " + (request.unit != null ? request.unit : context.getTranslatedString(R.string.text_km));
+                timeCost = currency + " " + CommonUtils.doubleDecimalFromat(bill.timePrice);
+                timeCostPerUnit = currency + " " + CommonUtils.doubleDecimalFromat(bill.pricePerTime) + " / " + context.getTranslatedString(R.string.txt_min);
+                waitingPrice = currency + " " + CommonUtils.doubleDecimalFromat(bill.waitingCharge);
+                serviceTAx = currency + " " + CommonUtils.doubleDecimalFromat(bill.serviceTax);
+                referralBonus = "-" + currency + " " + (bill.referral_amount != null ? CommonUtils.doubleDecimalFromat(bill.referral_amount) : "0.00");
+                promoBonus = "-" + currency + " " + CommonUtils.doubleDecimalFromat(bill.promoDiscount);
+                total = currency + " " + CommonUtils.doubleDecimalFromat(bill.totalAmount);
+                isWalletTrip = request.paymentOpt.equals("2") || request.paymentOpt.equals("3");
+                txt_Additional_Charge = currency + " " + CommonUtils.doubleDecimalFromat(bill.totalAdditionalCharge == null ? 0 : bill.totalAdditionalCharge);
+//                walletAmount = currency + " " + CommonUtils.doubleDecimalFromat(bill.wallet_amount);
+                if (bill.cancellationFee != null)
+                    total_trip_cost = currency + " " + CommonUtils.doubleDecimalFromat(bill.totalAmount - bill.cancellationFee) + " +";
 
-                customCaptainShown.set(request.bill.custom_select_driver_fee != 0);
-                custom_captain_fee = currency + " " + CommonUtils.doubleDecimalFromat(request.bill.custom_select_driver_fee);
+                customCaptainShown.set(bill.driverCommision != 0);
+                custom_captain_fee = currency + " " + CommonUtils.doubleDecimalFromat(bill.driverCommision);
 
-                pickup = request.pickLocation;
-                drop = request.dropLocation;
-                driverName = request.driver.firstname + " " + request.driver.lastname;
-                vehType = request.driver.type_name + " ( " + request.driver.carnumber + " )";
-                reqId = request.request_id;
+                pickup = request.pickAddress;
+                drop = request.dropAddress;
+                driverName = request.driverDetail.driverData.name;
+                vehType = request.driverDetail.driverData.vehicleTypeName + " ( " + request.driverDetail.driverData.carNumber + " )";
+                reqId = request.requestNumber;
                 dateTime = request.tripStartTime;
                 duration = getmNavigator().getAttachedContext().getTranslatedString(R.string.txt_trip_time_text) +
-                        ": " + request.time + " " +
+                        ": " + request.totalTime + " " +
                         getmNavigator().getAttachedContext().getTranslatedString(R.string.txt_min);
-                profilePic = Constants.URL.BaseURL + Constants.URL.DRIVER_PROFILE_PIC + request.driver.profilePic;
-                rating = request.driver.review + "";
+                profilePic = request.driverDetail.driverData.profilePicture;
+                rating = request.driverDetail.driverData.rating + "";
             }
         }
-
     }
 
     /** Custom {@link BindingAdapter} method to set image to {@link ImageView} from {@link java.net.URL} **/

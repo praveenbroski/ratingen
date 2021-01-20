@@ -533,7 +533,7 @@ public class DrawerAct extends BaseActivity<ActivityDrawerBinding, DrawerViewMod
         activityDrawerBinding.navView.getMenu().findItem(R.id.nav_logout).setTitle(getTranslatedString(R.string.txt_logout));
 
         /* hiding unwanted menus */
-        activityDrawerBinding.navView.getMenu().findItem(R.id.nav_History).setVisible(false);
+//        activityDrawerBinding.navView.getMenu().findItem(R.id.nav_History).setVisible(false);
         activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Favs).setVisible(false);
         activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Wallet).setVisible(false);
         activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Notifications).setVisible(false);

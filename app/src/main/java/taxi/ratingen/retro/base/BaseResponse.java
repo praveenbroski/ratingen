@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import taxi.ratingen.retro.responsemodel.ClientObject;
 import taxi.ratingen.retro.responsemodel.CountryListModel;
+import taxi.ratingen.retro.responsemodel.MetaHistory;
 import taxi.ratingen.retro.responsemodel.Result;
 import taxi.ratingen.retro.responsemodel.TripRegisteredDetails;
 import taxi.ratingen.retro.responsemodel.TypeNew;
@@ -281,6 +282,9 @@ public class BaseResponse implements Serializable {
 
     @Expose
     public Result result;
+
+    @Expose
+    public MetaHistory meta;
 
     @SerializedName("history")
     @Expose
@@ -641,4 +645,5 @@ public class BaseResponse implements Serializable {
 
         sharedPrefence.savevalue(SharedPrefence.LANGUAGES, gson.toJson(languages) + "");
     }
+
 }

@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.widget.ArrayAdapter;
 
 import taxi.ratingen.retro.GitHubCountryCode;
+import taxi.ratingen.retro.responsemodel.TaxiRequestModel;
 import taxi.ratingen.retro.responsemodel.Type;
 import taxi.ratingen.retro.responsemodel.TypeNew;
 import taxi.ratingen.ui.companyvalidation.dialog.DialogCompanyViewModel;
@@ -208,7 +209,7 @@ public class MapDaggerModel {
 
     @Provides
     HistoryAdapter HistoryAdapterAdapter(HistoryListFrag historyListFrag) {
-        return new HistoryAdapter(new ArrayList<history>(), historyListFrag.getBaseActivity());
+        return new HistoryAdapter(new ArrayList<>(), historyListFrag.getBaseActivity());
     }
 
     @Provides

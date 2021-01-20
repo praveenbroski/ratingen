@@ -1,5 +1,6 @@
 package taxi.ratingen.ui.drawerscreen.history;
 
+import android.util.Log;
 import android.view.View;
 
 import androidx.databinding.ObservableBoolean;
@@ -10,11 +11,14 @@ import taxi.ratingen.R;
 import taxi.ratingen.retro.base.BaseNetwork;
 import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.GitHubService;
+import taxi.ratingen.retro.responsemodel.TaxiRequestModel;
+import taxi.ratingen.utilz.CommonUtils;
 import taxi.ratingen.utilz.Constants;
 import taxi.ratingen.utilz.exception.CustomException;
 import taxi.ratingen.utilz.SharedPrefence;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by root on 1/4/18.
@@ -41,19 +45,38 @@ public class HistoryListViewModel extends BaseNetwork<BaseResponse, HistoryListN
     /** called when the API call is successful **/
     @Override
     public void onSuccessfulApi(long taskId, BaseResponse response) {
-        if (response.getHistory() != null && response.getHistory().size() != 0) {
-            isdata.set(true);
-            if (pageno > 1) {
-                getmNavigator().Dostaff();
+        if (response.message.equalsIgnoreCase("request_history_list")) {
+            if (response.data != null) {
+                String historyStr = CommonUtils.ObjectToString(response.data);
+                List<TaxiRequestModel.ResultData> historyList = CommonUtils.stringToArray(historyStr, TaxiRequestModel.ResultData[].class);
+                if (historyList.size() > 0) {
+                    isdata.set(true);
+                    getmNavigator().addHistoryItem(response, historyList);
+                }
             }
-            getmNavigator().addItem(response.getHistory());
-        } else {
-            if (response.successMessage.equalsIgnoreCase("user_history_not_found")) {
-                getmNavigator().MentionLastPage();
-            } else
-                getmNavigator().showMessage(response.successMessage);
+            if (response.meta != null && response.meta.pagination != null) {
+                if (response.meta.pagination.current_page > 1)
+                    getmNavigator().Dostaff();
 
+                if (response.meta.pagination.current_page.equals(response.meta.pagination.total_pages))
+                    getmNavigator().MentionLastPage();
+            }
+        } else {
+            getmNavigator().showMessage(response.message);
         }
+
+//        if (response.getHistory() != null && response.getHistory().size() != 0) {
+//            isdata.set(true);
+//            if (pageno > 1) {
+//                getmNavigator().Dostaff();
+//            }
+//            getmNavigator().addItem(response.getHistory());
+//        } else {
+//            if (response.successMessage.equalsIgnoreCase("user_history_not_found")) {
+//                getmNavigator().MentionLastPage();
+//            } else
+//                getmNavigator().showMessage(response.successMessage);
+//        }
     }
 
     /** called when the API call fails ***/
@@ -81,21 +104,15 @@ public class HistoryListViewModel extends BaseNetwork<BaseResponse, HistoryListN
     }
 
     /** gets user's ride history data from server via GetHistoryNetworkCall() API **/
-    public void fetchData(int currentPage) {
+    public void fetchData() {
         if (getmNavigator().isNetworkConnected()) {
-            pageno = currentPage;
-            hashMap.clear();
-            hashMap.put(Constants.NetworkParameters.client_id, sharedPrefence.getCompanyID());
-            hashMap.put(Constants.NetworkParameters.client_token, sharedPrefence.getCompanyToken());
-            hashMap.put(Constants.NetworkParameters.id, sharedPrefence.Getvalue(SharedPrefence.ID));
-            hashMap.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
-            hashMap.put(Constants.NetworkParameters.page, "" + pageno);
             if (scheduledClick.get()) {
-                hashMap.put(Constants.NetworkParameters.later, "1");
+                GetHistoryNetworkCallLater();
             } else if (cancelledClick.get()) {
-                hashMap.put(Constants.NetworkParameters.cancelled, "1");
+                GetHistoryNetworkCallCancelled();
+            } else if (completedClick.get()) {
+                GetHistoryNetworkCallCompleted();
             }
-            GetHistoryNetworkCall();
         } else {
             getmNavigator().showNetworkMessage();
         }

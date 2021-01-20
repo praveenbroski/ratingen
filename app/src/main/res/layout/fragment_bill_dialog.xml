@@ -357,7 +357,7 @@
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/sf_regular"
                                 android:gravity="end"
-                                android:text="@{viewModel.baseprice}"
+                                android:text="@{viewModel.basePrice}"
                                 android:textColor="@color/clr_333333"
                                 android:textSize="@dimen/_12sdp" />
 
@@ -515,7 +515,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/sf_regular"
-                                android:text="@{viewModel.refferalBonus}"
+                                android:text="@{viewModel.referralBonus}"
                                 android:textColor="@color/clr_FB4A46"
                                 android:textSize="@dimen/_12sdp" />
 
@@ -817,6 +817,7 @@
                                 android:textSize="@dimen/_12sdp" />
 
                         </RelativeLayout>
+
                     </LinearLayout>
 
                     <View
@@ -865,7 +866,6 @@
                     <Space
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_5sdp" />
-
 
                 </LinearLayout>
 
@@ -917,8 +917,8 @@
                 android:textAllCaps="true"
                 android:textColor="@color/clr_white"
                 android:textSize="@dimen/_12sdp" />
-        </androidx.cardview.widget.CardView>
 
+        </androidx.cardview.widget.CardView>
 
     </RelativeLayout>
 

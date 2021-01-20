@@ -125,8 +125,16 @@ public abstract class BaseNetwork<T extends BaseResponse, N> implements Basecall
     /**
      * Api call to get the history details of user.
      */
-    public void GetHistoryNetworkCall() {
-        gitHubService.GetHistorycall(getMap()).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+    public void GetHistoryNetworkCallLater() {
+        gitHubService.GetHistoryCallLater("1", "Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken)).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+    }
+
+    public void GetHistoryNetworkCallCancelled() {
+        gitHubService.GetHistoryCallCancelled("1", "Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken)).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+    }
+
+    public void GetHistoryNetworkCallCompleted() {
+        gitHubService.GetHistoryCallCompleted("1", "Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken)).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
     }
 
     /**

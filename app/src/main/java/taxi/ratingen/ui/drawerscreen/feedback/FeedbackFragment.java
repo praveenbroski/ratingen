@@ -59,10 +59,11 @@ public class FeedbackFragment extends BaseFragment<FragmentFeedbackBinding, Feed
         layoutBinding = getViewDataBinding();
         viewModel.setNavigator(this);
         viewModel.setUserDetails(model);
-//        if (model.bill != null)
+        if (model.billDetail != null && model.billDetail.billData != null) {
 //            if (!isCorporate && model.bill.show_bill == 1)
-//                BillDialogFragment.newInstance(model, "").show(this.getChildFragmentManager());
-
+            if (!isCorporate)
+                BillDialogFragment.newInstance(model, "").show(this.getChildFragmentManager());
+        }
 
         Drawable drawable1 = layoutBinding.ratingUserFeedback.getProgressDrawable();
         drawable1.setColorFilter(Color.parseColor("#FFAA00"), PorterDuff.Mode.SRC_ATOP);

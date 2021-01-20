@@ -208,7 +208,7 @@ public final class Constants {
         String Forgoturl = "v1/user/forgotpassword";
         String referralcheckUrl = "v1/user/referralcheck";
         String requestInProgressURL = "api/v1/user/requestInprogress";
-        String historyListURL = "v1/user/historyList";
+        String historyListURL = "api/v1/request/history";
         String AddFavurl = "v1/user/addfav";
         String ReviewURL = "api/v1/request/rating";
         String DirectionURLreferralcheckUrl = "maps/api/directions/json?";
@@ -371,6 +371,9 @@ public final class Constants {
         String custom_reason = "custom_reason";
         String arrived = "arrived";
         String fcm_token = "fcm_token";
+        String is_later = "is_later";
+        String is_cancelled = "is_cancelled";
+        String is_completed = "is_completed";
     }
 
     public interface TaskId {

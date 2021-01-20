@@ -129,9 +129,14 @@ public interface GitHubService {
     @GET(Constants.URL.requestInProgressURL)
     Call<BaseResponse> getRequestInpro(@Header("Authorization") String bearer);
 
-    @FormUrlEncoded
-    @POST(Constants.URL.historyListURL)
-    Call<BaseResponse> GetHistorycall(@FieldMap Map<String, String> options);
+    @GET(Constants.URL.historyListURL)
+    Call<BaseResponse> GetHistoryCallLater(@Query(Constants.NetworkParameters.is_later) String option, @Header("Authorization") String bearer);
+
+    @GET(Constants.URL.historyListURL)
+    Call<BaseResponse> GetHistoryCallCancelled(@Query(Constants.NetworkParameters.is_cancelled) String option, @Header("Authorization") String bearer);
+
+    @GET(Constants.URL.historyListURL)
+    Call<BaseResponse> GetHistoryCallCompleted(@Query(Constants.NetworkParameters.is_completed) String option, @Header("Authorization") String bearer);
 
     @FormUrlEncoded
     @POST(Constants.URL.AddFavurl)

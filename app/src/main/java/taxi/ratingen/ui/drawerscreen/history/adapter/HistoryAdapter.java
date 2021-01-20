@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import taxi.ratingen.retro.responsemodel.history;
+import taxi.ratingen.retro.responsemodel.TaxiRequestModel;
 import taxi.ratingen.databinding.HistoryItemBinding;
 import taxi.ratingen.databinding.PaginationLoadingBinding;
 import taxi.ratingen.ui.base.BaseViewHolder;
@@ -23,14 +23,14 @@ import java.util.List;
 
 public class HistoryAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
-    List<history> histories;
+    List<TaxiRequestModel.ResultData> histories;
     private boolean isLoadingAdded = false;
     private static final int ITEM = 0;
     private static final int LOADING = 1;
     Activity activity;
     public boolean isItemClick = true;
 
-    public HistoryAdapter(ArrayList<history> histories, Activity activity) {
+    public HistoryAdapter(ArrayList<TaxiRequestModel.ResultData> histories, Activity activity) {
         this.histories = histories;
         this.activity = activity;
     }
@@ -80,19 +80,19 @@ public class HistoryAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     }
 
     /** populates history list **/
-    public void addItem(List<history> histories, boolean isdeleted) {
+    public void addItem(List<TaxiRequestModel.ResultData> histories, boolean isdeleted) {
         if (isdeleted) {
             this.histories.clear();
             notifyDataSetChanged();
         }
 
-        for (history ff : histories) {
+        for (TaxiRequestModel.ResultData ff : histories) {
             add(ff);
         }
     }
 
     /** adds single history item to history list **/
-    public void add(history r) {
+    public void add(TaxiRequestModel.ResultData r) {
         histories.add(r);
         notifyItemInserted(histories.size() - 1);
     }
@@ -105,7 +105,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     /** adds a circular progress bar when loading next page **/
     public void addLoadingFooter() {
         isLoadingAdded = true;
-        add(new history());
+        add(new TaxiRequestModel.ResultData());
     }
 
     /** removes bottom loading circular progress when loading completes **/
@@ -113,7 +113,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         isLoadingAdded = false;
 
         int position = histories.size() - 1;
-        history result = getItem(position);
+        TaxiRequestModel.ResultData result = getItem(position);
 
         if (result != null) {
             histories.remove(position);
@@ -122,7 +122,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     }
 
     /** returns history item at given position **/
-    public history getItem(int position) {
+    public TaxiRequestModel.ResultData getItem(int position) {
         return histories.get(position);
     }
 
@@ -139,7 +139,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
         @Override
         public void onBind(int position) {
-            final history request = histories.get(position);
+            final TaxiRequestModel.ResultData request = histories.get(position);
             childHistoryViewModel = new ChildHistoryViewModel(request, this);
             mBinding.setViewModel(childHistoryViewModel);
             mBinding.executePendingBindings();
@@ -148,7 +148,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
         /** called when history item is clicked **/
         @Override
-        public void onItemClick(history request) {
+        public void onItemClick(TaxiRequestModel.ResultData request) {
             if (request != null) {
                 if (isItemClick) {
                     Intent intent = new Intent(itemView.getContext(), HistoryDetailsScrn.class);
@@ -161,11 +161,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
         /** updates history list with new data **/
         @Override
-        public void updatelist(history request) {
+        public void updatelist(TaxiRequestModel.ResultData request) {
             Iterator it = histories.iterator();
             int i = 0;
             while (it.hasNext()) {
-                history req = (history) it.next();
+                TaxiRequestModel.ResultData req = (TaxiRequestModel.ResultData) it.next();
                 if (Integer.parseInt(req.id) == Integer.parseInt(req.id)) {
                     histories.set(i, request);
                     /*notifyDataSetChanged();*/

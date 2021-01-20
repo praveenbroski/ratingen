@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import taxi.ratingen.R;
-import taxi.ratingen.retro.responsemodel.history;
+import taxi.ratingen.retro.responsemodel.TaxiRequestModel;
 import taxi.ratingen.utilz.CommonUtils;
 
 import java.text.ParseException;
@@ -22,7 +22,7 @@ import java.util.Locale;
 
 public class ChildHistoryViewModel {
     ChidItemViewModelListener mListener;
-    taxi.ratingen.retro.responsemodel.history history;
+    TaxiRequestModel.ResultData history;
     public ObservableField<String> driverurl, carurl, typename, total, requestid, pickadd, dropAdd, DateTime;
     public ObservableBoolean Iscancelled, islater, iscompleted, currency, isDropAvailable, isUnsucess, isINTrip, isTotalShown;
     ChidItemViewModelListener listener;
@@ -30,14 +30,14 @@ public class ChildHistoryViewModel {
     SimpleDateFormat TargetFormatter = new SimpleDateFormat("MMM dd, yyyy hh:mm aa", Locale.ENGLISH);
     SimpleDateFormat realformatter = new SimpleDateFormat("yyyy-MM-dd kk:mm", Locale.ENGLISH);
 
-    public ChildHistoryViewModel(history request, ChidItemViewModelListener childHistoryViewHolder) {
+    public ChildHistoryViewModel(TaxiRequestModel.ResultData request, ChidItemViewModelListener childHistoryViewHolder) {
         mListener = childHistoryViewHolder;
         /*DataBindingUtil.setDefaultComponent(new MyComponent(this));*/
         this.history = request;
         this.listener = childHistoryViewHolder;
-        driverurl = new ObservableField<>(request.driverProfilePic);
-        carurl = new ObservableField<>(request.typeIcon);
-        typename = new ObservableField<>(request.typename);
+        driverurl = new ObservableField<>(request.driverDetail.driverData.profilePicture);
+        carurl = new ObservableField<>(request.driverDetail.driverData.carModelName);
+        typename = new ObservableField<>(request.driverDetail.driverData.carModelName);
         DateTime = new ObservableField<>();
         isTotalShown = new ObservableBoolean(false);
         Iscancelled = new ObservableBoolean();
@@ -53,29 +53,31 @@ public class ChildHistoryViewModel {
             e.printStackTrace();
         }
 
-        requestid = new ObservableField<>(" ( "+request.requestId+" ) ");
-        pickadd = new ObservableField<>(request.pickLocation);
-        dropAdd = new ObservableField<>(request.dropLocation);
-        isDropAvailable = new ObservableBoolean(!CommonUtils.IsEmpty(request.dropLocation));
+        requestid = new ObservableField<>(" ( " + request.id + " ) ");
+        pickadd = new ObservableField<>(request.pickAddress);
+        dropAdd = new ObservableField<>(request.dropAddress);
+        isDropAvailable = new ObservableBoolean(!CommonUtils.IsEmpty(request.dropAddress));
         if (request.isCancelled != null)
             Iscancelled.set(request.isCancelled != 0);
         else Iscancelled.set(false);
         if (request.isCompleted != null)
             iscompleted.set(request.isCompleted != 0);
         else iscompleted.set(false);
-        if (request.later != null)
-            islater.set(request.later != 0);
+        if (request.isLater != null)
+            islater.set(request.isLater != 0);
         else islater.set(false);
-        isShare = new ObservableBoolean(request.is_share == 1);
-        if (request.isCancelled != null && request.cancel_method != null)
-            isUnsucess.set(request.isCancelled == 1 && request.cancel_method == 3);
+        isShare = new ObservableBoolean(request.isShare == 1);
+        if (request.isCancelled != null && request.cancelMethod != null)
+            isUnsucess.set(request.isCancelled == 1 && request.cancelMethod.equals("3"));
         else isUnsucess.set(false);
         if (request.isCancelled != null && request.isCompleted != null)
             isINTrip.set(request.isCancelled == 0 && request.isCompleted == 0);
         else isINTrip.set(false);
         if (!Iscancelled.get())
-            if (request.currency != null && request.total != null)
-                total.set("" + request.currency + CommonUtils.doubleDecimalFromat(Double.valueOf(String.valueOf(request.total))));
+            if (request.billDetail != null && request.billDetail.billData != null)
+                if (request.billDetail.billData.requestedCurrencySymbol != null && request.billDetail.billData.totalAmount != null)
+                total.set("" + request.billDetail.billData.requestedCurrencySymbol
+                        + CommonUtils.doubleDecimalFromat(Double.valueOf(String.valueOf(request.billDetail.billData.totalAmount))));
             else total.set("");
         if (islater.get() && iscompleted.get())
             isTotalShown.set(true);
@@ -88,9 +90,9 @@ public class ChildHistoryViewModel {
     }
 
     public interface ChidItemViewModelListener {
-        void onItemClick(history request);
+        void onItemClick(TaxiRequestModel.ResultData request);
 
-        void updatelist(history request);
+        void updatelist(TaxiRequestModel.ResultData request);
     }
 
     /** custom {@link BindingAdapter} function to set car image from API **/
