@@ -143,7 +143,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<BaseViewHolder> {
             childHistoryViewModel = new ChildHistoryViewModel(request, this);
             mBinding.setViewModel(childHistoryViewModel);
             mBinding.executePendingBindings();
-
         }
 
         /** called when history item is clicked **/

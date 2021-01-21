@@ -10,7 +10,6 @@ import androidx.databinding.library.baseAdapters.BR;
 import taxi.ratingen.R;
 import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.responsemodel.TaxiRequestModel;
-import taxi.ratingen.retro.responsemodel.history;
 import taxi.ratingen.databinding.FragmentHistoryListBinding;
 import taxi.ratingen.ui.base.BaseActivity;
 import taxi.ratingen.ui.base.BaseFragment;
@@ -23,7 +22,6 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-
 
 public class HistoryListFrag extends BaseFragment<FragmentHistoryListBinding, HistoryListViewModel> implements HistoryListNavigator {
 
@@ -56,15 +54,15 @@ public class HistoryListFrag extends BaseFragment<FragmentHistoryListBinding, Hi
     private static final int PAGE_START = 1;
 
     private boolean isLoading = false;
-//    private boolean isScheduledLastPage = false;
-//    private boolean isCompletedLastPage = false;
-//    private boolean isCancelledLastPage = false;
+    private boolean isScheduledLastPage = false;
+    private boolean isCompletedLastPage = false;
+    private boolean isCancelledLastPage = false;
     private boolean isdeleted = false;
     // limiting to 5 for this tutorial, since total pages in actual API is very large. Feel free to modify.
     private int TOTAL_PAGES = 1000;
-//    private int currentScheduledPage = PAGE_START;
-//    private int currentCompletedPage = PAGE_START;
-//    private int currentCancelledPage = PAGE_START;
+    private int currentScheduledPage = PAGE_START;
+    private int currentCompletedPage = PAGE_START;
+    private int currentCancelledPage = PAGE_START;
 
 
     public HistoryListFrag() {
@@ -147,16 +145,16 @@ public class HistoryListFrag extends BaseFragment<FragmentHistoryListBinding, Hi
             @Override
             protected void loadMoreItems() {
                 isLoading = true;
-//                if (historyListViewModel.scheduledClick.get()) {
-//                    currentScheduledPage += 1;
-//                    historyListViewModel.fetchData(currentScheduledPage);
-//                } else if (historyListViewModel.completedClick.get()) {
-//                    currentCompletedPage += 1;
-//                    historyListViewModel.fetchData(currentCompletedPage);
-//                } else if (historyListViewModel.cancelledClick.get()) {
-//                    currentCancelledPage += 1;
-//                    historyListViewModel.fetchData(currentCancelledPage);
-//                }
+                if (historyListViewModel.scheduledClick.get()) {
+                    currentScheduledPage += 1;
+                    historyListViewModel.fetchData(currentScheduledPage, false);
+                } else if (historyListViewModel.completedClick.get()) {
+                    currentCompletedPage += 1;
+                    historyListViewModel.fetchData(currentCompletedPage, false);
+                } else if (historyListViewModel.cancelledClick.get()) {
+                    currentCancelledPage += 1;
+                    historyListViewModel.fetchData(currentCancelledPage, false);
+                }
             }
 
             @Override
@@ -166,16 +164,15 @@ public class HistoryListFrag extends BaseFragment<FragmentHistoryListBinding, Hi
 
             @Override
             public boolean isLastPage() {
-//                if (historyListViewModel.scheduledClick.get()) {
-//                    return isScheduledLastPage;
-//                } else if (historyListViewModel.completedClick.get()) {
-//                    return isCompletedLastPage;
-//                } else if (historyListViewModel.cancelledClick.get()) {
-//                    return isCancelledLastPage;
-//                } else {
-//                    return false;
-//                }
-                return false;
+                if (historyListViewModel.scheduledClick.get()) {
+                    return isScheduledLastPage;
+                } else if (historyListViewModel.completedClick.get()) {
+                    return isCompletedLastPage;
+                } else if (historyListViewModel.cancelledClick.get()) {
+                    return isCancelledLastPage;
+                } else {
+                    return false;
+                }
             }
 
             @Override
@@ -186,36 +183,31 @@ public class HistoryListFrag extends BaseFragment<FragmentHistoryListBinding, Hi
 
         fragmentHistoryListBinding.txtNoData.setText(getBaseActivity().getTranslatedString(R.string.txt_no_upcoming_rides));
         if (historyListViewModel.scheduledClick.get()) {
-            historyListViewModel.fetchData();
+            historyListViewModel.fetchData(currentScheduledPage, true);
         } else if (historyListViewModel.completedClick.get()) {
-            historyListViewModel.fetchData();
+            historyListViewModel.fetchData(currentCompletedPage, true);
         } else if (historyListViewModel.cancelledClick.get()) {
-            historyListViewModel.fetchData();
+            historyListViewModel.fetchData(currentCancelledPage, true);
         }
         getBaseActivity().HideNshowToolbar(true);
     }
 
     /** populates history list with data from API **/
     @Override
-    public void addItem(List<history> histories) {
-        adapter.addItem(histories, isdeleted);
+    public void addHistoryItem(BaseResponse response, List<TaxiRequestModel.ResultData> historyList) {
+        adapter.addItem(historyList, isdeleted);
         isdeleted = false;
 
-//        if (historyListViewModel.scheduledClick.get()) {
-//            if (currentScheduledPage <= TOTAL_PAGES) adapter.addLoadingFooter();
-//            else isScheduledLastPage = true;
-//        } else if (historyListViewModel.completedClick.get()) {
-//            if (currentCompletedPage <= TOTAL_PAGES) adapter.addLoadingFooter();
-//            else isCompletedLastPage = true;
-//        } else if (historyListViewModel.cancelledClick.get()) {
-//            if (currentCancelledPage <= TOTAL_PAGES) adapter.addLoadingFooter();
-//            else isCancelledLastPage = true;
-//        }
-    }
-
-    @Override
-    public void addHistoryItem(BaseResponse response, List<TaxiRequestModel.ResultData> historyList) {
-
+        if (historyListViewModel.scheduledClick.get()) {
+            if (currentScheduledPage <= TOTAL_PAGES) adapter.addLoadingFooter();
+            else isScheduledLastPage = true;
+        } else if (historyListViewModel.completedClick.get()) {
+            if (currentCompletedPage <= TOTAL_PAGES) adapter.addLoadingFooter();
+            else isCompletedLastPage = true;
+        } else if (historyListViewModel.cancelledClick.get()) {
+            if (currentCancelledPage <= TOTAL_PAGES) adapter.addLoadingFooter();
+            else isCancelledLastPage = true;
+        }
     }
 
     /** removes bottom loading circular progress bar **/
@@ -228,28 +220,25 @@ public class HistoryListFrag extends BaseFragment<FragmentHistoryListBinding, Hi
     /** notifies when paging reached it's last page **/
     @Override
     public void MentionLastPage() {
-        adapter.removeLoadingFooter();
-        isLoading = false;
-
-//        if (historyListViewModel.scheduledClick.get()) {
-//            if (currentScheduledPage != 1) {
-//                adapter.removeLoadingFooter();
-//                isLoading = false;
-//                isScheduledLastPage = true;
-//            }
-//        } else if (historyListViewModel.completedClick.get()) {
-//            if (currentCompletedPage != 1) {
-//                adapter.removeLoadingFooter();
-//                isLoading = false;
-//                isCompletedLastPage = true;
-//            }
-//        } else if (historyListViewModel.cancelledClick.get()) {
-//            if (currentCancelledPage != 1) {
-//                adapter.removeLoadingFooter();
-//                isLoading = false;
-//                isCancelledLastPage = true;
-//            }
-//        }
+        if (historyListViewModel.scheduledClick.get()) {
+            if (currentScheduledPage != 1) {
+                adapter.removeLoadingFooter();
+                isLoading = false;
+                isScheduledLastPage = true;
+            }
+        } else if (historyListViewModel.completedClick.get()) {
+            if (currentCompletedPage != 1) {
+                adapter.removeLoadingFooter();
+                isLoading = false;
+                isCompletedLastPage = true;
+            }
+        } else if (historyListViewModel.cancelledClick.get()) {
+            if (currentCancelledPage != 1) {
+                adapter.removeLoadingFooter();
+                isLoading = false;
+                isCancelledLastPage = true;
+            }
+        }
     }
 
     public void goBack() {
@@ -272,21 +261,21 @@ public class HistoryListFrag extends BaseFragment<FragmentHistoryListBinding, Hi
     @Override
     public void fetchHistoryList() {
         adapter.clearList();
-//        currentScheduledPage = PAGE_START;
-//        currentCompletedPage = PAGE_START;
-//        currentCancelledPage = PAGE_START;
-//        isScheduledLastPage = false;
-//        isCompletedLastPage = false;
-//        isCancelledLastPage = false;
+        currentScheduledPage = PAGE_START;
+        currentCompletedPage = PAGE_START;
+        currentCancelledPage = PAGE_START;
+        isScheduledLastPage = false;
+        isCompletedLastPage = false;
+        isCancelledLastPage = false;
         if (historyListViewModel.scheduledClick.get()) {
             fragmentHistoryListBinding.txtNoData.setText(getBaseActivity().getTranslatedString(R.string.txt_no_upcoming_rides));
-            historyListViewModel.fetchData();
+            historyListViewModel.fetchData(currentScheduledPage, true);
         } else if (historyListViewModel.completedClick.get()) {
             fragmentHistoryListBinding.txtNoData.setText(getBaseActivity().getTranslatedString(R.string.txt_no_completed_rides));
-            historyListViewModel.fetchData();
+            historyListViewModel.fetchData(currentCompletedPage, true);
         } else if (historyListViewModel.cancelledClick.get()) {
             fragmentHistoryListBinding.txtNoData.setText(getBaseActivity().getTranslatedString(R.string.txt_no_cancelled_rides));
-            historyListViewModel.fetchData();
+            historyListViewModel.fetchData(currentCancelledPage, true);
         }
     }
 
@@ -304,14 +293,14 @@ public class HistoryListFrag extends BaseFragment<FragmentHistoryListBinding, Hi
             if (data.getExtras().getString(Constants.EXTRA_Data).equalsIgnoreCase("Done")) {
                 isdeleted = true;
                 if (historyListViewModel.scheduledClick.get()) {
-//                    currentScheduledPage = PAGE_START;
-                    historyListViewModel.fetchData();
+                    currentScheduledPage = PAGE_START;
+                    historyListViewModel.fetchData(currentScheduledPage, true);
                 } else if (historyListViewModel.completedClick.get()) {
-//                    currentCompletedPage = PAGE_START;
-                    historyListViewModel.fetchData();
+                    currentCompletedPage = PAGE_START;
+                    historyListViewModel.fetchData(currentCompletedPage, true);
                 } else if (historyListViewModel.cancelledClick.get()) {
-//                    currentCancelledPage = PAGE_START;
-                    historyListViewModel.fetchData();
+                    currentCancelledPage = PAGE_START;
+                    historyListViewModel.fetchData(currentCancelledPage, true);
                 }
             }
         }

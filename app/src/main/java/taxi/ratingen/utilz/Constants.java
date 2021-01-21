@@ -200,7 +200,7 @@ public final class Constants {
         String SendCompliantURL = "v1/compliants/user";
         String addwalletURL = "v1/user/addwallet";
         String addcardURL = "v1/user/addcard";
-        String historySingleURL = "v1/user/historySingle";
+        String historySingleURL = "api/v1/request/history";
         String cardlistURL = "v1/user/cardlist";
         String getwalletURL = "v1/user/getwallet";
         String ClienttokenURL = "v1/application/client_token";

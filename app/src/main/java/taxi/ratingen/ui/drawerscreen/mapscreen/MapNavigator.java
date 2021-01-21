@@ -49,4 +49,7 @@ public interface MapNavigator extends BaseView{
     void openScannerPage();
 
     void openSideMenu();
+
+    void izettleLogin();
+
 }

@@ -47,6 +47,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.zxing.integration.android.IntentIntegrator;
+import com.izettle.payments.android.sdk.IZettleSDK;
+
 import taxi.ratingen.R;
 import taxi.ratingen.databinding.FragmentMapBinding;
 import taxi.ratingen.retro.base.BaseResponse;
@@ -80,6 +82,7 @@ import javax.inject.Inject;
 
 /**/
 public class MapFragment extends BaseFragment<FragmentMapBinding, MapFragmentViewModel> implements MapNavigator, OnMapReadyCallback {
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -450,6 +453,11 @@ public class MapFragment extends BaseFragment<FragmentMapBinding, MapFragmentVie
     public void openSideMenu() {
         if(getBaseActivity()!=null)
             ((DrawerAct)getBaseActivity()).openCloseDrawer();
+    }
+
+    @Override
+    public void izettleLogin() {
+        IZettleSDK.Instance.getUser().login(getBaseActivity());
     }
 
     @Override

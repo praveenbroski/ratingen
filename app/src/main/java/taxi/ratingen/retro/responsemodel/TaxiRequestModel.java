@@ -79,7 +79,7 @@ public class TaxiRequestModel extends BaseResponse implements Serializable {
         public Double totalDistance;
         @SerializedName("total_time")
         @Expose
-        public Integer totalTime;
+        public Float totalTime;
         @SerializedName("is_completed")
         @Expose
         public Integer isCompleted;
@@ -303,6 +303,9 @@ public class TaxiRequestModel extends BaseResponse implements Serializable {
         @SerializedName("vehicle_type_name")
         @Expose
         public String vehicleTypeName;
+        @SerializedName("vehicle_type_image")
+        @Expose
+        public String vehicleTypeImage;
         @SerializedName("car_make")
         @Expose
         public String carMake;
@@ -323,7 +326,7 @@ public class TaxiRequestModel extends BaseResponse implements Serializable {
         public String carNumber;
         @SerializedName("rating")
         @Expose
-        public Float rating;
+        public float rating;
         @SerializedName("no_of_ratings")
         @Expose
         public Integer noOfRatings;

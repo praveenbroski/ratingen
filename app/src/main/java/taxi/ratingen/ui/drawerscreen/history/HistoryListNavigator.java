@@ -14,7 +14,7 @@ import taxi.ratingen.ui.base.BaseView;
 
 public interface HistoryListNavigator extends BaseView {
 
-    void addItem(List<history> histories);
+//    void addItem(List<history> histories);
 
     void Dostaff();
 

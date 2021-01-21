@@ -389,20 +389,6 @@
                                         android:orientation="horizontal"
                                         android:visibility="@{viewModel.isCompleted?View.VISIBLE:viewModel.iscancelled?View.GONE:View.GONE}">
 
-                                        <!--                                  <TextView-->
-                                        <!--                                        android:layout_width="wrap_content"-->
-                                        <!--                                        android:layout_height="wrap_content"-->
-                                        <!--                                        android:text="Your rated"-->
-                                        <!--                                        android:textAppearance="?android:attr/textAppearanceSmall"-->
-                                        <!--                                        app:textfont="@{`sf_regular.otf`}" />-->
-
-<!--                                        <RatingBar-->
-<!--                                            android:layout_width="wrap_content"-->
-<!--                                            android:layout_height="16dp"-->
-<!--                                            android:isIndicator="true"-->
-<!--                                            android:progressDrawable="@drawable/custom_rating_small"-->
-<!--                                            android:rating="@{viewModel.driverRating}" />-->
-
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="match_parent"

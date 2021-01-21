@@ -16,7 +16,7 @@ import taxi.ratingen.R;
 import taxi.ratingen.retro.base.BaseNetwork;
 import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.GitHubService;
-import taxi.ratingen.retro.responsemodel.Request;
+import taxi.ratingen.retro.responsemodel.TaxiRequestModel;
 import taxi.ratingen.utilz.CommonUtils;
 import taxi.ratingen.utilz.Constants;
 import taxi.ratingen.utilz.exception.CustomException;
@@ -71,7 +71,7 @@ public class HistoryDetViewModel extends BaseNetwork<BaseResponse, HistoryDetNav
     private String requestID;
     private boolean isAlreadyDrawer = false;
     SimpleDateFormat TargetFormatter = new SimpleDateFormat("EE, MMM dd, hh:mm aa", Locale.US);
-    SimpleDateFormat realformatter = new SimpleDateFormat("yyyy-MM-dd kk:mm");
+    SimpleDateFormat realformatter = new SimpleDateFormat("yyyy-MM-dd kk:mm", Locale.ENGLISH);
     public ObservableBoolean isDisputeAvailable = new ObservableBoolean(false);
     public ObservableBoolean cancelFee = new ObservableBoolean(true);
     public ObservableBoolean zoneFee = new ObservableBoolean(true);
@@ -158,15 +158,15 @@ public class HistoryDetViewModel extends BaseNetwork<BaseResponse, HistoryDetNav
     }
 
     /** set trip data to variables **/
-    public void initializeValues(Request model) {
+    public void initializeValues(TaxiRequestModel.ResultData model) {
         if (model != null) {
-            if (model.driver != null && model.driver.id != null) {
+            if (model.driverDetail != null && model.driverDetail.driverData != null) {
                 driverNotAvail.set(true);
-                bitmap_profilePic.set(model.driver.profilePic);
-                driverName.set(model.driver.firstname + " " + model.driver.lastname);
-                driverRating.set((int) model.driver.review);
-                ratingText.set("" + model.driver.review);
-                car_number.set(model.driver.carnumber);
+                bitmap_profilePic.set(model.driverDetail.driverData.profilePicture);
+                driverName.set(model.driverDetail.driverData.name);
+                driverRating.set((int) model.driverDetail.driverData.rating);
+                ratingText.set("" + model.driverDetail.driverData.rating);
+                car_number.set(model.driverDetail.driverData.carNumber);
             } else driverNotAvail.set(false);
 
             iscancelShown.set(model.isDriverStarted == 1);
@@ -176,84 +176,99 @@ public class HistoryDetViewModel extends BaseNetwork<BaseResponse, HistoryDetNav
                 dropLatlng.set(new LatLng(model.dropLat, model.dropLng));
             isCompleted.set(model.isCompleted == 1);
             iscancelled.set(model.isCancelled == 1);
-            islater.set(model.later == 1);
-            isShare.set(model.is_share == 1);
-            if (!CommonUtils.IsEmpty(model.typeIcon))
-                carurl.set(model.typeIcon);
+            islater.set(model.isLater == 1);
+            isShare.set(model.isShare != null && model.isShare == 1);
+            if (model.driverDetail != null && model.driverDetail.driverData != null) {
+                if (!CommonUtils.IsEmpty(model.driverDetail.driverData.vehicleTypeImage))
+                    carurl.set(model.driverDetail.driverData.vehicleTypeImage);
 
-            if (!CommonUtils.IsEmpty(model.typename))
-                typename.set(model.typename);
+                if (!CommonUtils.IsEmpty(model.driverDetail.driverData.vehicleTypeName))
+                    typename.set(model.driverDetail.driverData.vehicleTypeName);
+            }
 
             if (islater.get())
                 driverName.set(getmNavigator().getBaseAct().getTranslatedString(R.string.Txt_RideScheduled));
-            isDisputeAvailable.set(!iscancelled.get() && isCompleted.get() && model.enable_dispute_button);
+//            isDisputeAvailable.set(!iscancelled.get() && isCompleted.get() && model.enable_dispute_button);
+            isDisputeAvailable.set(false);
 //            txt_Distance.set(model.distance + " " + context.getString(R.string.text_km));
-            txt_Time.set(model.time + " " + getmNavigator().getBaseAct().getTranslatedString(R.string.txt_min));
-            txt_pick.set(model.pickLocation);
-            txt_drop.set(model.dropLocation);
-            if (model.bill != null && isCompleted.get()) {
-                showBill.set(model.bill.show_bill == 1);
-                currency = model.bill.currency;
-                txt_basePrice.set(currency + " " + CommonUtils.doubleDecimalFromat(isShare.get() ? model.bill.ride_fare : model.bill.base_price));
+            txt_Time.set(model.totalTime + " " + getmNavigator().getBaseAct().getTranslatedString(R.string.txt_min));
+            txt_pick.set(model.pickAddress);
+            txt_drop.set(model.dropAddress);
+            if (model.billDetail != null && model.billDetail.billData != null && isCompleted.get()) {
+//                showBill.set(model.billDetail.billData.show_bill == 1);
+                showBill.set(true);
+                currency = model.billDetail.billData.requestedCurrencySymbol;
+//                txt_basePrice.set(currency + " " + CommonUtils.doubleDecimalFromat(isShare.get() ? model.billDetail.billData.ride_fare : model.bill.base_price));
+                txt_basePrice.set(currency + " " + CommonUtils.doubleDecimalFromat(model.billDetail.billData.basePrice));
 
-                if (model.bill.cancellation_fee != null && model.bill.cancellation_fee != 0.0)
-                    cancellation_fees.set(currency + " " + CommonUtils.doubleDecimalFromat(model.bill.cancellation_fee));
+                if (model.billDetail.billData.cancellationFee != null && model.billDetail.billData.cancellationFee != 0.0)
+                    cancellation_fees.set(currency + " " + CommonUtils.doubleDecimalFromat(model.billDetail.billData.cancellationFee));
                 else cancelFee.set(false);
 
-                if (model.bill.drop_out_of_zone_fee != null && model.bill.drop_out_of_zone_fee != 0.0)
-                    zone_fees.set(currency + " " + CommonUtils.doubleDecimalFromat(model.bill.drop_out_of_zone_fee));
-                else zoneFee.set(false);
+//                if (model.bill.drop_out_of_zone_fee != null && model.bill.drop_out_of_zone_fee != 0.0)
+//                    zone_fees.set(currency + " " + CommonUtils.doubleDecimalFromat(model.bill.drop_out_of_zone_fee));
+//                else zoneFee.set(false);
+                zoneFee.set(false);
 
-                txt_distanceCost.set(currency + " " + CommonUtils.doubleDecimalFromat(model.bill.distance_price));
+                txt_distanceCost.set(currency + " " + CommonUtils.doubleDecimalFromat(model.billDetail.billData.distancePrice));
 //                txt_price_perDistance.set(currency + CommonUtils.doubleDecimalFromat(model.bill.price_per_distance) + " / " + context.getString(R.string.text_km));
-                txt_price_perDistance.set(currency + " " + CommonUtils.doubleDecimalFromat(model.bill.price_per_distance) + " / " +
-                        (model.bill.unit_in_words != null ? model.bill.unit_in_words : getmNavigator().getBaseAct().getTranslatedString(R.string.text_km)));
-                txt_Distance.set(CommonUtils.doubleDecimalFromat(model.distance) + " " + (model.bill.unit_in_words != null ? model.bill.unit_in_words : getmNavigator().getBaseAct().getTranslatedString(R.string.text_km)));
-                txt_TimeCost.set(currency + " " + CommonUtils.doubleDecimalFromat(model.bill.time_price));
-                txt_price_pertime.set(currency + " " + model.bill.price_per_time + " / " + getmNavigator().getBaseAct().getTranslatedString(R.string.txt_min));
-                txt_refferalBonus.set("-" + currency + " " + CommonUtils.doubleDecimalFromat(model.bill.referral_amount));
-                txt_taxiCost.set(currency + " " + CommonUtils.doubleDecimalFromat(model.bill.service_tax));
-                txt_promoBonus.set("-" + currency + " " + CommonUtils.doubleDecimalFromat(model.bill.promo_amount));
-                txt_waitingCost.set(currency + " " + CommonUtils.doubleDecimalFromat(model.bill.waiting_price));
-                txt_total.set(currency + " " + CommonUtils.doubleDecimalFromat(model.bill.total));
-                totalAdditionalCharge.set(currency + " " + CommonUtils.doubleDecimalFromat(model.bill.totalAdditionalCharge == null ? 0 : model.bill.totalAdditionalCharge));
+                txt_price_perDistance.set(currency + " " + CommonUtils.doubleDecimalFromat(model.billDetail.billData.pricePerDistance) + " / " +
+                        (model.unit != null ? model.unit : getmNavigator().getBaseAct().getTranslatedString(R.string.text_km)));
+                txt_Distance.set(CommonUtils.doubleDecimalFromat(model.totalDistance) + " " + (model.unit != null ? model.unit : getmNavigator().getBaseAct().getTranslatedString(R.string.text_km)));
+                txt_TimeCost.set(currency + " " + CommonUtils.doubleDecimalFromat(model.billDetail.billData.timePrice));
+                txt_price_pertime.set(currency + " " + model.billDetail.billData.pricePerTime + " / " + getmNavigator().getBaseAct().getTranslatedString(R.string.txt_min));
+                txt_refferalBonus.set("-" + currency + " " + CommonUtils.doubleDecimalFromat(model.billDetail.billData.referral_amount));
+                txt_taxiCost.set(currency + " " + CommonUtils.doubleDecimalFromat(model.billDetail.billData.serviceTax));
+                txt_promoBonus.set("-" + currency + " " + CommonUtils.doubleDecimalFromat(model.billDetail.billData.promoDiscount));
+                txt_waitingCost.set(currency + " " + CommonUtils.doubleDecimalFromat(model.billDetail.billData.waitingCharge));
+                txt_total.set(currency + " " + CommonUtils.doubleDecimalFromat(model.billDetail.billData.totalAmount));
+//                totalAdditionalCharge.set(currency + " " + CommonUtils.doubleDecimalFromat(model.bill.totalAdditionalCharge == null ? 0 : model.bill.totalAdditionalCharge));
 
-                txt_paymentMode.set(getmNavigator().getBaseAct().getTranslatedString(model.paymentOpt == 0 ? R.string.txt_card : model.paymentOpt == 1 ? R.string.txt_cash : R.string.txt_wallet));
-                txt_walletAmount.set(currency + " " + ((model.paymentOpt == 2 || model.paymentOpt == 3) ? CommonUtils.doubleDecimalFromat(model.bill.wallet_amount) : CommonUtils.doubleDecimalFromat(model.bill.total)));
+                txt_paymentMode.set(getmNavigator().getBaseAct().getTranslatedString(model.paymentOpt.equals("0") ? R.string.txt_card : model.paymentOpt.equals("1") ? R.string.txt_cash : R.string.txt_wallet));
+//                txt_walletAmount.set(currency + " " + ((model.paymentOpt.equals("2") || model.paymentOpt.equals("3")) ? CommonUtils.doubleDecimalFromat(model.billDetail.billData.wallet_amount) : CommonUtils.doubleDecimalFromat(model.billDetail.billData.totalAmount)));
 
-                customCaptainShown.set(model.bill.custom_select_driver_fee != 0);
-                custom_captain_fee.set(currency + " " + CommonUtils.doubleDecimalFromat(model.bill.custom_select_driver_fee));
-                total_trip_cost.set(currency + " " + CommonUtils.doubleDecimalFromat(model.bill.total - model.bill.cancellation_fee) + " +");
-                service_fee.set(currency + " " + CommonUtils.doubleDecimalFromat(model.bill.service_fee));
+//                customCaptainShown.set(model.bill.custom_select_driver_fee != 0);
+//                custom_captain_fee.set(currency + " " + CommonUtils.doubleDecimalFromat(model.bill.custom_select_driver_fee));
+                customCaptainShown.set(false);
+                total_trip_cost.set(currency + " " + CommonUtils.doubleDecimalFromat(model.billDetail.billData.totalAmount - model.billDetail.billData.cancellationFee) + " +");
+                service_fee.set(currency + " " + CommonUtils.doubleDecimalFromat(model.billDetail.billData.adminCommision));
 
-                if (model.bill.additionalCharge != null && getmNavigator() != null) {
-                    getmNavigator().setRecyclerAdapter(model.bill.currency, model.bill.additionalCharge);
-                    isAddnlChargeAvailable.set(model.bill.additionalCharge.size() > 0);
-                } else {
-                    isAddnlChargeAvailable.set(false);
-                }
+//                if (model.bill.additionalCharge != null && getmNavigator() != null) {
+//                    getmNavigator().setRecyclerAdapter(model.bill.currency, model.bill.additionalCharge);
+//                    isAddnlChargeAvailable.set(model.bill.additionalCharge.size() > 0);
+//                } else {
+//                    isAddnlChargeAvailable.set(false);
+//                }
+                isAddnlChargeAvailable.set(false);
             }
         }
-        try {
-            if (!CommonUtils.IsEmpty(model.tripStartTime)) {
-                DatenTime.set(TargetFormatter.format(realformatter.parse(model.tripStartTime)));
-            }
-            duration.set(getmNavigator().getBaseAct().getTranslatedString(R.string.txt_trip_time_text) +
-                    ": " + CommonUtils.doubleDecimalFromatFloat(model.time) + " " +
-                    getmNavigator().getBaseAct().getTranslatedString(R.string.txt_min));
+//        try {
+//            if (!CommonUtils.IsEmpty(model.tripStartTime)) {
+//                DatenTime.set(TargetFormatter.format(realformatter.parse(model.tripStartTime)));
+//            }
+//            duration.set(getmNavigator().getBaseAct().getTranslatedString(R.string.txt_trip_time_text) +
+//                    ": " + CommonUtils.doubleDecimalFromatFloat(model.totalTime) + " " +
+//                    getmNavigator().getBaseAct().getTranslatedString(R.string.txt_min));
+//
+//            if (!CommonUtils.IsEmpty(model.requestNumber))
+//                requedid.set(translationModel.txt_rideID + " " + model.requestNumber);
+//
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
 
-            if (!CommonUtils.IsEmpty(model.request_id))
-                requedid.set(translationModel.txt_rideID + " " + model.request_id);
+        DatenTime.set(model.tripStartTime);
+        duration.set(getmNavigator().getBaseAct().getTranslatedString(R.string.txt_trip_time_text) +
+                ": " + CommonUtils.doubleDecimalFromatFloat(model.totalTime) + " " +
+                getmNavigator().getBaseAct().getTranslatedString(R.string.txt_min));
+        if (!CommonUtils.IsEmpty(model.requestNumber))
+            requedid.set(translationModel.txt_rideID + " " + model.requestNumber);
 
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
         if (!isAlreadyDrawer)
             if (pickupLatlng.get() != null && dropLatlng.get() != null)
                 drawPathPickupDrop(pickupLatlng.get(), dropLatlng.get());
             else if (pickupLatlng.get() != null)
                 markerBuildBound(pickupLatlng.get());
-
     }
 
     /** draw polyline between pickup and drop locations **/
@@ -307,11 +322,13 @@ public class HistoryDetViewModel extends BaseNetwork<BaseResponse, HistoryDetNav
     @Override
     public void onSuccessfulApi(long taskId, BaseResponse response) {
         setIsLoading(false);
-
         if (response.success) {
-            if (response.successMessage.equalsIgnoreCase("user_single_history")) {
-                initializeValues(response.request);
-            } else if (response.successMessage.equalsIgnoreCase("Ride_later_cancelled")) {
+            if (response.message.equalsIgnoreCase("single_request_history")) {
+                if (response.data != null) {
+                    TaxiRequestModel.ResultData requestModel = (TaxiRequestModel.ResultData) CommonUtils.StringToObject(CommonUtils.ObjectToString(response.data), TaxiRequestModel.ResultData.class);
+                    initializeValues(requestModel);
+                }
+            } else if (response.message.equalsIgnoreCase("Ride_later_cancelled")) {
                 getmNavigator().setResultnFinish();
             }
         } else
@@ -335,15 +352,9 @@ public class HistoryDetViewModel extends BaseNetwork<BaseResponse, HistoryDetNav
     /** call API to get details of the ride **/
     public void getRequestDetails(String requestID) {
         this.requestID = requestID;
-
         if (getmNavigator().isNetworkConnected()) {
             setIsLoading(true);
-            map.put(Constants.NetworkParameters.client_id, sharedPrefence.getCompanyID());
-            map.put(Constants.NetworkParameters.client_token, sharedPrefence.getCompanyToken());
-            map.put(Constants.NetworkParameters.id, sharedPrefence.Getvalue(SharedPrefence.ID));
-            map.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
-            map.put(Constants.NetworkParameters.request_id, requestID);
-            getSingleHistoryNetwork();
+            getSingleHistoryNetwork(requestID);
         }
     }
 

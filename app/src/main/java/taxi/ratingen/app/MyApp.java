@@ -4,10 +4,16 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
+
+import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.multidex.MultiDex;
 import android.util.Log;
 
+import com.izettle.payments.android.sdk.IZettleSDK;
+import com.izettle.payments.android.ui.SdkLifecycle;
+
 import dagger.android.HasAndroidInjector;
+import taxi.ratingen.R;
 import taxi.ratingen.ui.nodriveralert.NoDriverAct;
 import taxi.ratingen.ui.topdriver.TopDriverAct;
 import taxi.ratingen.di.component.DaggerAppComponent;
@@ -41,6 +47,16 @@ public class MyApp extends Application implements HasAndroidInjector, Applicatio
 
         mContext = this;
         registerActivityLifecycleCallbacks(this);
+        initIZettleSDK();
+    }
+
+    private void initIZettleSDK() {
+        String clientId = getString(R.string.client_id);
+        String scheme = getString(R.string.redirect_url_scheme);
+        String host = getString(R.string.redirect_url_host);
+        String redirectUrl = scheme + "://" + host;
+        IZettleSDK.Instance.init(this, clientId, redirectUrl);
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(new SdkLifecycle(IZettleSDK.Instance));
     }
 
     public static Context getmContext() {

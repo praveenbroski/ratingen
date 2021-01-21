@@ -35,9 +35,15 @@ public class ChildHistoryViewModel {
         /*DataBindingUtil.setDefaultComponent(new MyComponent(this));*/
         this.history = request;
         this.listener = childHistoryViewHolder;
-        driverurl = new ObservableField<>(request.driverDetail.driverData.profilePicture);
-        carurl = new ObservableField<>(request.driverDetail.driverData.carModelName);
-        typename = new ObservableField<>(request.driverDetail.driverData.carModelName);
+        if (request.driverDetail != null) {
+            driverurl = new ObservableField<>(request.driverDetail.driverData.profilePicture);
+            carurl = new ObservableField<>(request.driverDetail.driverData.vehicleTypeImage);
+            typename = new ObservableField<>(request.driverDetail.driverData.vehicleTypeName);
+        } else {
+            driverurl = new ObservableField<>("");
+            carurl = new ObservableField<>("");
+            typename = new ObservableField<>("");
+        }
         DateTime = new ObservableField<>();
         isTotalShown = new ObservableBoolean(false);
         Iscancelled = new ObservableBoolean();
@@ -46,14 +52,15 @@ public class ChildHistoryViewModel {
         isUnsucess = new ObservableBoolean();
         isINTrip = new ObservableBoolean();
         total = new ObservableField<>("");
-        try {
-            if (request.tripStartTime != null)
-                DateTime.set(TargetFormatter.format(realformatter.parse(request.tripStartTime)));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        DateTime.set(request.tripStartTime);
+//        try {
+//            if (request.tripStartTime != null)
+//                DateTime.set(TargetFormatter.format(realformatter.parse(request.tripStartTime)));
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
 
-        requestid = new ObservableField<>(" ( " + request.id + " ) ");
+        requestid = new ObservableField<>(" ( " + request.requestNumber + " ) ");
         pickadd = new ObservableField<>(request.pickAddress);
         dropAdd = new ObservableField<>(request.dropAddress);
         isDropAvailable = new ObservableBoolean(!CommonUtils.IsEmpty(request.dropAddress));
@@ -66,7 +73,7 @@ public class ChildHistoryViewModel {
         if (request.isLater != null)
             islater.set(request.isLater != 0);
         else islater.set(false);
-        isShare = new ObservableBoolean(request.isShare == 1);
+        isShare = new ObservableBoolean(request.isShare != null && request.isShare == 1);
         if (request.isCancelled != null && request.cancelMethod != null)
             isUnsucess.set(request.isCancelled == 1 && request.cancelMethod.equals("3"));
         else isUnsucess.set(false);

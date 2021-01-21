@@ -4,6 +4,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.Url;
 import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.responsemodel.Payment;
 import taxi.ratingen.retro.responsemodel.User;
@@ -130,13 +131,16 @@ public interface GitHubService {
     Call<BaseResponse> getRequestInpro(@Header("Authorization") String bearer);
 
     @GET(Constants.URL.historyListURL)
-    Call<BaseResponse> GetHistoryCallLater(@Query(Constants.NetworkParameters.is_later) String option, @Header("Authorization") String bearer);
+    Call<BaseResponse> GetHistoryCallLater(@Query(Constants.NetworkParameters.is_later) String option, @Header("Authorization") String bearer, @Query(Constants.NetworkParameters.page) String pageNo);
 
     @GET(Constants.URL.historyListURL)
-    Call<BaseResponse> GetHistoryCallCancelled(@Query(Constants.NetworkParameters.is_cancelled) String option, @Header("Authorization") String bearer);
+    Call<BaseResponse> GetHistoryCallCancelled(@Query(Constants.NetworkParameters.is_cancelled) String option, @Header("Authorization") String bearer, @Query(Constants.NetworkParameters.page) String pageNo);
 
     @GET(Constants.URL.historyListURL)
-    Call<BaseResponse> GetHistoryCallCompleted(@Query(Constants.NetworkParameters.is_completed) String option, @Header("Authorization") String bearer);
+    Call<BaseResponse> GetHistoryCallCompleted(@Query(Constants.NetworkParameters.is_completed) String option, @Header("Authorization") String bearer, @Query(Constants.NetworkParameters.page) String pageNo);
+
+    @GET
+    Call<BaseResponse> GetHistoryNextPage(@Url String nextPageURL, @Header("Authorization") String bearer);
 
     @FormUrlEncoded
     @POST(Constants.URL.AddFavurl)
@@ -185,9 +189,8 @@ public interface GitHubService {
     @POST(Constants.URL.ridelatercancelURL)
     Call<BaseResponse> Schedulecancel(@FieldMap Map<String, String> options);
 
-    @FormUrlEncoded
-    @POST(Constants.URL.historySingleURL)
-    Call<BaseResponse> getSingleHistory(@FieldMap Map<String, String> options);
+    @GET(Constants.URL.historySingleURL + "/{" + Constants.NetworkParameters.id + "}")
+    Call<BaseResponse> getSingleHistory(@Path(Constants.NetworkParameters.id) String requestId, @Header("Authorization") String bearer);
 
 
     @Multipart

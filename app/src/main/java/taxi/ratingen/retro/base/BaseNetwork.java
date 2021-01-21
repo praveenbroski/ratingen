@@ -125,16 +125,20 @@ public abstract class BaseNetwork<T extends BaseResponse, N> implements Basecall
     /**
      * Api call to get the history details of user.
      */
-    public void GetHistoryNetworkCallLater() {
-        gitHubService.GetHistoryCallLater("1", "Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken)).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+    public void GetHistoryNetworkCallLater(String pageNo) {
+        gitHubService.GetHistoryCallLater("1", "Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken), pageNo).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
     }
 
-    public void GetHistoryNetworkCallCancelled() {
-        gitHubService.GetHistoryCallCancelled("1", "Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken)).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+    public void GetHistoryNetworkCallCancelled(String pageNo) {
+        gitHubService.GetHistoryCallCancelled("1", "Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken), pageNo).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
     }
 
-    public void GetHistoryNetworkCallCompleted() {
-        gitHubService.GetHistoryCallCompleted("1", "Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken)).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+    public void GetHistoryNetworkCallCompleted(String pageNo) {
+        gitHubService.GetHistoryCallCompleted("1", "Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken), pageNo).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+    }
+
+    public void GetHistoryNextPage(String nextPageURL) {
+        gitHubService.GetHistoryNextPage(nextPageURL, "Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken)).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
     }
 
     /**
@@ -161,8 +165,8 @@ public abstract class BaseNetwork<T extends BaseResponse, N> implements Basecall
     /**
      * api call to get single history details.
      */
-    public void getSingleHistoryNetwork() {
-        gitHubService.getSingleHistory(getMap()).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+    public void getSingleHistoryNetwork(String requestId) {
+        gitHubService.getSingleHistory(requestId, "Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken)).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
     }
 
     /**

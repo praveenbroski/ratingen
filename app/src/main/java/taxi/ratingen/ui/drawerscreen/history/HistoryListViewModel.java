@@ -1,6 +1,5 @@
 package taxi.ratingen.ui.drawerscreen.history;
 
-import android.util.Log;
 import android.view.View;
 
 import androidx.databinding.ObservableBoolean;
@@ -17,6 +16,7 @@ import taxi.ratingen.utilz.Constants;
 import taxi.ratingen.utilz.exception.CustomException;
 import taxi.ratingen.utilz.SharedPrefence;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -45,43 +45,34 @@ public class HistoryListViewModel extends BaseNetwork<BaseResponse, HistoryListN
     /** called when the API call is successful **/
     @Override
     public void onSuccessfulApi(long taskId, BaseResponse response) {
+        setIsLoading(false);
         if (response.message.equalsIgnoreCase("request_history_list")) {
             if (response.data != null) {
                 String historyStr = CommonUtils.ObjectToString(response.data);
                 List<TaxiRequestModel.ResultData> historyList = CommonUtils.stringToArray(historyStr, TaxiRequestModel.ResultData[].class);
                 if (historyList.size() > 0) {
                     isdata.set(true);
+                    if (pageno > 1) {
+                        getmNavigator().Dostaff();
+                    }
                     getmNavigator().addHistoryItem(response, historyList);
+                } else {
+                    if (response.meta != null && response.meta.pagination != null) {
+                        if (response.meta.pagination.current_page >= response.meta.pagination.total_pages) {
+                            getmNavigator().MentionLastPage();
+                        }
+                    }
                 }
-            }
-            if (response.meta != null && response.meta.pagination != null) {
-                if (response.meta.pagination.current_page > 1)
-                    getmNavigator().Dostaff();
-
-                if (response.meta.pagination.current_page.equals(response.meta.pagination.total_pages))
-                    getmNavigator().MentionLastPage();
             }
         } else {
             getmNavigator().showMessage(response.message);
         }
-
-//        if (response.getHistory() != null && response.getHistory().size() != 0) {
-//            isdata.set(true);
-//            if (pageno > 1) {
-//                getmNavigator().Dostaff();
-//            }
-//            getmNavigator().addItem(response.getHistory());
-//        } else {
-//            if (response.successMessage.equalsIgnoreCase("user_history_not_found")) {
-//                getmNavigator().MentionLastPage();
-//            } else
-//                getmNavigator().showMessage(response.successMessage);
-//        }
     }
 
     /** called when the API call fails ***/
     @Override
     public void onFailureApi(long taskId, CustomException e) {
+        setIsLoading(false);
         if (e.getCode() == Constants.ErrorCode.TOKEN_EXPIRED || e.getCode() == Constants.ErrorCode.TOKEN_MISMATCHED
                 || e.getCode() == Constants.ErrorCode.INVALID_LOGIN) {
             if (getmNavigator().getAttachedContext() != null) {
@@ -104,18 +95,27 @@ public class HistoryListViewModel extends BaseNetwork<BaseResponse, HistoryListN
     }
 
     /** gets user's ride history data from server via GetHistoryNetworkCall() API **/
-    public void fetchData() {
+    public void fetchData(int currentPage, boolean showLoader) {
         if (getmNavigator().isNetworkConnected()) {
+            pageno = currentPage;
+            setIsLoading(showLoader);
             if (scheduledClick.get()) {
-                GetHistoryNetworkCallLater();
+                GetHistoryNetworkCallLater(pageno + "");
             } else if (cancelledClick.get()) {
-                GetHistoryNetworkCallCancelled();
+                GetHistoryNetworkCallCancelled(pageno + "");
             } else if (completedClick.get()) {
-                GetHistoryNetworkCallCompleted();
+                GetHistoryNetworkCallCompleted(pageno + "");
             }
         } else {
             getmNavigator().showNetworkMessage();
         }
+    }
+
+    public void getNextPage(String nextPageURL) {
+        if (getmNavigator().isNetworkConnected()) {
+            GetHistoryNextPage(nextPageURL);
+        } else
+            getmNavigator().showNetworkMessage();
     }
 
     public void scheduledClick(View v) {

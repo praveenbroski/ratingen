@@ -6,7 +6,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.3'
+        classpath 'com.android.tools.build:gradle:4.1.2'
         classpath 'com.google.gms:google-services:4.3.4'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.3.0'
@@ -19,6 +19,16 @@ allprojects {
         mavenCentral()
         maven { url 'https://maven.google.com' }
         maven { url 'https://jitpack.io' }
+        maven {
+            url = uri("https://maven.pkg.github.com/iZettle/sdk-android")
+            credentials(HttpHeaderCredentials) {
+                name "Authorization"
+                value "Bearer 46045a1d8b085a03f913ce286f391e882db576ce"
+            }
+            authentication {
+                header(HttpHeaderAuthentication)
+            }
+        }
         google()
         jcenter()
     }
