@@ -63,10 +63,10 @@ public class FeedbackViewModel extends BaseNetwork<BaseResponse, FeedbackNavigat
                 if (!CommonUtils.IsEmpty(model.driverDetail.driverData.profilePicture))
                     userPic.set(model.driverDetail.driverData.profilePicture);
                 savedRating.set(model.driverDetail.driverData.rating);
-                if (!CommonUtils.IsEmpty(model.driverDetail.driverData.carNumber))
-                    carNumber.set(model.driverDetail.driverData.carNumber);
-                if (!CommonUtils.IsEmpty(model.driverDetail.driverData.carModel))
-                    carModel.set(model.driverDetail.driverData.carModel);
+                if (!CommonUtils.IsEmpty(model.driverDetail.driverData.carMakeName))
+                    carNumber.set(model.driverDetail.driverData.carMakeName);
+                if (!CommonUtils.IsEmpty(model.driverDetail.driverData.carModelName))
+                    carModel.set(model.driverDetail.driverData.carModelName);
             }
         }
     }

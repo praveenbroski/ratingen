@@ -557,8 +557,7 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
     /** Called when confirm button is clicked. Calls create request API **/
     public void OnClickConfirmBooking(String dateSelected) {
         this.dateFormat = dateSelected;
-        if (typeNew != null) {
-            //        this.view = view;
+        if (type != null) {
             if (!CommonUtils.IsEmpty(paymentOption.get())) {
                 if (isShareRide.get())
                     if (nofUser == null || nofUser == 0) {
@@ -570,24 +569,21 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
                     }
                 is_enableBooking.set(false);
                 hashMap.clear();
-//            if (drop == null)
-//                return;
-                hashMap.put(Constants.NetworkParameters.id, sharedPrefence.Getvalue(SharedPrefence.ID));
-                hashMap.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
-                hashMap.put(Constants.NetworkParameters.type, "" + typeNew.getZoneId());
-                hashMap.put(Constants.NetworkParameters.platitude, "" + pickup.latitude);
-                hashMap.put(Constants.NetworkParameters.plongitude, "" + pickup.longitude);
+                hashMap.put(Constants.NetworkParameters.is_later, "1");
+                hashMap.put(Constants.NetworkParameters.vehicle_type, "" + type.type_id);
+                hashMap.put(Constants.NetworkParameters.PICK_LAT, "" + pickup.latitude);
+                hashMap.put(Constants.NetworkParameters.PICK_LNG, "" + pickup.longitude);
+                hashMap.put(Constants.NetworkParameters.PICK_ADDRESS, "" + PickAddress.get());
                 if (isPromoAvail.get())
                     hashMap.put(Constants.NetworkParameters.promo_booked_id, bookedId);
 
                 if (!CommonUtils.IsEmpty(DropAddress.get())) {
-                    hashMap.put(Constants.NetworkParameters.dlongitude, "" + drop.longitude);
-                    hashMap.put(Constants.NetworkParameters.dlatitude, "" + drop.latitude);
-                    hashMap.put(Constants.NetworkParameters.dlocation, "" + DropAddress.get());
+                    hashMap.put(Constants.NetworkParameters.DROP_LAT, "" + drop.latitude);
+                    hashMap.put(Constants.NetworkParameters.DROP_LNG, "" + drop.longitude);
+                    hashMap.put(Constants.NetworkParameters.DROP_ADDRESS, "" + DropAddress.get());
                 }
-                hashMap.put(Constants.NetworkParameters.paymentOpt, "" + paymentOption.get());
+                hashMap.put(Constants.NetworkParameters.payment_opt, "" + paymentOption.get());
 
-                hashMap.put(Constants.NetworkParameters.plocation, "" + PickAddress.get());
                 hashMap.put(Constants.NetworkParameters.no_of_seats, "" + nofUser);
                 hashMap.put(Constants.NetworkParameters.is_share, "" + isShare);
 
@@ -600,7 +596,7 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
                 hashMap.put(Constants.NetworkParameters.timezone, "" + s.substring(0, 3) + ":" + s.substring(3));
                 Log.d(TAG, s.substring(0, 3) + ":" + s.substring(3));
                 try {
-                    hashMap.put(Constants.NetworkParameters.datetime, "" + TargetFormatter.format(realformatter.parse(dateFormat)));
+                    hashMap.put(Constants.NetworkParameters.trip_start_time, "" + TargetFormatter.format(realformatter.parse(dateFormat)));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -734,6 +730,16 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
                             getmNavigator().ShowWaitingDialog(requestModel.id);
                         }
                     }
+                } else if (response.message.equalsIgnoreCase("ride_later_success")) {
+                    if (type != null)
+                        typeId = type.type_id;
+                    if (response.data != null) {
+                        String requestStr = CommonUtils.ObjectToString(response.data);
+                        NewRequestModel requestModel = (NewRequestModel) CommonUtils.StringToObject(requestStr, NewRequestModel.class);
+                        reqId = requestModel.id + "";
+                        if (type != null)
+                            getmNavigator().scheduleSucess("" + type.type_id, requestModel.id, pickup.latitude, pickup.longitude);
+                    }
                 }
             } else {
                 if (response.successMessage.equalsIgnoreCase("user_declined"))
@@ -761,7 +767,7 @@ public class RideConfirmationViewModel extends BaseNetwork<BaseResponse, RideCon
                     reqId = response.request_id + "";
                     //  getmNavigator().openAlert(response.currency, response.DriverAddCharges);
                     if (typeNew != null)
-                        getmNavigator().scheduleSucess("" + typeNew.getTypeId(), "" + response.request_id, sharedPrefence.Getvalue(SharedPrefence.ID), sharedPrefence.Getvalue(SharedPrefence.TOKEN), pickup.latitude, pickup.longitude);
+                        getmNavigator().scheduleSucess("" + typeNew.getTypeId(), "" + response.request_id, pickup.latitude, pickup.longitude);
                 }  /*else if (response.message.equalsIgnoreCase("request_in_progress")) {
                 getmNavigator().enableCorporateUser(sharedPrefence.GetBoolean(SharedPrefence.IS_CORPORATE_USER));
                 ReqInProgress model = CommonUtils.getSingleObject(new Gson().toJson(response.data), ReqInProgress.class);

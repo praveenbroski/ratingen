@@ -1,6 +1,7 @@
 package taxi.ratingen.ui.drawerscreen;
 
 import taxi.ratingen.retro.responsemodel.Driver;
+import taxi.ratingen.retro.responsemodel.DriverData;
 import taxi.ratingen.retro.responsemodel.NewRequestModel;
 import taxi.ratingen.retro.responsemodel.Request;
 import taxi.ratingen.retro.responsemodel.TaxiRequestModel;
@@ -32,7 +33,7 @@ public interface DrawerNavigator extends BaseView{
      * */
     void enableCorporateUser(boolean isCorporate);
 
-    void openRideLaterAlert(Request request, Driver driver);
+    void openRideLaterAlert(TaxiRequestModel.ResultData request, TaxiRequestModel.DriverData driver);
 
     void openCloseDrawer();
 
@@ -43,5 +44,9 @@ public interface DrawerNavigator extends BaseView{
     void showTripFragment(TaxiRequestModel.ResultData resultData, TaxiRequestModel.DriverData driverData);
 
     void ShowFeedbackFragment(TaxiRequestModel.ResultData resultData, boolean isCorporate);
+
+    void notifyNoDriverMessage(String reqId);
+
+    void openRideLaterAlert(NewRequestModel requestModel);
 
 }

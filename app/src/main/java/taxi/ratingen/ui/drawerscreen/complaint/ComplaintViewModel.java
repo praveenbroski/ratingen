@@ -125,6 +125,9 @@ public class ComplaintViewModel extends BaseNetwork<BaseResponse, ComplaintNavig
                             addNoServiceList();
                     } else
                         addNoServiceList();
+                } else if (mCurrentTaskId == Constants.TaskId.REPORT_COMPLAINT) {
+                    getmNavigator().showMessage(getmNavigator().getBaseAct().getTranslatedString(R.string.txt_complaint_success));
+                    text_cmts.set("");
                 }
             }
         }
@@ -132,7 +135,7 @@ public class ComplaintViewModel extends BaseNetwork<BaseResponse, ComplaintNavig
 
     private void addNoServiceList() {
         ComplaintList complaintList = new ComplaintList();
-        complaintList.id = 0;
+        complaintList.id = "0";
         if (getmNavigator().GetContext() != null)
             complaintList.title = getmNavigator().GetContext().getTranslatedString(R.string.Txt_NoServiceAvailable);
         ArrayList<ComplaintList> list = new ArrayList<>();
@@ -196,13 +199,8 @@ public class ComplaintViewModel extends BaseNetwork<BaseResponse, ComplaintNavig
         } else {
             setIsLoading(true);
             hashMap.clear();
-            hashMap.put(Constants.NetworkParameters.client_id, sharedPrefence.getCompanyID());
-            hashMap.put(Constants.NetworkParameters.client_token, sharedPrefence.getCompanyToken());
-            hashMap.put(Constants.NetworkParameters.id, sharedPrefence.Getvalue(SharedPrefence.ID));
-            hashMap.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
-            hashMap.put(Constants.NetworkParameters.title, SelectedId);
+            hashMap.put(Constants.NetworkParameters.complaint_title_id, SelectedId);
             hashMap.put(Constants.NetworkParameters.description, text_cmts.get());
-            hashMap.put(Constants.NetworkParameters.admin_key, zoneRefID);
             SendComplaintNetwork();
         }
     }

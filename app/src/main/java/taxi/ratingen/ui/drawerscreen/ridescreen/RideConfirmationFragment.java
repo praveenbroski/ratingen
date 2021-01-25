@@ -31,6 +31,7 @@ import taxi.ratingen.retro.responsemodel.NewRequestModel;
 import taxi.ratingen.retro.responsemodel.Request;
 import taxi.ratingen.retro.responsemodel.Route;
 import taxi.ratingen.retro.responsemodel.TripRegisteredDetails;
+import taxi.ratingen.ui.drawerscreen.DrawerAct;
 import taxi.ratingen.ui.drawerscreen.ridescreen.payment.PaymentMethod;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -52,6 +53,7 @@ import taxi.ratingen.ui.base.BaseFragment;
 import taxi.ratingen.ui.drawerscreen.mapscrn.adapter.CarsTypesAdapter;
 import taxi.ratingen.ui.drawerscreen.ridescreen.etaparent.ETAParent;
 import taxi.ratingen.ui.drawerscreen.ridescreen.waitingdialog.WaitProgressDialog;
+import taxi.ratingen.ui.topdriver.TopDriverAct;
 import taxi.ratingen.utilz.CommonUtils;
 import taxi.ratingen.utilz.Constants;
 import taxi.ratingen.utilz.SharedPrefence;
@@ -279,10 +281,10 @@ public class RideConfirmationFragment extends BaseFragment<FragRideConfirmationB
         fragmentRideBinding.FPPaymentTXt.setText(getBaseAct().getTranslatedString(R.string.txt_cash));
         /* disabling promo, ride later, notes */
         fragmentRideBinding.llApplyPromo.setEnabled(false);
-        fragmentRideBinding.imgLater.setEnabled(false);
+//        fragmentRideBinding.imgLater.setEnabled(false);
         fragmentRideBinding.imgNotes.setEnabled(false);
         fragmentRideBinding.promocode.setTextColor(getResources().getColor(R.color.clr_disabled));
-        fragmentRideBinding.imgLater.setColorFilter(getResources().getColor(R.color.clr_disabled));
+//        fragmentRideBinding.imgLater.setColorFilter(getResources().getColor(R.color.clr_disabled));
         fragmentRideBinding.imgNotes.setColorFilter(getResources().getColor(R.color.clr_disabled));
     }
 
@@ -1075,27 +1077,41 @@ public class RideConfirmationFragment extends BaseFragment<FragRideConfirmationB
     /** Called when trip scheduling was successful
      * @param type_id Id of the selected car
      * @param req_id Id of the request
-     * @param user_id Id of the user
-     * @param user_token Token string of the user
      * @param latitude Latitude of the user
      * @param longitude Longitude of the user **/
     @Override
-    public void scheduleSucess(String type_id, String req_id, String user_id, String user_token, double latitude, double longitude) {
+    public void scheduleSucess(String type_id, String req_id, double latitude, double longitude) {
         this.type_id = type_id;
         this.req_id = req_id;
-        this.user_id = user_id;
-        this.user_token = user_token;
         this.latitude = latitude;
         this.longitude = longitude;
 
 //        Intent topDriver = new Intent(getActivity(), TopDriverAct.class);
-//        topDriver.putExtra("req_id", req_id);
-//        topDriver.putExtra("id", user_id);
-//        topDriver.putExtra("token", user_token);
 //        topDriver.putExtra("type_id", type_id);
+//        topDriver.putExtra("req_id", req_id);
 //        topDriver.putExtra("lati", "" + latitude);
 //        topDriver.putExtra("longi", "" + longitude);
 //        startActivity(topDriver);
+
+        openConfirmedAlert(getBaseAct().getTranslatedString(R.string.txt_req_sent));
+    }
+
+    private void openConfirmedAlert(String message) {
+        View dialogView = LayoutInflater.from(getBaseAct()).inflate(R.layout.ride_latrer_alert, null, false);
+        TextView content = dialogView.findViewById(R.id.alert_content);
+        Button okButt = dialogView.findViewById(R.id.submit);
+        okButt.setText(getBaseAct().getTranslatedString(R.string.text_ok));
+        content.setText(message);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getBaseAct());
+        builder.setView(dialogView);
+        builder.setCancelable(false);
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setCanceledOnTouchOutside(false);
+        okButt.setOnClickListener(v -> {
+            alertDialog.dismiss();
+            startActivity(new Intent(getBaseAct(), DrawerAct.class));
+        });
+        alertDialog.show();
     }
 
     public void fareDetailsClicked(Type request) {

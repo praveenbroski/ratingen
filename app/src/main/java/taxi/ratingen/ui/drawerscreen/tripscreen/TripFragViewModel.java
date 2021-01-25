@@ -128,6 +128,8 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
     public ObservableBoolean enablePromoOption = new ObservableBoolean(true);
     String waitingValue = "0";
     Boolean cancelationFeeApplied = true;
+    float defaultMapZoom = 15;
+    boolean zoomFlag = false;
 
     public TripFragViewModel(GitHubService gitHubService,
                              GitHubMapService gitHubMapService,
@@ -264,7 +266,7 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
     @BindingAdapter("font_color")
     public static void setTextColor(TextView textView, boolean isTripStarted) {
         if (isTripStarted)
-            textView.setTextColor(Color.parseColor("#FB4A46"));
+            textView.setTextColor(Color.parseColor("#E0D426"));
         else
             textView.setTextColor(Color.parseColor("#027D61"));
     }
@@ -346,8 +348,8 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
         if (!CommonUtils.IsEmpty(driver.profilePicture))
             profileurl.set(driver.profilePicture);
 
-        if (!CommonUtils.IsEmpty(driver.carNumber))
-            car_number.set(driver.carNumber);
+        if (!CommonUtils.IsEmpty(driver.carMakeName))
+            car_number.set(driver.carMakeName);
 
         if (!CommonUtils.IsEmpty(driver.carColor))
             car_color.set(driver.carColor);
@@ -463,7 +465,7 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
                             }
                             polyLineDest1 = mGoogleMap.addPolyline(lineOptionsDest1);
                             polyLineDestDark = mGoogleMap.addPolyline(lineOptionsDest1);
-                            boundLatLang();
+                            boundLatLang(true);
                             //animatePolyLine();
                         }
                     } catch (Exception e) {
@@ -564,7 +566,7 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
             mGoogleApiClient.connect();
         }
         if (request.pickLat != null && request.pickLng != null && request.pickLat != 0 && request.pickLng != 0) {
-            boundLatLang();
+            boundLatLang(true);
 //            if (request.dropLat != null && request.dropLng != null && request.dropLat !=0 && request.dropLng != 0)
 //                DrawPathCurrentToHero(true, new LatLng(request.pickLat, request.pickLng), new LatLng(request.dropLat, request.dropLng));
         }
@@ -583,7 +585,7 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
     Marker markerPickup, markerDrop;
 
     /** Adjusts {@link GoogleMap} zoom to fit pickup and drop location **/
-    private void boundLatLang() {
+    private void boundLatLang(boolean bound) {
         if(mGoogleMap==null)
             return;
         LatLngBounds.Builder bld = new LatLngBounds.Builder();
@@ -601,8 +603,8 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
         if (driver != null && driver.latitude != null && driver.longitude != null)
             bld.include(new LatLng(driver.latitude, driver.longitude));
         if (isMapRendered.get())
-            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(
-                    bld.build(), 25));
+            if (bound)
+                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bld.build(), 25));
     }
 
     /** {@link Socket} connection successful callback **/
@@ -824,8 +826,7 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
                                 isTripArrived.set(true);
                                 waitingtime.set("0.0");
                                 mGoogleMap.clear();
-                                drawSavedRoute();
-                                boundLatLang();
+                                drawSavedRoute(true);
                                 marker = null;
                                 if (driver.latitude != null && driver.latitude != 0 && driver.longitude != 0 && driver.longitude != 0) {
                                     if (marker == null)
@@ -856,15 +857,19 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
                                 getmNavigator().openTripCancelMsg();
                             } else if (baseResponse.successMessage.equalsIgnoreCase("driver_location_got_successfully")) {
                                 mGoogleMap.clear();
-                                drawSavedRoute();
-                                boundLatLang();
+                                drawSavedRoute(false);
                                 marker = null;
                                 if (baseResponse.lat != null && baseResponse.lat != 0 && baseResponse.lng != 0 && baseResponse.lng != 0) {
-                                    if (marker == null)
-                                        marker = mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(baseResponse.lat, baseResponse.lng)).title("Driver Point").icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_new_car)));
-                                    else {
-                                        marker.setPosition(new LatLng(baseResponse.lat, baseResponse.lng));
-                                        marker.setAnchor(0.5f, 0.5f);
+                                    marker = mGoogleMap.addMarker(new MarkerOptions()
+                                            .position(new LatLng(baseResponse.lat, baseResponse.lng))
+                                            .title("Driver Point")
+                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_new_car)).rotation(baseResponse.bearing));
+                                    if (!zoomFlag) {
+                                        boundLatLang(true);
+                                        zoomFlag = true;
+                                    }
+                                    if (mGoogleMap != null && defaultMapZoom != 0) {
+                                        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(baseResponse.lat, baseResponse.lng), defaultMapZoom));
                                     }
                                 }
                             }
@@ -899,7 +904,7 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
         }
     }
 
-    private void drawSavedRoute() {
+    private void drawSavedRoute(boolean bound) {
         if (routeDest1 != null) {
             final ArrayList<Step> step = routeDest1.getListStep();
             System.out.println("step size=====> " + step.size());
@@ -932,7 +937,7 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
                 if (lineOptionsDest1 != null && mGoogleMap != null) {
                     polyLineDest1 = mGoogleMap.addPolyline(lineOptionsDest1);
                     polyLineDestDark = mGoogleMap.addPolyline(lineOptionsDest1);
-                    boundLatLang();
+                    boundLatLang(bound);
                     //animatePolyLine();
                 }
             } catch (Exception e) {
@@ -1018,8 +1023,8 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
         else
             return;
 
-        drawSavedRoute();
-        boundLatLang();
+        drawSavedRoute(true);
+        boundLatLang(true);
         marker = null;
         if (driver.latitude != 0 && driver.longitude != 0) {
             if (marker == null)
@@ -1146,7 +1151,7 @@ public class TripFragViewModel extends BaseNetwork<BaseResponse, TripNavigator> 
                                     isTripArrived.set(true);
                                     waitingtime.set("0.0");
                                     mGoogleMap.clear();
-                                    boundLatLang();
+                                    boundLatLang(true);
                                     marker = null;
                                     if (driver.latitude != 0 && driver.longitude != 0) {
                                         if (marker == null)

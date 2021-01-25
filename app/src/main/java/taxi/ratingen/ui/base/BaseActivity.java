@@ -32,6 +32,9 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -693,6 +696,16 @@ public abstract class BaseActivity<T extends ViewDataBinding, V> extends AppComp
     public void stopTypesTimerNow() {
 
     }
+
+    public Handler mHandler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message message) {
+            // This is where you do your work in the UI thread.
+            // Your worker tells you in the message what to do.
+            if (message != null && message.obj != null)
+                showMessage(message.obj.toString());
+        }
+    };
 
 }
 

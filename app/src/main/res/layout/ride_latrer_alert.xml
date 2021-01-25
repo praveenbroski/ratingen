@@ -29,7 +29,7 @@
         android:layout_marginTop="@dimen/_15sdp"
         android:layout_marginEnd="@dimen/_12sdp"
         android:textColor="@color/while_light"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/btn_primary"
         android:text="@string/Txt_Continue" />
 
     <Space

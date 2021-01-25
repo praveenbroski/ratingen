@@ -203,7 +203,9 @@ public abstract class BaseNetwork<T extends BaseResponse, N> implements Basecall
      * Api call Register the complaint.
      */
     public void SendComplaintNetwork() {
-        gitHubService.sendComplaint(getMap()).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+        setIsLoading(true);
+        mCurrentTaskId = Constants.TaskId.REPORT_COMPLAINT;
+        gitHubService.sendComplaint("Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken), getMap()).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
     }
 
     /**
@@ -346,7 +348,7 @@ public abstract class BaseNetwork<T extends BaseResponse, N> implements Basecall
      * Api call to create the ride later request.
      */
     public void CreateRequestLaterNetwork() {
-        gitHubService.CreateRequestLater(getMap()).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
+        gitHubService.CreateRequestLater("Bearer " + sharedPrefence.Getvalue(SharedPrefence.AccessToken), getMap()).enqueue((Callback<BaseResponse>) baseModelCallBackListener);
     }
 
     /**

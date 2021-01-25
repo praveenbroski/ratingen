@@ -64,8 +64,8 @@ public class SplashScreen extends BaseActivity<SplashscreenBinding, SplashViewMo
         }*/
         getGCMDeviceToken();
         binding = getViewDataBinding();
-        if (binding != null && binding.imgSpl != null)
-            Glide.with(this).load(R.raw.taxiappz1).into(binding.imgSpl);
+//        if (binding != null && binding.imgSpl != null)
+//            Glide.with(this).load(R.raw.taxiappz1).into(binding.imgSpl);
         emptyViewModel.setNavigator(this);
         configureLanguage();
 

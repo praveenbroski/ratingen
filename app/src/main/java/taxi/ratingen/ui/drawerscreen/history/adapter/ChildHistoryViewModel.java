@@ -71,7 +71,7 @@ public class ChildHistoryViewModel {
             iscompleted.set(request.isCompleted != 0);
         else iscompleted.set(false);
         if (request.isLater != null)
-            islater.set(request.isLater != 0);
+            islater.set(request.isLater == 1);
         else islater.set(false);
         isShare = new ObservableBoolean(request.isShare != null && request.isShare == 1);
         if (request.isCancelled != null && request.cancelMethod != null)

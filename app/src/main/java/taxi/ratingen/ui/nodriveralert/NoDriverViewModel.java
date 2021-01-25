@@ -17,7 +17,7 @@ import javax.inject.Named;
 
 public class NoDriverViewModel extends BaseNetwork<BaseResponse, NoDriverNavigator> {
 
-    int requestId;
+    String requestId;
 
     HashMap<String, String> hashMap = new HashMap<>();
     Gson gson;

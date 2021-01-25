@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TaxiRatingen</string>
+    <string name="app_name">TaxiAPS</string>
     <string name="facebook_app_id" translatable="false">276966796008290</string>
     <string name="default_notification_ride_admin" translatable="false">1029589359310</string>
     <string name="Map_key" translatable="false">AIzaSyDQFBX0d1JeJLAOIei-43tH5uLrDjnipEQ</string>
@@ -231,6 +231,8 @@
     <string name="txt_request_cancel_success">txt_request_cancel_success</string>
     <string name="txt_view_profile">txt_view_profile</string>
     <string name="client_id">9310d80c-18c1-45ca-b3fa-13a14c261e24</string>
+    <string name="txt_complaint_success">txt_complaint_success</string>
+    <string name="txt_req_sent">txt_req_sent</string>
 
 
 </resources>

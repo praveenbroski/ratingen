@@ -434,6 +434,9 @@ public class TaxiRequestModel extends BaseResponse implements Serializable {
         @SerializedName("time_price")
         @Expose
         public Double timePrice;
+        @SerializedName("extra_person_charge")
+        @Expose
+        public Double extraPersonCharge;
         @SerializedName("waiting_charge")
         @Expose
         public Double waitingCharge;

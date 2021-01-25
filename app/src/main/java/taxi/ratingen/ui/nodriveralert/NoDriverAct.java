@@ -34,7 +34,7 @@ public class NoDriverAct extends BaseActivity<NoDriverLayBinding, NoDriverViewMo
     public static final String TAG = "NoDriverAct";
     NoDriverLayBinding noDriverLayBinding;
     public static String ARG_PARAM1 = "param";
-    int reqId;
+    String reqId;
     MediaPlayer mMediaPlayer;
     @Inject
     NoDriverViewModel noDriverViewModel;
@@ -78,7 +78,7 @@ public class NoDriverAct extends BaseActivity<NoDriverLayBinding, NoDriverViewMo
         noDriverLayBinding.layoutToolbar.toolbar.setTitle(getTranslatedString(R.string.app_name));
 
         if (getIntent() != null)
-            reqId = getIntent().getIntExtra("reqId", 0);
+            reqId = getIntent().getStringExtra("reqId");
 
         Log.e("requestId==", "id--" + reqId);
         noDriverViewModel.requestId = reqId;

@@ -79,7 +79,7 @@ public class DisputeDialogViewModel extends BaseNetwork<BaseResponse, DisputeDia
                 getmNavigator().addList(compLaintObservableList);
             } else if (response.complaintList.size() == 0) {
                 ComplaintList complaintList = new ComplaintList();
-                complaintList.id = 0;
+                complaintList.id = "0";
                 ArrayList<ComplaintList> list = new ArrayList<>();
                 list.add(complaintList);
                 getmNavigator().addList(list);

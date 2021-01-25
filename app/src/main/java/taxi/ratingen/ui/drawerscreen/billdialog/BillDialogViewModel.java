@@ -27,9 +27,9 @@ import java.util.HashMap;
  */
 
 public class BillDialogViewModel extends BaseNetwork<BaseResponse, BillDialogNavigator> {
-    public String time, distance, basePrice, distanceCost, distancePerUnit, timeCost, timeCostPerUnit, pickup, drop,
+    public String time, distance, basePrice, distanceCost, distancePerUnit, timeCost, timeCostPerUnit, extraPersonCost, pickup, drop,
             waitingPrice, serviceTAx, referralBonus, promoBonus, walletAmount, total, txt_Additional_Charge, total_trip_cost,
-            cancellation_fees, zone_fees, custom_captain_fee, profilePic, rating;
+            cancellation_fees, zone_fees, custom_captain_fee, profilePic, rating, admin_amount;
     public String driverName, vehType, reqId, dateTime, duration;
     public String currency;
     public BaseActivity context;
@@ -66,6 +66,7 @@ public class BillDialogViewModel extends BaseNetwork<BaseResponse, BillDialogNav
 //                if (request.bill.drop_out_of_zone_fee != null && request.bill.drop_out_of_zone_fee != 0.0)
 //                    zone_fees = currency + " " + CommonUtils.doubleDecimalFromat(request.bill.drop_out_of_zone_fee);
 //                else zoneFee.set(false);
+                zoneFee.set(false);
 
                 basePrice = currency + " " + CommonUtils.doubleDecimalFromat(isShare ? bill.basePrice : bill.basePrice);
                 distanceCost = currency + " " + CommonUtils.doubleDecimalFromat(bill.distancePrice);
@@ -73,6 +74,7 @@ public class BillDialogViewModel extends BaseNetwork<BaseResponse, BillDialogNav
                 distance = CommonUtils.doubleDecimalFromat(request.totalDistance) + " " + (request.unit != null ? request.unit : context.getTranslatedString(R.string.text_km));
                 timeCost = currency + " " + CommonUtils.doubleDecimalFromat(bill.timePrice);
                 timeCostPerUnit = currency + " " + CommonUtils.doubleDecimalFromat(bill.pricePerTime) + " / " + context.getTranslatedString(R.string.txt_min);
+                extraPersonCost = currency + " " + CommonUtils.doubleDecimalFromat(bill.extraPersonCharge);
                 waitingPrice = currency + " " + CommonUtils.doubleDecimalFromat(bill.waitingCharge);
                 serviceTAx = currency + " " + CommonUtils.doubleDecimalFromat(bill.serviceTax);
                 referralBonus = "-" + currency + " " + (bill.referral_amount != null ? CommonUtils.doubleDecimalFromat(bill.referral_amount) : "0.00");
@@ -84,13 +86,15 @@ public class BillDialogViewModel extends BaseNetwork<BaseResponse, BillDialogNav
                 if (bill.cancellationFee != null)
                     total_trip_cost = currency + " " + CommonUtils.doubleDecimalFromat(bill.totalAmount - bill.cancellationFee) + " +";
 
-                customCaptainShown.set(bill.driverCommision != 0);
+//                customCaptainShown.set(bill.driverCommision != 0);
+                customCaptainShown.set(false);
                 custom_captain_fee = currency + " " + CommonUtils.doubleDecimalFromat(bill.driverCommision);
+                admin_amount = currency + " " + CommonUtils.doubleDecimalFromat(bill.adminCommision);
 
                 pickup = request.pickAddress;
                 drop = request.dropAddress;
                 driverName = request.driverDetail.driverData.name;
-                vehType = request.driverDetail.driverData.vehicleTypeName + " ( " + request.driverDetail.driverData.carNumber + " )";
+                vehType = request.driverDetail.driverData.vehicleTypeName + " ( " + request.driverDetail.driverData.carMakeName + " - " + request.driverDetail.driverData.carModelName + " )";
                 reqId = request.requestNumber;
                 dateTime = request.tripStartTime;
                 duration = getmNavigator().getAttachedContext().getTranslatedString(R.string.txt_trip_time_text) +

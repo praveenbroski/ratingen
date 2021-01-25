@@ -10,6 +10,7 @@ import androidx.databinding.ObservableField;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,11 +22,13 @@ import taxi.ratingen.R;
 import taxi.ratingen.retro.base.BaseNetwork;
 import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.GitHubService;
+import taxi.ratingen.retro.responsemodel.NewRequestModel;
 import taxi.ratingen.retro.responsemodel.ProfileModel;
 import taxi.ratingen.retro.responsemodel.ReqInProgress;
 import taxi.ratingen.retro.responsemodel.TaxiRequestModel;
 import taxi.ratingen.utilz.CommonUtils;
 import taxi.ratingen.utilz.Constants;
+import taxi.ratingen.utilz.SocketHelper;
 import taxi.ratingen.utilz.exception.CustomException;
 import taxi.ratingen.utilz.SharedPrefence;
 
@@ -39,7 +42,7 @@ import javax.inject.Named;
  * Created by root on 10/11/17.
  */
 
-public class DrawerViewModel extends BaseNetwork<BaseResponse, DrawerNavigator> {
+public class DrawerViewModel extends BaseNetwork<BaseResponse, DrawerNavigator> implements SocketHelper.SocketListener {
 
     Gson gson;
 
@@ -57,6 +60,7 @@ public class DrawerViewModel extends BaseNetwork<BaseResponse, DrawerNavigator> 
     public ObservableBoolean isRatingCalled = new ObservableBoolean();
     public ObservableBoolean ratingUnread = new ObservableBoolean(false);
 
+    public static final String TAG = "DrawerAct";
 
     @Inject
     public DrawerViewModel(@Named(Constants.ourApp) GitHubService gitHubService,
@@ -159,7 +163,7 @@ public class DrawerViewModel extends BaseNetwork<BaseResponse, DrawerNavigator> 
                             getmNavigator().ShowFeedbackFragment(metaRequest.resultData, false);
                             } else {
                                 if (metaRequest.resultData.isLater != null && metaRequest.resultData.isLater == 1) {
-//                                    getmNavigator().openRideLaterAlert(metaRequest.requestData, metaRequest.requestData.driverDetail.driverData);
+                                    getmNavigator().openRideLaterAlert(metaRequest.resultData, metaRequest.resultData.driverDetail.driverData);
                                 } else {
                                     getmNavigator().showTripFragment(metaRequest.resultData, metaRequest.resultData.driverDetail.driverData);
                                 }
@@ -251,6 +255,7 @@ public class DrawerViewModel extends BaseNetwork<BaseResponse, DrawerNavigator> 
     }
 
     private void showMapScreen(ReqInProgress model) {
+        SocketHelper.init(sharedPrefence, this, TAG, false);
         if (model.getProfilePicture() != null) {
             Imageurl.set(model.getProfilePicture());
         }
@@ -299,4 +304,68 @@ public class DrawerViewModel extends BaseNetwork<BaseResponse, DrawerNavigator> 
     public void onClickNotification(View v) {
         getmNavigator().onClickNotification();
     }
+
+    @Override
+    public void Types(String typesString) {
+
+    }
+
+    @Override
+    public void TripStatus(String trip_status) {
+        Log.i(TAG, "Trip_Status" + trip_status);
+        if (getmNavigator().getBaseAct() != null) {
+            getmNavigator().getBaseAct().runOnUiThread(() -> {
+                if (trip_status != null && !CommonUtils.IsEmpty(trip_status)) {
+                    BaseResponse baseResponse = gson.fromJson(trip_status, BaseResponse.class);
+                    if (baseResponse != null && baseResponse.result != null && baseResponse.result.data != null) {
+                        String requestStr = CommonUtils.ObjectToString(baseResponse.result.data);
+                        NewRequestModel requestModel = (NewRequestModel) CommonUtils.StringToObject(requestStr + "", NewRequestModel.class);
+                        if (requestModel.is_later != null && requestModel.is_later == 1) {
+                            if (baseResponse.successMessage != null && baseResponse.successMessage.equalsIgnoreCase("trip_accepted")) {
+                                getmNavigator().openRideLaterAlert(requestModel);
+                            } else if (baseResponse.successMessage != null && baseResponse.successMessage.equalsIgnoreCase("no_driver_found")) {
+                                getmNavigator().notifyNoDriverMessage(requestModel.id);
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    @Override
+    public void CancelledRequest(String cancelled_request) {
+
+    }
+
+    @Override
+    public void RideLaterNoCaptainAlert(String ride_later_no_captain) {
+
+    }
+
+    @Override
+    public void DurationHandler(String duration_handler) {
+
+    }
+
+    @Override
+    public boolean isNetworkConnected() {
+        return false;
+    }
+
+    @Override
+    public void OnConnect() {
+
+    }
+
+    @Override
+    public void OnDisconnect() {
+
+    }
+
+    @Override
+    public void OnConnectError() {
+
+    }
+
 }

@@ -779,7 +779,8 @@
                                     android:gravity="center"
                                     android:paddingLeft="@dimen/_18sdp"
                                     android:paddingRight="@dimen/_18sdp"
-                                    android:visibility="@{viewModel.isShare?View.GONE:View.VISIBLE}">
+                                    android:visibility="gone">
+<!--                                    android:visibility="@{viewModel.isShare?View.GONE:View.VISIBLE}"-->
 
                                     <LinearLayout
                                         android:layout_width="0dp"
@@ -798,20 +799,6 @@
                                             android:text="@{viewModel.translationModel.text_time_cost}"
                                             android:textAppearance="?android:attr/textAppearanceSmall"
                                             app:textfont="@{`sf_regular.otf`}" />
-
-                                        <!-- android:text="@string/text_time_cost"-->
-
-                                        <!--  <TextView
-                                              android:id="@+id/tvBillTimePerHour"
-                                              android:layout_width="wrap_content"
-                                              android:layout_height="wrap_content"
-                                              android:layout_gravity="top|right"
-                                              android:gravity="start"
-                                              android:hint="$ 3 / 15 mins"
-                                              android:text="@{viewModel.txt_price_pertime}"
-                                              android:textAppearance="?android:attr/textAppearanceSmall"
-                                              android:textColor="@color/color_app_gray"
-                                              app:textfont="@{`sf_regular.otf`}" />-->
 
                                     </LinearLayout>
 
@@ -835,7 +822,51 @@
                                     android:layout_marginTop="@dimen/_8sdp"
                                     android:gravity="center"
                                     android:paddingLeft="@dimen/_18sdp"
-                                    android:paddingRight="@dimen/_18sdp">
+                                    android:paddingRight="@dimen/_18sdp"
+                                    android:visibility="@{viewModel.isShare ? View.GONE : View.VISIBLE}">
+
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="@dimen/_3sdp"
+                                        android:layout_weight="1"
+                                        android:gravity="center"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="top|end"
+                                            android:gravity="start"
+                                            android:textColor="@color/clr_333333"
+                                            android:text="@{viewModel.translationModel.txt_extra_person_cost}"
+                                            android:textAppearance="?android:attr/textAppearanceSmall"
+                                            app:textfont="@{`sf_regular.otf`}" />
+
+                                    </LinearLayout>
+
+                                    <TextView
+                                        android:id="@+id/tvExtraPerson"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="@dimen/_1sdp"
+                                        android:gravity="center"
+                                        android:textColor="@color/clr_333333"
+                                        android:hint=""
+                                        android:text="@{viewModel.txt_ExtraPersonCost}"
+                                        android:textAppearance="?android:attr/textAppearanceSmall"
+                                        app:textfont="@{`sf_regular.otf`}" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/_8sdp"
+                                    android:gravity="center"
+                                    android:paddingLeft="@dimen/_18sdp"
+                                    android:paddingRight="@dimen/_18sdp"
+                                    android:visibility="gone">
 
                                     <TextView
                                         android:layout_width="0dp"
@@ -870,7 +901,8 @@
                                     android:layout_marginTop="@dimen/_8sdp"
                                     android:gravity="center"
                                     android:paddingLeft="@dimen/_18sdp"
-                                    android:paddingRight="@dimen/_18sdp">
+                                    android:paddingRight="@dimen/_18sdp"
+                                    android:visibility="gone">
 
                                     <TextView
                                         android:layout_width="0dp"
@@ -918,8 +950,7 @@
                                         android:textColor="@color/clr_333333"
                                         android:text="@{viewModel.translationModel.waiting_time_price}"
                                         android:textAppearance="?android:attr/textAppearanceSmall"
-                                        app:textfont="@{`sf_regular.otf`}" /><!--
-                                    android:text="@string/waiting_time_price"-->
+                                        app:textfont="@{`sf_regular.otf`}" />
 
                                     <TextView
                                         android:id="@+id/tvWaitingTimePrice"
@@ -967,6 +998,44 @@
                                         android:text="@{viewModel.txt_taxiCost}"
                                         android:textAppearance="?android:attr/textAppearanceSmall"
                                         app:textfont="@{`sf_regular.otf`}" />
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal"
+                                    android:paddingLeft="@dimen/_18sdp"
+                                    android:paddingRight="@dimen/_18sdp"
+                                    android:paddingTop="@dimen/_8sdp"
+                                    android:weightSum="2">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1.3"
+                                        android:text="@{viewModel.translationModel.admin_commission}"
+                                        android:textColor="@color/clr_333333"
+                                        android:textSize="@dimen/_12sdp"
+                                        android:fontFamily="@font/sf_regular" />
+
+                                    <RelativeLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="0.7"
+                                        android:gravity="end">
+
+                                        <TextView
+                                            android:id="@+id/admin_amnt"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginEnd="@dimen/_2sdp"
+                                            android:text="@{viewModel.service_fee}"
+                                            android:textColor="@color/clr_333333"
+                                            android:textSize="@dimen/_12sdp"
+                                            android:fontFamily="@font/sf_regular" />
+
+                                    </RelativeLayout>
 
                                 </LinearLayout>
 
@@ -1309,7 +1378,7 @@
                 android:layout_alignParentBottom="true"
                 android:background="@color/clr_black_t"
                 android:gravity="center"
-                android:onClick="@{viewModel.onclickcancelschedule}"
+                android:onClick="@{viewModel.onClickCancelSchedule}"
                 android:text="@{viewModel.translationModel.text_cancel}"
                 android:textAllCaps="true"
                 android:textColor="@color/buttonTextColor"
@@ -1338,6 +1407,10 @@
                 app:navigationIcon="@drawable/back_nav" />
 
         </com.google.android.material.appbar.AppBarLayout>
+
+        <include
+            layout="@layout/progress_dialog"
+            android:visibility="@{viewModel.mIsLoading ? View.VISIBLE : View.GONE}" />
 
     </RelativeLayout>
 

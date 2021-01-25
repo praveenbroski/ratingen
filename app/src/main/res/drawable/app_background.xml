@@ -8,8 +8,8 @@
 
 <!--    <gradient-->
 <!--        android:angle="0"-->
-<!--        android:endColor="#FB4A46"-->
-<!--        android:startColor="#FB4A46"-->
+<!--        android:endColor="@color/clr_FB4A46"-->
+<!--        android:startColor="@color/clr_FB4A46"-->
 <!--        android:type="linear" />-->
 
     <solid android:color="@color/clr_white" />

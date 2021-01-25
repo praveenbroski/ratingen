@@ -65,11 +65,11 @@ public class FeedbackFragment extends BaseFragment<FragmentFeedbackBinding, Feed
                 BillDialogFragment.newInstance(model, "").show(this.getChildFragmentManager());
         }
 
-        Drawable drawable1 = layoutBinding.ratingUserFeedback.getProgressDrawable();
-        drawable1.setColorFilter(Color.parseColor("#FFAA00"), PorterDuff.Mode.SRC_ATOP);
-
-        Drawable drawable2 = layoutBinding.ratingBar.getProgressDrawable();
-        drawable2.setColorFilter(Color.parseColor("#FFAA00"), PorterDuff.Mode.SRC_ATOP);
+//        Drawable drawable1 = layoutBinding.ratingUserFeedback.getProgressDrawable();
+//        drawable1.setColorFilter(Color.parseColor("#FFAA00"), PorterDuff.Mode.SRC_ATOP);
+//
+//        Drawable drawable2 = layoutBinding.ratingBar.getProgressDrawable();
+//        drawable2.setColorFilter(Color.parseColor("#FFAA00"), PorterDuff.Mode.SRC_ATOP);
     }
 
     @Override

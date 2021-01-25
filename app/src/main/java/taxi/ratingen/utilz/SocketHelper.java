@@ -131,7 +131,7 @@ public class SocketHelper {
     private static Emitter.Listener types = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
-            Log.v(TAG, "SocketTriggering---***************----types" + args[0]);
+//            Log.v(TAG, "SocketTriggering---***************----types" + args[0]);
             if (socketDataReceiver != null && args != null)
                 typesDriversData = args[0].toString();
             socketDataReceiver.Types(args[0].toString());
@@ -177,12 +177,12 @@ public class SocketHelper {
     public static void sendTypes(String types) {
         Log.v(TAG, "types Data--------------" + types);
         if (mSocket != null) {
-            Log.v(TAG, "types Data--------Socket=" + mSocket.connected());
+//            Log.v(TAG, "types Data--------Socket=" + mSocket.connected());
             if (!mSocket.connected()) {
                 setSocketListener();
                 pendingTypeData = types;
             } else if (mSocket.connected()) {
-                Log.v(TAG, "types Data----Sent----Socket=" + mSocket.connected());
+//                Log.v(TAG, "types Data----Sent----Socket=" + mSocket.connected());
                 mSocket.emit("user_vehicle_types", types);
                 pendingTypeData = null;
             }

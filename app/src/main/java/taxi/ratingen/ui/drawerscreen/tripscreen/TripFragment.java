@@ -454,6 +454,9 @@ public class TripFragment extends BaseFragment<FragmentTripBinding, TripFragView
             }
         });
 
+        googleMap.setOnCameraIdleListener(() -> {
+            tripFragViewModel.defaultMapZoom = googleMap.getCameraPosition().zoom;
+        });
     }
 
     /** Changes {@link GoogleMap} style **/

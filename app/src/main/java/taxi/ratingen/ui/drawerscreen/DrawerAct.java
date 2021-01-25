@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,6 +47,7 @@ import taxi.ratingen.R;
 import taxi.ratingen.databinding.ActivityDrawerBinding;
 import taxi.ratingen.databinding.NavHeaderDrawerBinding;
 import taxi.ratingen.retro.responsemodel.Driver;
+import taxi.ratingen.retro.responsemodel.DriverData;
 import taxi.ratingen.retro.responsemodel.NewRequestModel;
 import taxi.ratingen.retro.responsemodel.Request;
 import taxi.ratingen.retro.responsemodel.TaxiRequestModel;
@@ -103,6 +105,7 @@ public class DrawerAct extends BaseActivity<ActivityDrawerBinding, DrawerViewMod
     Gson gson;
 
     private boolean isTriporFeedback;
+    AlertDialog alertDialog = null;
 
     @Inject
     DispatchingAndroidInjector<Object> fragmentDispatchingAndroidInjector;
@@ -537,7 +540,7 @@ public class DrawerAct extends BaseActivity<ActivityDrawerBinding, DrawerViewMod
         activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Favs).setVisible(false);
         activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Wallet).setVisible(false);
         activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Notifications).setVisible(false);
-//        activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Complaints).setVisible(false);
+        activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Complaints).setVisible(false);
         activityDrawerBinding.navView.getMenu().findItem(R.id.nav_about).setVisible(false);
 //        activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Sos).setVisible(false);
         activityDrawerBinding.navView.getMenu().findItem(R.id.nav_faq).setVisible(false);
@@ -682,6 +685,15 @@ public class DrawerAct extends BaseActivity<ActivityDrawerBinding, DrawerViewMod
     @Override
     public void ShowFeedbackFragment(TaxiRequestModel.ResultData resultData, boolean isCorporate) {
         NeedFeedbackFragment(resultData, isCorporate);
+    }
+
+    @Override
+    public void notifyNoDriverMessage(String reqId) {
+        Intent intentBroadcast = new Intent();
+        intentBroadcast.setAction(Constants.BroadcastsActions.LATER_NO_DRIVER);
+        intentBroadcast.putExtra("req_id", reqId);
+        intentBroadcast.putExtra("from", "push");
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intentBroadcast);
     }
 
     /**
@@ -1031,7 +1043,7 @@ public class DrawerAct extends BaseActivity<ActivityDrawerBinding, DrawerViewMod
      * @param driver  {@link Driver} model
      **/
     @Override
-    public void openRideLaterAlert(final Request request, final Driver driver) {
+    public void openRideLaterAlert(TaxiRequestModel.ResultData request, TaxiRequestModel.DriverData driver) {
         Toast.makeText(this, "LaterReceieved..!!", Toast.LENGTH_SHORT).show();
         ViewGroup viewGroup = findViewById(android.R.id.content);
         View dialogView = LayoutInflater.from(this).inflate(R.layout.ride_latrer_alert, viewGroup, false);
@@ -1045,12 +1057,27 @@ public class DrawerAct extends BaseActivity<ActivityDrawerBinding, DrawerViewMod
         builder.setView(dialogView);
         final AlertDialog alertDialog = builder.create();
         alertDialog.setCanceledOnTouchOutside(false);
-        dialogView.findViewById(R.id.submit).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-                NeedTripFragment(request, driver);
-            }
+        dialogView.findViewById(R.id.submit).setOnClickListener(v -> {
+            alertDialog.dismiss();
+            NeedTripFragment(request, driver);
+        });
+        alertDialog.show();
+    }
+
+    @Override
+    public void openRideLaterAlert(NewRequestModel request) {
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.ride_latrer_alert, viewGroup, false);
+        TextView content = dialogView.findViewById(R.id.alert_content);
+        content.setText(getBaseAct().getTranslatedString(R.string.txt_schedule_trip_accepted));
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        builder.setCancelable(false);
+        alertDialog = builder.create();
+        alertDialog.setCanceledOnTouchOutside(false);
+        dialogView.findViewById(R.id.submit).setOnClickListener(v -> {
+            alertDialog.dismiss();
+            NeedTripFragment(request);
         });
         alertDialog.show();
     }

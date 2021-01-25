@@ -60,7 +60,7 @@ public interface RideConfirmNavigator extends BaseView {
 
     // void scheduleSucess(List<TopDriverModel> driverList, String s, String reqId, String requestId, String id, String token, double latitude, double longitude);
 
-    void scheduleSucess(String type_id, String req_id, String user_id, String user_token, double latitude, double longitude);
+    void scheduleSucess(String type_id, String req_id, double latitude, double longitude);
 
     void setUpPayment(List<String> payment);
 

@@ -7,7 +7,7 @@ public class ComplaintList {
 
 @SerializedName("id")
 @Expose
-public Integer id;
+public String id;
 @SerializedName("title")
 @Expose
 public String title;

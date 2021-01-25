@@ -1,8 +1,11 @@
 package taxi.ratingen.ui.splash;
 
 import androidx.databinding.ObservableBoolean;
+import androidx.databinding.ObservableField;
 
 import com.google.gson.Gson;
+
+import taxi.ratingen.BuildConfig;
 import taxi.ratingen.retro.base.BaseNetwork;
 import taxi.ratingen.retro.base.BaseResponse;
 import taxi.ratingen.retro.GitHubService;
@@ -21,10 +24,11 @@ import javax.inject.Named;
  */
 
 public class SplashViewModel extends BaseNetwork<BaseResponse, SplashNavigator> {
+
     SharedPrefence sharedPrefence;
     Gson gson;
     public ObservableBoolean isLoaad = new ObservableBoolean(false);
-
+    public ObservableField<String> currentAppVersion = new ObservableField<>();
 
     @Inject
     public SplashViewModel(@Named(Constants.ourApp) GitHubService gitHubService
@@ -32,7 +36,7 @@ public class SplashViewModel extends BaseNetwork<BaseResponse, SplashNavigator> 
         super(gitHubService, sharedPrefence, gson);
         this.sharedPrefence = sharedPrefence;
         this.gson = gson;
-
+        currentAppVersion.set("v " + BuildConfig.VERSION_NAME);
     }
 
 

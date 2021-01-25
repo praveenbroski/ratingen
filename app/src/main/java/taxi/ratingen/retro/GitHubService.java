@@ -94,8 +94,8 @@ public interface GitHubService {
     Call<BaseResponse> CreateRequest(@Header("Authorization") String bearer, @FieldMap Map<String, String> options);
 
     @FormUrlEncoded
-    @POST(Constants.URL.createrequestLaterURl)
-    Call<BaseResponse> CreateRequestLater(@FieldMap Map<String, String> options);
+    @POST(Constants.URL.createRequestLaterURl)
+    Call<BaseResponse> CreateRequestLater(@Header("Authorization") String bearer, @FieldMap Map<String, String> options);
 
     @FormUrlEncoded
     @POST(Constants.URL.otpvalidate)
@@ -170,7 +170,7 @@ public interface GitHubService {
 
     @FormUrlEncoded
     @POST(Constants.URL.SendCompliantURL)
-    Call<BaseResponse> sendComplaint(@FieldMap Map<String, String> options);
+    Call<BaseResponse> sendComplaint(@Header("Authorization") String bearer, @FieldMap Map<String, String> options);
 
     @FormUrlEncoded
     @POST(Constants.URL.DeletefavURL)

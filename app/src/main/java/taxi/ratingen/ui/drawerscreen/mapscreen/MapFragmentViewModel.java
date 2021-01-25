@@ -551,16 +551,16 @@ public class MapFragmentViewModel extends BaseNetwork<User, MapNavigator> implem
     }
 
     public void onClickCurrentLocation(View v) {
-//        if (googleMap != null) {
-//            if (getmNavigator().checkLocationPermission()) {
-//                if (CommonUtils.isGpscheck(getmNavigator().getAttachedContext()))
-//                    buildGoogleApiClient(googleMap);
-//                else
-//                    getmNavigator().openRequestLocation();
-//            } else
-//                getmNavigator().requestLocationPermission();
-//        }
-        getmNavigator().izettleLogin();
+        if (googleMap != null) {
+            if (getmNavigator().checkLocationPermission()) {
+                if (CommonUtils.isGpscheck(getmNavigator().getAttachedContext()))
+                    buildGoogleApiClient(googleMap);
+                else
+                    getmNavigator().openRequestLocation();
+            } else
+                getmNavigator().requestLocationPermission();
+        }
+//        getmNavigator().izettleLogin();
     }
 
     public void onClickPickLocation(View v) {

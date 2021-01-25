@@ -61,7 +61,7 @@ public class HistoryDetViewModel extends BaseNetwork<BaseResponse, HistoryDetNav
     public ObservableField<LatLng> dropLatlng = new ObservableField<>();
     public ObservableField<String> driverName,
             txt_Distance, txt_Time, txt_pick, txt_drop, txt_basePrice, txt_distanceCost,
-            txt_price_perDistance, txt_TimeCost, txt_price_pertime, txt_refferalBonus,
+            txt_price_perDistance, txt_TimeCost, txt_price_pertime, txt_ExtraPersonCost, txt_refferalBonus,
             txt_promoBonus, txt_waitingCost, txt_taxiCost, txt_total, txt_paymentMode, txt_walletAmount, bitmap_profilePic, carurl, typename, DatenTime,
             requedid, totalAdditionalCharge, cancellation_fees, zone_fees, custom_captain_fee, total_trip_cost, service_fee, car_number, duration;
     public ObservableInt driverRating = new ObservableInt();
@@ -96,6 +96,7 @@ public class HistoryDetViewModel extends BaseNetwork<BaseResponse, HistoryDetNav
         txt_price_perDistance = new ObservableField<>();
         txt_TimeCost = new ObservableField<>();
         txt_price_pertime = new ObservableField<>();
+        txt_ExtraPersonCost = new ObservableField<>();
         txt_refferalBonus = new ObservableField<>();
         txt_promoBonus = new ObservableField<>();
         txt_waitingCost = new ObservableField<>();
@@ -142,16 +143,26 @@ public class HistoryDetViewModel extends BaseNetwork<BaseResponse, HistoryDetNav
     }
 
     /** called when need to cancel a scheduled trip **/
-    public void onclickcancelschedule(View view) {
-        map.clear();
+    public void onClickCancelSchedule(View view) {
+//        map.clear();
+//        if (getmNavigator().isNetworkConnected()) {
+//            setIsLoading(true);
+//            map.put(Constants.NetworkParameters.client_id, sharedPrefence.getCompanyID());
+//            map.put(Constants.NetworkParameters.client_token, sharedPrefence.getCompanyToken());
+//            map.put(Constants.NetworkParameters.id, sharedPrefence.Getvalue(SharedPrefence.ID));
+//            map.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
+//            map.put(Constants.NetworkParameters.request_id, requestID);
+//            SchedulecancelNetwork();
+//        } else {
+//            getmNavigator().showNetworkMessage();
+//        }
+
         if (getmNavigator().isNetworkConnected()) {
             setIsLoading(true);
-            map.put(Constants.NetworkParameters.client_id, sharedPrefence.getCompanyID());
-            map.put(Constants.NetworkParameters.client_token, sharedPrefence.getCompanyToken());
-            map.put(Constants.NetworkParameters.id, sharedPrefence.Getvalue(SharedPrefence.ID));
-            map.put(Constants.NetworkParameters.token, sharedPrefence.Getvalue(SharedPrefence.TOKEN));
+            map.clear();
             map.put(Constants.NetworkParameters.request_id, requestID);
-            SchedulecancelNetwork();
+            map.put(Constants.NetworkParameters.custom_reason, "User Cancelled");
+            RequestCancelNetwork();
         } else {
             getmNavigator().showNetworkMessage();
         }
@@ -166,7 +177,7 @@ public class HistoryDetViewModel extends BaseNetwork<BaseResponse, HistoryDetNav
                 driverName.set(model.driverDetail.driverData.name);
                 driverRating.set((int) model.driverDetail.driverData.rating);
                 ratingText.set("" + model.driverDetail.driverData.rating);
-                car_number.set(model.driverDetail.driverData.carNumber);
+                car_number.set(model.driverDetail.driverData.carMakeName + " - " + model.driverDetail.driverData.carModelName);
             } else driverNotAvail.set(false);
 
             iscancelShown.set(model.isDriverStarted == 1);
@@ -217,6 +228,7 @@ public class HistoryDetViewModel extends BaseNetwork<BaseResponse, HistoryDetNav
                 txt_Distance.set(CommonUtils.doubleDecimalFromat(model.totalDistance) + " " + (model.unit != null ? model.unit : getmNavigator().getBaseAct().getTranslatedString(R.string.text_km)));
                 txt_TimeCost.set(currency + " " + CommonUtils.doubleDecimalFromat(model.billDetail.billData.timePrice));
                 txt_price_pertime.set(currency + " " + model.billDetail.billData.pricePerTime + " / " + getmNavigator().getBaseAct().getTranslatedString(R.string.txt_min));
+                txt_ExtraPersonCost.set(currency + " " + CommonUtils.doubleDecimalFromat(model.billDetail.billData.extraPersonCharge));
                 txt_refferalBonus.set("-" + currency + " " + CommonUtils.doubleDecimalFromat(model.billDetail.billData.referral_amount));
                 txt_taxiCost.set(currency + " " + CommonUtils.doubleDecimalFromat(model.billDetail.billData.serviceTax));
                 txt_promoBonus.set("-" + currency + " " + CommonUtils.doubleDecimalFromat(model.billDetail.billData.promoDiscount));
@@ -328,7 +340,7 @@ public class HistoryDetViewModel extends BaseNetwork<BaseResponse, HistoryDetNav
                     TaxiRequestModel.ResultData requestModel = (TaxiRequestModel.ResultData) CommonUtils.StringToObject(CommonUtils.ObjectToString(response.data), TaxiRequestModel.ResultData.class);
                     initializeValues(requestModel);
                 }
-            } else if (response.message.equalsIgnoreCase("Ride_later_cancelled")) {
+            } else if (response.message.equalsIgnoreCase("request_cancelled_by_user")) {
                 getmNavigator().setResultnFinish();
             }
         } else

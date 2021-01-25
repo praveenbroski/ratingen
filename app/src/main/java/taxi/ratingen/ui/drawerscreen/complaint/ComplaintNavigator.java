@@ -13,9 +13,13 @@ import java.util.List;
 public interface ComplaintNavigator extends BaseView {
 
     void addList(List<ComplaintList> complaintLists);
+
     BaseActivity GetContext();
+
     void DisableSpinner(Boolean status);
+
     void logout();
 
+    BaseActivity getBaseAct();
 
 }

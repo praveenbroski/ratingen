@@ -65,8 +65,8 @@
 
     <color name="clr_222B45">#222B45</color>
     <color name="clr_FD716F">#FD716F</color>
-    <color name="clr_FB4A46">#FB4A46</color>
-    <color name="clr_CA2925">#CA2925</color>
+    <color name="clr_FB4A46">#D5C924</color>
+    <color name="clr_CA2925">#B5AB1C</color>
     <color name="clr_FA8886">#FA8886</color>
     <color name="clr_8992A3">#8992A3</color>
     <color name="clr_8F9BB3">#8F9BB3</color>
@@ -96,8 +96,10 @@
     <color name="clr_4CE5B1">#4CE5B1</color>
     <color name="clr_1ED195">#1ED195</color>
     <color name="clr_A9F6DC">#A9F6DC</color>
-    <color name="clr_D5BEBD">#D5BEBD</color>
-    <color name="clr_FF9391">#FF9391</color>
+    <color name="clr_D5BEBD">#F4F0B5</color>
+    <color name="clr_FF9391">#5B5B5C</color>
     <color name="clr_disabled">#CCCCCC</color>
+    <color name="clr_E0D426">#E0D426</color>
+    <color name="clr_0F0D12">#0F0D12</color>
 
 </resources>

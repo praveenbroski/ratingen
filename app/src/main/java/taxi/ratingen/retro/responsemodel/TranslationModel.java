@@ -1176,4 +1176,10 @@ public class TranslationModel {
     @SerializedName("txt_view_profile")
     public String txt_view_profile = "txt_view_profile";
 
+    @SerializedName("txt_complaint_success")
+    public String txt_complaint_success = "txt_complaint_success";
+
+    @SerializedName("txt_extra_person_cost")
+    public String txt_extra_person_cost = "txt_extra_person_cost";
+
 }

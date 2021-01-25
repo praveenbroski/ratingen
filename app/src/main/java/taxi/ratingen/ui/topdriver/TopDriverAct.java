@@ -79,7 +79,7 @@ public class TopDriverAct extends AppCompatActivity {
         confirm = findViewById(R.id.confirm);
         skip = findViewById(R.id.skip);
         progressBar = findViewById(R.id.progressBar_driver);
-        setSupportActionBar((Toolbar) findViewById(R.id.my_toolbar));
+        setSupportActionBar(findViewById(R.id.my_toolbar));
         add_charges = findViewById(R.id.add_charges_applicable);
 
         sharedPrefence = new SharedPrefence(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()), PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit());
@@ -112,27 +112,13 @@ public class TopDriverAct extends AppCompatActivity {
         lati = getIntent().getStringExtra("lati");
         longi = getIntent().getStringExtra("longi");
 
-        map.put(Constants.NetworkParameters.client_id, sharedPrefence.getCompanyID());
-        map.put(Constants.NetworkParameters.client_token, sharedPrefence.getCompanyToken());
-        map.put(Constants.NetworkParameters.id, id);
-        map.put(Constants.NetworkParameters.token, token);
-        map.put(Constants.NetworkParameters.type, typeId);
-        map.put(Constants.NetworkParameters.platitude, lati);
-        map.put(Constants.NetworkParameters.plongitude, longi);
+        map.put(Constants.NetworkParameters.vehicle_type, typeId);
+        map.put(Constants.NetworkParameters.PICK_LAT, lati);
+        map.put(Constants.NetworkParameters.PICK_LNG, longi);
         map.put(Constants.NetworkParameters.request_id, reqId);
 
-        skip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openConfirmedAlert(translationModel.txt_req_sent);
-            }
-        });
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                confirmClicked();
-            }
-        });
+        skip.setOnClickListener(v -> openConfirmedAlert(translationModel.txt_req_sent));
+        confirm.setOnClickListener(v -> confirmClicked());
 
         /*if (getIntent() != null) {
             linearLayoutManager = new LinearLayoutManager(this);
@@ -147,7 +133,7 @@ public class TopDriverAct extends AppCompatActivity {
     /**
      * Triggers this receiver from push to handle the scehdule push rejects.
      */
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.hasExtra("message")) {
@@ -157,7 +143,6 @@ public class TopDriverAct extends AppCompatActivity {
 
                 if (msg != null && msg.length() > 0 && msg.equalsIgnoreCase("Ride Has been scheduled"))
                     onBackPressed();
-
             }
         }
     };
@@ -173,7 +158,6 @@ public class TopDriverAct extends AppCompatActivity {
         super.onStop();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
     }
-
 
     @Override
     protected void onResume() {
