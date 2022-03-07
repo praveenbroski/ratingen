@@ -4,8 +4,8 @@
     <string name="default_notification_ride_admin" translatable="false">1029589359310</string>
     <string name="Map_key" translatable="false">AIzaSyDQFBX0d1JeJLAOIei-43tH5uLrDjnipEQ</string>
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
-    <string name="redirect_url_host" translatable="false">redirect_url_host</string>
-    <string name="redirect_url_scheme" translatable="false">redirect_url_scheme</string>
+    <string name="redirect_url_host" translatable="false">httpbin.org/get</string>
+    <string name="redirect_url_scheme" translatable="false">https</string>
     <string name="oauth_activity_task_affinity" translatable="false">redirect_url_scheme</string>
     <string name="text_firstname">First Name</string>
     <string name="text_log_in">Log In</string>
@@ -230,7 +230,7 @@
     <string name="txt_already_registered">txt_already_registered</string>
     <string name="txt_request_cancel_success">txt_request_cancel_success</string>
     <string name="txt_view_profile">txt_view_profile</string>
-    <string name="client_id">9310d80c-18c1-45ca-b3fa-13a14c261e24</string>
+    <string name="client_id">b41b504e-1065-4047-8085-b0b3af9172b6</string>
     <string name="txt_complaint_success">txt_complaint_success</string>
     <string name="txt_req_sent">txt_req_sent</string>
 

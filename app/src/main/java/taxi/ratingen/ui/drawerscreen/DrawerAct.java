@@ -52,6 +52,7 @@ import taxi.ratingen.retro.responsemodel.NewRequestModel;
 import taxi.ratingen.retro.responsemodel.Request;
 import taxi.ratingen.retro.responsemodel.TaxiRequestModel;
 import taxi.ratingen.retro.responsemodel.Type;
+import taxi.ratingen.ui.PayTest;
 import taxi.ratingen.ui.base.BaseActivity;
 import taxi.ratingen.ui.drawerscreen.complaint.ComplaiintFrag;
 import taxi.ratingen.ui.drawerscreen.faq.FaqFragment;
@@ -400,6 +401,8 @@ public class DrawerAct extends BaseActivity<ActivityDrawerBinding, DrawerViewMod
 //                .setCustomAnimations(R.anim.slide_left, R.anim.slide_right)
 //                .add(R.id.Container, NotificationlistFrag.newInstance(), FavoriteFragment.TAG)
 //                .commit();
+
+        startActivity(new Intent(this, PayTest.class));
     }
 
     /**
@@ -541,7 +544,7 @@ public class DrawerAct extends BaseActivity<ActivityDrawerBinding, DrawerViewMod
         activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Wallet).setVisible(false);
         activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Notifications).setVisible(false);
         activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Complaints).setVisible(false);
-        activityDrawerBinding.navView.getMenu().findItem(R.id.nav_about).setVisible(false);
+//        activityDrawerBinding.navView.getMenu().findItem(R.id.nav_about).setVisible(false);
 //        activityDrawerBinding.navView.getMenu().findItem(R.id.nav_Sos).setVisible(false);
         activityDrawerBinding.navView.getMenu().findItem(R.id.nav_faq).setVisible(false);
     }
